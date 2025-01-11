@@ -385,7 +385,7 @@ public class WebBrowserActivity extends BaseActivity {
             onActivityResultAboveL(requestCode, resultCode, data);
         }
     }
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+
     private void onActivityResultAboveL(int requestCode, int resultCode, Intent intent) {
         if (requestCode != FILE_CHOOSER_RESULT_CODE || uploadMessageAboveL == null)
             return;
