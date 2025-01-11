@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.zhouyu.android_create.R;
 import com.zhouyu.android_create.activities.parent.BaseActivity;
+import com.zhouyu.android_create.fragments.AboutFragment;
 import com.zhouyu.android_create.manager.ActivityManager;
 import com.zhouyu.android_create.application.Application;
 import com.zhouyu.android_create.tools.CleanCacheTool;
@@ -264,7 +265,7 @@ public class MainActivity extends BaseActivity {
 
         fragmentList.add(new Fragment());
         fragmentList.add(new Fragment());
-        fragmentList.add(new Fragment());
+        fragmentList.add(new AboutFragment());
 
         //设置预加载页数
         view_pager.setOffscreenPageLimit(4);

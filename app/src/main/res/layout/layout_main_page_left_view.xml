@@ -247,7 +247,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="退出/关闭微音乐"
+                    android:text="退出/关闭"
                     android:textColor="#fa5a5a"
                     android:textSize="16dp"
                     tools:ignore="HardcodedText,SpUsage" />
