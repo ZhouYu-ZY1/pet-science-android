@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/content_view"
+    tools:context=".activities.WebBrowserActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+        <RelativeLayout
+            android:id="@+id/top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@color/viewColor">
+            <LinearLayout
+                android:id="@+id/top_bar_message"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:background="@android:color/transparent">
+                <RelativeLayout
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    tools:ignore="UselessParent">
+                    <LinearLayout
+                        android:id="@+id/finish_btn"
+                        android:gravity="center"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_centerVertical="true">
+                        <ImageView
+                            android:tint="@color/textGeneral"
+                            android:rotation="180"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/remove_icon"
+                            tools:ignore="ContentDescription,UseAppTint" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/top_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="60dp"
+                        android:layout_marginEnd="92dp"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:text="加载中"
+                        android:textColor="@color/textGeneral"
+                        android:textSize="17dp"
+                        tools:ignore="HardcodedText,ObsoleteLayoutParam,RelativeOverlap" />
+
+                    <LinearLayout
+                        android:id="@+id/open_web_browser"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="55dp"
+                        android:background="@drawable/touch_radius"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:rotation="180"
+                            android:src="@drawable/web_browser_icon"
+                            android:tint="@color/textGeneral"
+                            tools:ignore="ContentDescription,UseAppTint" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_alignParentEnd="true"
+                        android:id="@+id/refresh_btn"
+                        android:gravity="center"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/touch_radius">
+                        <ImageView
+                            android:tint="@color/textGeneral"
+                            android:rotation="180"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/refresh_icon"
+                            tools:ignore="ContentDescription,UseAppTint" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+        <ProgressBar
+            android:id="@+id/web_progress_bar"
+            android:maxHeight="2dp"
+            android:minHeight="2dp"
+            android:progressTint="@color/Theme"
+            android:progressBackgroundTint="@color/textTinge"
+            style="?android:progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progress="0"
+            tools:ignore="UnusedAttribute" />
+        <WebView
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+
+</RelativeLayout>
