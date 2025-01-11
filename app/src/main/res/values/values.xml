@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RoundedImageView">
+        <attr format="dimension" name="radius"/>
+    </declare-styleable>
+    <declare-styleable name="CardView">
+        <attr format="dimension" name="view_radius"/>
+    </declare-styleable>
+</resources>

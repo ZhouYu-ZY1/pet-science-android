@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--底部播放器背景-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="-2dp"
+        android:right="-2dp"
+        android:bottom="-2dp">
+        <shape>
+            <solid android:color="@color/viewColor"/>
+            <stroke
+                android:width="0.5dp"
+                android:color="@color/cutOffLine"/>
+        </shape>
+    </item>
+</layer-list>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/Theme</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
+    <color name="colorAccent">#FFFFFF</color>
+
+    <!--一般组件颜色-->
+    <color name="viewColor">#272727</color>
+
+    <!--一般Activity背景颜色-->
+    <color name="themeColor">#1a1a1a</color>
+
+    <!--分割线颜色-->
+    <color name="cutOffLine">#535353</color>
+
+    <!--音乐item默认图片背景颜色-->
+<!--    <color name="music_default_back_color">#99C1DF</color>-->
+
+    <!--深色字体颜色-->
+    <color name="textGeneral">#ffffff</color>
+
+    <!--浅色字体颜色-->
+    <color name="textTinge">#B8B6B6</color>
+
+    <!--主要底部栏选中底色-->
+    <color name="mainBarIndicatorColor">#4E4D4D</color>
+
+    <!--MyDialog分割线-->
+    <color name="myDialogLine">#5E5E5E</color>
+
+    <!--分类标签底色-->
+    <color name="classifyLabelBack">#2E2E2E</color>
+</resources>

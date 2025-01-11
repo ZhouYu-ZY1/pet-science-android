@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--通知栏字体颜色适配-->
+    <style
+        name="NotificationInfo"
+        parent="android:TextAppearance.Material.Notification.Info" />
+    <style
+        name="NotificationTitle"
+        parent="android:TextAppearance.Material.Notification.Title" />
+</resources>

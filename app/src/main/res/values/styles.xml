@@ -1,0 +1,92 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <item name="colorAccent">@color/Theme</item>
+
+<!--        <item name="android:windowIsTranslucent">true</item>-->
+        <!--取消字母全部大写功能-->
+        <item name="textAllCaps">false</item>
+
+        <!--设置自带的触摸反馈动画颜色-->
+        <item name="android:colorControlHighlight">@color/selectableItemBackgroundColor</item>
+    </style>
+
+    <!--启动界面-->
+    <style name="WelcomeTheme" parent="Theme.AppCompat.DayNight">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">#40B1FB</item>
+<!--        <item name="android:windowBackground">@drawable/start_background</item>-->
+<!--        <item name="android:windowBackground">@mipmap/back</item>-->
+    </style>
+
+
+    <!--自定义seekBarStyle-->
+    <style name="SeekBarStyle" >
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">@color/colorAccent</item>
+        <item name="android:progressDrawable">@xml/seekbar_progress_drawable</item>
+        <item name="android:thumb">@drawable/thumb_up</item>
+    </style>
+
+    <declare-styleable name="CircleImageView">
+        //外边的宽度
+        <attr name="civ_border_width" format="dimension" /> //外边的颜色
+        <attr name="civ_border_color" format="color" />
+        <attr name="civ_border_overlay" format="boolean" />
+        <attr name="civ_fill_color" format="color" />
+    </declare-styleable>
+
+    <!--自定义Dialog背景全透明无边框theme-->
+    <style name="MyDialog" parent="android:style/Theme.Dialog">
+        <!--背景颜色和透明程度-->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--是否去除标题-->
+        <item name="android:windowNoTitle">true</item>
+        <!--是否去除边框-->
+        <item name="android:windowFrame">@null</item>
+        <!--是否浮现在activity之上-->
+        <item name="android:windowIsFloating">false</item>
+        <!--是否模糊-->
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <!--自定义Dialog动画-->
+    <style name="PauseDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_slide_up</item>
+        <item name="android:windowExitAnimation">@anim/dialog_slide_down</item>
+    </style>
+
+    <style name="OnePixelActivity" parent="android:Theme.Holo.Light.NoActionBar">//无标题
+        <item name="android:windowIsTranslucent">true</item>//透明
+    </style>
+
+    <!--通知栏字体颜色适配-->
+    <style
+        name="NotificationInfo"
+        parent="android:TextAppearance.StatusBar.EventContent" />
+    <style
+        name="NotificationTitle"
+        parent="android:TextAppearance.StatusBar.EventContent.Title" />
+
+
+    <style name="MyCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="colorSwitchThumbNormal">@color/Theme</item>
+        <item name="buttonTint">@color/Theme</item>
+    </style>
+
+
+    <style name="WarpLinearLayoutDefault">
+        <item name="grivate">left</item>
+        <item name="horizontal_Space">20dp</item>
+        <item name="vertical_Space">20dp</item>
+        <item name="isFull">false</item>
+    </style>
+</resources>

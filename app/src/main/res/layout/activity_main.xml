@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    android:id="@+id/main_drawer_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/themeColor"
+        tools:ignore="SmallSp,DisableBaselineAlignment,UseCompoundDrawables,ScrollViewSize,Autofill,HardcodedText,SpUsage,UselessParent,RtlHardcoded,ContentDescription,ObsoleteLayoutParam">
+        <com.zhouyu.android_create.views.CustomViewPager
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/main_view_pager" />
+
+        <View
+            android:layout_marginBottom="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_height="0.5dp"
+            android:layout_width="match_parent"
+            android:background="@color/cutOffLine" />
+
+        <me.ibrahimsn.lib.SmoothBottomBar
+            android:id="@+id/main_bottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            app:backgroundColor="@color/viewColor"
+            app:duration="250"
+            app:iconSize="30dp"
+            app:iconTint="#B3AEAE"
+            app:iconTintActive="@color/Theme"
+            app:indicatorColor="@color/mainBarIndicatorColor"
+            app:indicatorRadius="30dp"
+            app:itemPadding="6dp"
+            app:menu="@menu/menu_bottom"
+            app:textColor="@color/Theme"
+            app:textSize="11dp" />
+    </RelativeLayout>
+
+    <!--侧划界面-->
+    <LinearLayout
+        android:id="@+id/main_left_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:clickable="false"
+        android:orientation="vertical"
+        tools:ignore="RtlHardcoded"
+        android:background="@color/themeColor">
+        <include layout="@layout/layout_main_page_left_view"/>
+    </LinearLayout>
+
+</androidx.drawerlayout.widget.DrawerLayout>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#7e090909">
+    <LinearLayout
+        android:id="@+id/content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <com.zhouyu.android_create.views.CardView
+            android:id="@+id/my_dialog_content_view"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:background="@color/viewColor"
+            android:orientation="vertical"
+            android:clipToPadding="false"
+            app:view_radius="5dp">
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:text="标题"
+                android:gravity="center"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/Theme"
+                android:textSize="17dp"
+                tools:ignore="HardcodedText,SpUsage" />
+            <ScrollView
+                android:id="@+id/scroll"
+                android:scrollbars="none"
+                android:overScrollMode="never"
+                android:layout_width="match_parent"
+                android:layout_height="320dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="15dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/message"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textTinge3"
+                        android:text="提示文字"
+                        android:textSize="14dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+
+                    <TextView
+                        android:layout_marginTop="15dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textGeneral"
+                        android:textStyle="bold"
+                        android:text="1.设备信息"
+                        android:textSize="15dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+                    <TextView
+                        android:layout_marginTop="3dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textTinge"
+                        android:text="含硬件型号、设备状态、Android版本、Mac地址等。用于软件崩溃收集应用产生的Bug信息，以便我们更好的改进应用"
+                        android:textSize="13dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textGeneral"
+                        android:textStyle="bold"
+                        android:text="2.访问网络"
+                        android:textSize="15dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+                    <TextView
+                        android:layout_marginTop="3dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textTinge"
+                        android:text="用于获取软件更新、访问Web网页"
+                        android:textSize="13dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textGeneral"
+                        android:textStyle="bold"
+                        android:text="3.读写存储"
+                        android:textSize="15dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+                    <TextView
+                        android:layout_marginTop="3dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textTinge"
+                        android:text="用于数据（歌单、听歌数据等）备份和恢复"
+                        android:textSize="13dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textGeneral"
+                        android:textStyle="bold"
+                        android:text="4.前台服务"
+                        android:textSize="15dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+                    <TextView
+                        android:layout_marginTop="3dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textTinge"
+                        android:text="用于启动前台音乐播放服务"
+                        android:textSize="13dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textGeneral"
+                        android:textStyle="bold"
+                        android:text="5.悬浮窗"
+                        android:textSize="15dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+                    <TextView
+                        android:layout_marginTop="3dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textTinge"
+                        android:text="用于桌面歌词悬浮窗，状态栏歌词悬浮窗"
+                        android:textSize="13dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textGeneral"
+                        android:textStyle="bold"
+                        android:text="6.访问相册"
+                        android:textSize="15dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+                    <TextView
+                        android:layout_marginTop="3dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textTinge"
+                        android:text="用于修改头像、修改歌单图片"
+                        android:textSize="13dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textGeneral"
+                        android:textStyle="bold"
+                        android:text="7.通知"
+                        android:textSize="15dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+                    <TextView
+                        android:layout_marginTop="3dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textTinge"
+                        android:text="用于在通知栏显示音乐播放信息与控制器"
+                        android:textSize="13dp"
+                        tools:ignore="HardcodedText,SpUsage" />
+                </LinearLayout>
+            </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/dialog_input_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <EditText
+                    android:inputType="text"
+                    android:id="@+id/dialog_input"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp"
+                    android:paddingStart="3dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14dp"
+                    android:background="@drawable/input_style"
+                    android:textCursorDrawable="@drawable/input_gb"
+                    android:textColorHint="#C1BEBE"
+                    android:textColor="@color/textGeneral"
+                    tools:ignore="RtlSymmetry" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#C1C0C0"/>
+            </LinearLayout>
+
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.2dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/myDialogLine"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+                <Button
+                    android:id="@+id/no"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/touch_anim_default"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:text="取消"
+                    android:textColor="@color/textTinge"
+                    android:textSize="16dp"/>
+                <View
+                    android:id="@+id/center_view"
+                    android:layout_width="0.2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/myDialogLine"/>
+                <Button
+                    android:id="@+id/yes"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/touch_anim_default"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:text="确定"
+                    android:textColor="@color/Theme"
+                    android:textSize="16dp"/>
+            </LinearLayout>
+        </com.zhouyu.android_create.views.CardView>
+    </LinearLayout>
+</LinearLayout>

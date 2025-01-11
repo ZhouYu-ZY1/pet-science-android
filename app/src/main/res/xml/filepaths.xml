@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <paths>
+        <!--代表app外部存储区域根目录下的文件 Context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)目录下的Pictures目录-->
+        <!--/storage/emulated/0/Android/data/com.xxx.xxx/files/Pictures-->
+        <external-files-path name="images" path="Pictures" />
+
+        <root-path
+            name="camera_photos"
+            path="" />
+
+        <!-- /storage/emulated/0/Download/${applicationId}/.beta/apk-->
+        <external-path name="beta_external_path" path="Download/"/>
+        <!--/storage/emulated/0/Android/data/${applicationId}/files/apk/-->
+        <external-path name="beta_external_files_path" path="Android/data/"/>
+    </paths>
+</resources>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#7e090909"
+    tools:ignore="SmallSp,DisableBaselineAlignment,UseCompoundDrawables,ScrollViewSize,Autofill,HardcodedText,SpUsage,UselessParent,RtlHardcoded,ContentDescription,ObsoleteLayoutParam">
+    <com.zhouyu.android_create.views.CardView
+        android:id="@+id/content_view"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@color/viewColor"
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingTop="20dp"
+        app:view_radius="3dp">
+        <LinearLayout
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="正在下载 稻香-周杰伦.flac"
+                android:textColor="@color/textGeneral"
+                android:textSize="15dp" />
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:progressTint="@color/Theme"
+                android:progressBackgroundTint="@color/cutOffLine"
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:progress="0"
+                android:max="100"
+                style="?android:attr/progressBarStyleHorizontal"/>
+            <RelativeLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="0%"
+                    android:textColor="@color/textGeneral"
+                    android:textSize="13dp" />
+                <LinearLayout
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/curr_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="0M"
+                        android:textColor="@color/textGeneral"
+                        android:textSize="13dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text=" / "
+                        android:textColor="@color/textGeneral"
+                        android:textSize="13dp" />
+                    <TextView
+                        android:id="@+id/total_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="0M"
+                        android:textColor="@color/textGeneral"
+                        android:textSize="13dp" />
+                </LinearLayout>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="25dp"
+            android:background="#E4E4E4"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+            <Button
+                android:id="@+id/no"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/touch_anim_default"
+                android:gravity="center"
+                android:lines="1"
+                android:text="取消下载"
+                android:textColor="@color/textTinge"
+                android:textSize="16dp"/>
+            <View
+                android:id="@+id/center_view"
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="#E4E4E4"/>
+            <Button
+                android:id="@+id/yes"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/touch_anim_default"
+                android:gravity="center"
+                android:lines="1"
+                android:text="后台下载"
+                android:textColor="@color/Theme"
+                android:textSize="16dp"/>
+        </LinearLayout>
+    </com.zhouyu.android_create.views.CardView>
+</RelativeLayout>

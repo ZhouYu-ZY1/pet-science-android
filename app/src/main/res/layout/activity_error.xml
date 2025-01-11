@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/err_hint_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="发生未知错误，您可点击下方复制错误信息按钮，前往【微音乐助手】微信公众号反馈该问题"
+        android:textSize="24sp"
+        android:padding="16dp"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btn_err_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="复制错误信息"
+        android:onClick="onRestartAppClicked"/>
+
+    <Button
+        android:layout_marginTop="20dp"
+        android:id="@+id/btn_restart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="重启应用"
+        android:onClick="onRestartAppClicked"/>
+
+</LinearLayout>
