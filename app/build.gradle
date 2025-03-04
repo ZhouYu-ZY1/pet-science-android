@@ -1,10 +1,11 @@
 plugins {
     alias(libs.plugins.androidApplication)
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
     namespace 'com.zhouyu.android_create'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.zhouyu.android_create"
@@ -66,6 +67,9 @@ android {
                     ]
         }
     }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
 }
 
 
@@ -76,6 +80,7 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+    implementation 'androidx.core:core-ktx:+'
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
