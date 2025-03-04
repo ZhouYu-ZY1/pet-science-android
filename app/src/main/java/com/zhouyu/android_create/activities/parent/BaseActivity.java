@@ -48,6 +48,15 @@ public class BaseActivity extends AppCompatActivity {
         ActivityManager.getInstance().addActivity(this);
     }
 
+    public void setTopBarView(View view){
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) layoutParams;
+            marginLayoutParams.topMargin = PhoneMessage.statusBarHeight;
+            view.setLayoutParams(marginLayoutParams);
+        }
+    }
+
     private boolean isLoadTopBar = false;
     @Override
     protected void onStart() {

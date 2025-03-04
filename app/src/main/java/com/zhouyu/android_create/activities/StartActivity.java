@@ -436,10 +436,12 @@ public class StartActivity extends AppCompatActivity {
 
         skipHandler.postDelayed(this::skip,100);
     }
+    private boolean isSkip = false;
     private void skipActivity(){
-        if(isMaintenance){
+        if(isMaintenance || isSkip){
             return;
         }
+        isSkip = true;
         Intent intent = new Intent(StartActivity.this, MainActivity.class);
         intent.putExtra("openActivityName",openActivityName);
         startActivity(intent);

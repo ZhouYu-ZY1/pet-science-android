@@ -93,47 +93,6 @@
 <!--                    android:layout_width="match_parent"-->
 <!--                    android:layout_height="0.8dp"-->
 <!--                    android:background="@color/cutOffLine"/>-->
-                <RelativeLayout
-                    android:id="@+id/importOrExport"
-                    android:padding="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground">
-                    <LinearLayout
-                        android:layout_marginEnd="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="导入/导出数据"
-                            android:textSize="14dp"
-                            android:textColor="@color/textGeneral"
-                            tools:ignore="HardcodedText,SpUsage" />
-                        <TextView
-                            android:layout_marginTop="5dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="已不再提供账号数据上传功能，请使用此功能代替，手动导出成功后，每15分钟自动导出一次"
-                            android:textSize="11dp"
-                            android:textColor="@color/textTinge"
-                            tools:ignore="HardcodedText,SpUsage" />
-                    </LinearLayout>
-                    <ImageView
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_width="13dp"
-                        android:layout_height="13dp"
-                        android:src="@drawable/next_icon"
-                        tools:ignore="ContentDescription,RtlHardcoded"
-                        app:tint="@color/textGeneral" />
-                </RelativeLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.8dp"
-                    android:background="@color/cutOffLine"/>
 
                 <RelativeLayout
                     android:id="@+id/clear_cache"
