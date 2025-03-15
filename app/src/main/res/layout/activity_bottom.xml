@@ -26,7 +26,7 @@
                 android:paddingBottom="20dp"
                 android:visibility="gone"
                 tools:ignore="RtlSymmetry,UselessParent">
-                <com.zhouyu.android_create.views.CircleImageView
+                <com.zhouyu.pet_science.views.CircleImageView
                     android:id="@+id/bottom_dialog_image"
                     android:layout_width="60dp"
                     android:layout_height="60dp"

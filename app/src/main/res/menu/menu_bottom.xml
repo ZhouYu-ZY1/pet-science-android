@@ -3,35 +3,48 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-<!--    <item-->
-<!--        android:id="@+id/item1"-->
-<!--        android:title="发现"-->
-<!--        android:icon="@drawable/find_icon"-->
-<!--        tools:ignore="HardcodedText,MenuTitle" />-->
+    <!--    <item-->
+    <!--        android:id="@+id/item1"-->
+    <!--        android:title="发现"-->
+    <!--        android:icon="@drawable/find_icon"-->
+    <!--        tools:ignore="HardcodedText,MenuTitle" />-->
 
-    <item
-        android:id="@+id/item0"
-        android:title="我的"
-        android:icon="@drawable/my_icon"
-        tools:ignore="HardcodedText,MenuTitle" />
+
 
 
     <item
         android:id="@+id/item1"
-        android:title="扫描"
-        android:icon="@drawable/menu_scan_icon"
+        android:title="首页"
+        android:icon="@drawable/my_icon"
         tools:ignore="HardcodedText,MenuTitle" />
 
+    <item
+        android:id="@+id/item2"
+        android:title="商店页"
+        android:icon="@drawable/my_icon"
+        tools:ignore="HardcodedText,MenuTitle" />
 
-<!--    <item-->
-<!--        android:id="@+id/item2"-->
-<!--        android:title="工具箱"-->
-<!--        android:icon="@drawable/tool_icon"-->
-<!--        tools:ignore="HardcodedText,MenuTitle" />-->
+    <item
+        android:id="@+id/item3"
+        android:title="排行榜"
+        android:icon="@drawable/my_icon"
+        tools:ignore="HardcodedText,MenuTitle" />
 
     <item
         android:id="@+id/item4"
-        android:title="更多"
-        android:icon="@drawable/about_icon"
+        android:title="我的"
+        android:icon="@drawable/my_icon"
         tools:ignore="HardcodedText,MenuTitle" />
+
+    <!--    <item-->
+    <!--        android:id="@+id/item2"-->
+    <!--        android:title="工具箱"-->
+    <!--        android:icon="@drawable/tool_icon"-->
+    <!--        tools:ignore="HardcodedText,MenuTitle" />-->
+
+    <!--    <item-->
+    <!--        android:id="@+id/item4"-->
+    <!--        android:title="更多"-->
+    <!--        android:icon="@drawable/about_icon"-->
+    <!--        tools:ignore="HardcodedText,MenuTitle" />-->
 </menu>

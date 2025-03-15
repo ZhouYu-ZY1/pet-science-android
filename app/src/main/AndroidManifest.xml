@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.zhouyu.android_create" >
+    package="com.zhouyu.pet_science" >
      <!-- 网络请求权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.zhouyu.android_create.application.Application"
+        android:name="com.zhouyu.pet_science.application.Application"
         android:allowBackup="false"
         android:debuggable="false"
         android:extractNativeLibs="true"
@@ -26,13 +26,13 @@
         tools:replace="android:allowBackup">
 
         <!--Web浏览器-->
-        <activity android:name="com.zhouyu.android_create.activities.WebBrowserActivity"/>
+        <activity android:name="com.zhouyu.pet_science.activities.WebBrowserActivity"/>
         <!--主页-->
-        <activity android:name="com.zhouyu.android_create.activities.MainActivity"/>
+        <activity android:name="com.zhouyu.pet_science.activities.MainActivity"/>
         <!--错误页-->
-        <activity android:name="com.zhouyu.android_create.activities.parent.ErrorActivity"/>
+        <activity android:name="com.zhouyu.pet_science.activities.base.ErrorActivity"/>
         <!--启动页-->
-        <activity android:name="com.zhouyu.android_create.activities.StartActivity"
+        <activity android:name="com.zhouyu.pet_science.activities.StartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

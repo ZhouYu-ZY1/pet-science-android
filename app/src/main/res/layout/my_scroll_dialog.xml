@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center">
-        <com.zhouyu.android_create.views.CardView
+        <com.zhouyu.pet_science.views.CardView
             android:id="@+id/my_dialog_content_view"
             android:layout_width="280dp"
             android:layout_height="wrap_content"
@@ -251,6 +251,6 @@
                     android:textColor="@color/Theme"
                     android:textSize="16dp"/>
             </LinearLayout>
-        </com.zhouyu.android_create.views.CardView>
+        </com.zhouyu.pet_science.views.CardView>
     </LinearLayout>
 </LinearLayout>

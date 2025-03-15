@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#7e090909"
     tools:ignore="SmallSp,DisableBaselineAlignment,UseCompoundDrawables,ScrollViewSize,Autofill,HardcodedText,SpUsage,UselessParent,RtlHardcoded,ContentDescription,ObsoleteLayoutParam">
-    <com.zhouyu.android_create.views.CardView
+    <com.zhouyu.pet_science.views.CardView
         android:id="@+id/content_view"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
@@ -63,5 +63,5 @@
                     tools:ignore="HardcodedText,RtlHardcoded,SpUsage" />
             </LinearLayout>
         </LinearLayout>
-    </com.zhouyu.android_create.views.CardView>
+    </com.zhouyu.pet_science.views.CardView>
 </RelativeLayout>

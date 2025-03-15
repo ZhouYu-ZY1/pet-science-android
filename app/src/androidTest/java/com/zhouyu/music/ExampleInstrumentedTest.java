@@ -1,4 +1,4 @@
-package com.zhouyu.android_create;
+package com.zhouyu.pet_science;
 
 import android.content.Context;
 
@@ -21,7 +21,7 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.zhouyu.android_create", appContext.getPackageName());
+        assertEquals("com.zhouyu.pet_science", appContext.getPackageName());
 
 
     }

@@ -18,7 +18,7 @@
         android:layout_gravity="center"
         tools:ignore="UselessParent"
         android:orientation="vertical">
-        <com.zhouyu.android_create.views.CircleImageView
+        <com.zhouyu.pet_science.views.CircleImageView
             android:id="@+id/left_view_user_avatar"
             android:layout_width="45dp"
             android:layout_height="45dp"
@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <com.zhouyu.android_create.views.CardView
+            <com.zhouyu.pet_science.views.CardView
                 app:view_radius="3dp"
                 android:orientation="vertical"
                 android:layout_marginStart="15dp"
@@ -169,7 +169,7 @@
                         tools:ignore="ContentDescription,RtlHardcoded"
                         app:tint="@color/textGeneral" />
                 </RelativeLayout>
-            </com.zhouyu.android_create.views.CardView>
+            </com.zhouyu.pet_science.views.CardView>
 
 
 <!--            <LinearLayout-->

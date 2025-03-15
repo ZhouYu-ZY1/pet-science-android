@@ -12,9 +12,10 @@
         android:orientation="vertical"
         android:background="@color/themeColor"
         tools:ignore="SmallSp,DisableBaselineAlignment,UseCompoundDrawables,ScrollViewSize,Autofill,HardcodedText,SpUsage,UselessParent,RtlHardcoded,ContentDescription,ObsoleteLayoutParam">
-        <com.zhouyu.android_create.views.CustomViewPager
+        <com.zhouyu.pet_science.views.CustomViewPager
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="50dp"
             android:id="@+id/main_view_pager" />
 
         <View

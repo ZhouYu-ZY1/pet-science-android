@@ -9,7 +9,7 @@
         android:id="@+id/err_hint_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="发生未知错误，您可点击下方复制错误信息按钮，前往【微音乐助手】微信公众号反馈该问题"
+        android:text="发生未知错误"
         android:textSize="24sp"
         android:padding="16dp"
         android:layout_marginBottom="24dp"/>

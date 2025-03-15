@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.zhouyu.android_create'
+    namespace 'com.zhouyu.pet_science'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.zhouyu.android_create"
+        applicationId "com.zhouyu.pet_science"
         minSdk 24
         targetSdk 34
         versionCode 1
@@ -80,7 +80,7 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
-    implementation 'androidx.core:core-ktx:+'
+    implementation 'androidx.core:core-ktx:1.10.1'
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
@@ -107,7 +107,6 @@ dependencies {
     //文件下载库
 //    implementation 'com.mindorks.android:prdownloader:0.6.0'
 //
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     androidTestImplementation('androidx.test.espresso:espresso-core:3.2.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

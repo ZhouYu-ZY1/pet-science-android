@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+    <TextView
+        android:id="@+id/category_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="推荐"
+        android:textSize="14sp"
+        android:textColor="@color/textGeneral" />
+
+    <View
+        android:id="@+id/category_indicator"
+        android:layout_width="20dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/Theme"
+        android:visibility="invisible" />
+
+</LinearLayout>

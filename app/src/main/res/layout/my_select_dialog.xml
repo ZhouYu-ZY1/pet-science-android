@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#7e090909">
-    <com.zhouyu.android_create.views.CardView
+    <com.zhouyu.pet_science.views.CardView
         android:id="@+id/content_view"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
@@ -46,5 +46,5 @@
 
 
         </LinearLayout>
-    </com.zhouyu.android_create.views.CardView>
+    </com.zhouyu.pet_science.views.CardView>
 </RelativeLayout>
