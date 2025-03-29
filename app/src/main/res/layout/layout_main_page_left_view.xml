@@ -28,7 +28,7 @@
             android:id="@+id/left_view_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="13dp"
+            android:textSize="13sp"
             android:textColor="@color/textGeneral"
             android:text="用户名"
             tools:ignore="HardcodedText" />
@@ -68,7 +68,7 @@
 <!--                            android:layout_width="wrap_content"-->
 <!--                            android:layout_height="wrap_content"-->
 <!--                            android:text="上传数据"-->
-<!--                            android:textSize="14dp"-->
+<!--                            android:textSize="14sp"-->
 <!--                            android:textColor="@color/textGeneral"-->
 <!--                            tools:ignore="HardcodedText,SpUsage" />-->
 <!--                        <TextView-->
@@ -76,7 +76,7 @@
 <!--                            android:layout_width="wrap_content"-->
 <!--                            android:layout_height="wrap_content"-->
 <!--                            android:text="为减少服务器压力，部分数据（歌单、收藏歌曲等）每15分钟自动同步一次。请在退出登录或清除数据之前手动上传保存"-->
-<!--                            android:textSize="11dp"-->
+<!--                            android:textSize="11sp"-->
 <!--                            android:textColor="@color/textTinge"-->
 <!--                            tools:ignore="HardcodedText,SpUsage" />-->
 <!--                    </LinearLayout>-->
@@ -110,7 +110,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="清除缓存"
-                            android:textSize="14dp"
+                            android:textSize="14sp"
                             android:textColor="@color/textGeneral"
                             tools:ignore="HardcodedText,SpUsage" />
                         <TextView
@@ -119,7 +119,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="计算中..."
-                            android:textSize="11dp"
+                            android:textSize="11sp"
                             android:textColor="@color/textTinge"
                             tools:ignore="HardcodedText,SpUsage" />
                     </LinearLayout>
@@ -156,7 +156,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="设置"
-                            android:textSize="14dp"
+                            android:textSize="14sp"
                             android:textColor="@color/textGeneral"
                             tools:ignore="HardcodedText,SpUsage" />
                     </LinearLayout>
@@ -188,7 +188,7 @@
 <!--                    android:layout_height="wrap_content"-->
 <!--                    android:text="迁移至正式账号"-->
 <!--                    android:textColor="@color/Theme"-->
-<!--                    android:textSize="16dp"-->
+<!--                    android:textSize="16sp"-->
 <!--                    tools:ignore="HardcodedText,SpUsage" />-->
 <!--            </LinearLayout>-->
 
@@ -208,7 +208,7 @@
                     android:layout_height="wrap_content"
                     android:text="退出/关闭"
                     android:textColor="#fa5a5a"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     tools:ignore="HardcodedText,SpUsage" />
             </LinearLayout>
         </LinearLayout>

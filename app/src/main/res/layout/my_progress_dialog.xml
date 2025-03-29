@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:text="标题"
                 android:textColor="#38ADFF"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <LinearLayout
                 android:layout_marginTop="10dp"
@@ -57,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:lines="4"
                     android:ellipsize="end"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:text="努力加载中"
                     android:textColor="@color/textGeneral"
                     tools:ignore="HardcodedText,RtlHardcoded,SpUsage" />

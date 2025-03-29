@@ -58,7 +58,7 @@
                         android:lines="1"
                         android:text="加载中"
                         android:textColor="@color/textGeneral"
-                        android:textSize="17dp"
+                        android:textSize="17sp"
                         tools:ignore="HardcodedText,ObsoleteLayoutParam,RelativeOverlap" />
 
                     <LinearLayout

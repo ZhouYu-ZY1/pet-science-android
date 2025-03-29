@@ -54,16 +54,25 @@ class ShopCategoryFragment : BaseFragment() {
                     productItems.add(ProductItem("Nike Air Force 1", "¥899", "2.3万+人付款"))
                     productItems.add(ProductItem("Adidas Superstar", "¥699", "1.8万+人付款"))
                     productItems.add(ProductItem("New Balance 327", "¥799", "1.5万+人付款"))
+                    productItems.add(ProductItem("Nike Air Force 1", "¥899", "2.3万+人付款"))
+                    productItems.add(ProductItem("Adidas Superstar", "¥699", "1.8万+人付款"))
+                    productItems.add(ProductItem("New Balance 327", "¥799", "1.5万+人付款"))
+                    productItems.add(ProductItem("Nike Air Force 1", "¥899", "2.3万+人付款"))
+                    productItems.add(ProductItem("Adidas Superstar", "¥699", "1.8万+人付款"))
+                    productItems.add(ProductItem("New Balance 327", "¥799", "1.5万+人付款"))
+                    productItems.add(ProductItem("Nike Air Force 1", "¥899", "2.3万+人付款"))
+                    productItems.add(ProductItem("Adidas Superstar", "¥699", "1.8万+人付款"))
+                    productItems.add(ProductItem("New Balance 327", "¥799", "1.5万+人付款"))
+                    productItems.add(ProductItem("Nike Air Force 1", "¥899", "2.3万+人付款"))
+                    productItems.add(ProductItem("Adidas Superstar", "¥699", "1.8万+人付款"))
+                    productItems.add(ProductItem("New Balance 327", "¥799", "1.5万+人付款"))
+                    productItems.add(ProductItem("Nike Air Force 1", "¥899", "2.3万+人付款"))
+                    productItems.add(ProductItem("Adidas Superstar", "¥699", "1.8万+人付款"))
+                    productItems.add(ProductItem("New Balance 327", "¥799", "1.5万+人付款"))
                 }
 
                 "鞋类" -> {
-                    productItems.add(
-                        ProductItem(
-                            "鸿星尔克 流云 网事拼接 耐磨跑鞋",
-                            "¥159",
-                            "1000+人付款"
-                        )
-                    )
+                    productItems.add(ProductItem("鸿星尔克 流云 网事拼接 耐磨跑鞋", "¥159", "1000+人付款"))
                     productItems.add(
                         ProductItem(
                             "鸿星尔克 百搭舒适 防滑耐磨休闲鞋",

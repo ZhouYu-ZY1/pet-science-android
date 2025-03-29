@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>萌宠世界</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <div class="time">12:30</div>
+        <div class="status-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <!-- 主内容区域 - 使用iframe加载页面 -->
+    <div class="content-container">
+        <iframe id="main-content" src="pages/login.html" frameborder="0"></iframe>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <nav class="tab-bar">
+        <div class="tab-item active" data-page="pages/home.html">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="tab-item" data-page="pages/shop.html">
+            <i class="fas fa-shopping-bag"></i>
+            <span>商城</span>
+        </div>
+        <div class="tab-item" data-page="pages/ai.html">
+            <i class="fas fa-robot"></i>
+            <span>AI助手</span>
+        </div>
+        <div class="tab-item" data-page="pages/profile.html">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </div>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

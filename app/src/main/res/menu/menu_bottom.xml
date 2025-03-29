@@ -20,13 +20,13 @@
 
     <item
         android:id="@+id/item2"
-        android:title="商店页"
-        android:icon="@drawable/my_icon"
+        android:title="商城"
+        android:icon="@drawable/shop_icon"
         tools:ignore="HardcodedText,MenuTitle" />
 
     <item
         android:id="@+id/item3"
-        android:title="排行榜"
+        android:title="排行"
         android:icon="@drawable/my_icon"
         tools:ignore="HardcodedText,MenuTitle" />
 

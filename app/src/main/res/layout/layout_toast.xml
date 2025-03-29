@@ -28,6 +28,6 @@
         android:layout_marginRight="10dp"
         android:textColor="#FFFFFF"
         android:gravity="center"
-        android:textSize="14dp" />
+        android:textSize="14sp" />
 
 </LinearLayout>

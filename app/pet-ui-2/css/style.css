@@ -1,0 +1,110 @@
+:root {
+    --primary-color: #ff6b81;
+    --secondary-color: #ff9eb5;
+    --text-color: #333;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #6c757d;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #fff;
+    color: var(--text-color);
+    width: 390px; /* iPhone 15 Pro 宽度 */
+    height: 844px; /* iPhone 15 Pro 高度 */
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    border-radius: 40px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 状态栏样式 */
+.status-bar {
+    height: 44px;
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 600;
+    position: relative;
+    z-index: 100;
+}
+
+.status-icons i {
+    margin-left: 8px;
+}
+
+/* 内容容器 */
+.content-container {
+    height: calc(100% - 44px - 83px); /* 减去状态栏和底部导航的高度 */
+    overflow: hidden;
+}
+
+#main-content {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* 底部导航栏 */
+.tab-bar {
+    height: 83px;
+    background-color: #fff;
+    border-top: 1px solid var(--medium-gray);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: 20px; /* 为了模拟iOS底部安全区域 */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark-gray);
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.tab-item i {
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.tab-item.active {
+    color: var(--primary-color);
+}
+
+/* 通用卡片样式 */
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 按钮样式 */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}

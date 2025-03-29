@@ -34,5 +34,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "pet_science"
+rootProject.name = "pet-science-android"
 include ':app'

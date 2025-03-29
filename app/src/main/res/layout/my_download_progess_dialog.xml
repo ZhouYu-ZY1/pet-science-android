@@ -33,7 +33,7 @@
                 android:gravity="center_vertical"
                 android:text="正在下载 稻香-周杰伦.flac"
                 android:textColor="@color/textGeneral"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
             <ProgressBar
                 android:id="@+id/progress_bar"
                 android:progressTint="@color/Theme"
@@ -55,7 +55,7 @@
                     android:layout_centerVertical="true"
                     android:text="0%"
                     android:textColor="@color/textGeneral"
-                    android:textSize="13dp" />
+                    android:textSize="13sp" />
                 <LinearLayout
                     android:layout_alignParentRight="true"
                     android:layout_width="wrap_content"
@@ -67,14 +67,14 @@
                         android:layout_centerVertical="true"
                         android:text="0M"
                         android:textColor="@color/textGeneral"
-                        android:textSize="13dp" />
+                        android:textSize="13sp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:text=" / "
                         android:textColor="@color/textGeneral"
-                        android:textSize="13dp" />
+                        android:textSize="13sp" />
                     <TextView
                         android:id="@+id/total_size"
                         android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
                         android:layout_centerVertical="true"
                         android:text="0M"
                         android:textColor="@color/textGeneral"
-                        android:textSize="13dp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
 
             </RelativeLayout>
@@ -109,7 +109,7 @@
                 android:lines="1"
                 android:text="取消下载"
                 android:textColor="@color/textTinge"
-                android:textSize="16dp"/>
+                android:textSize="16sp"/>
             <View
                 android:id="@+id/center_view"
                 android:layout_width="1px"
@@ -125,7 +125,7 @@
                 android:lines="1"
                 android:text="后台下载"
                 android:textColor="@color/Theme"
-                android:textSize="16dp"/>
+                android:textSize="16sp"/>
         </LinearLayout>
     </com.zhouyu.pet_science.views.CardView>
 </RelativeLayout>

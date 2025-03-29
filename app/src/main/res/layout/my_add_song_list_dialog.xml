@@ -36,7 +36,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="添加到歌单"
-                            android:textSize="15dp"
+                            android:textSize="15sp"
                             android:textColor="@color/textGeneral"/>
 
                     </LinearLayout>
@@ -90,7 +90,7 @@
                         android:layout_height="wrap_content"
                         android:text="歌单获取失败，请确认QQ号是否输入正确（可在左侧侧滑栏清除绿源账号），如账号正确请至 Q音APP -> 个人主页 -> 右上角更多按钮 -> 访问设置 中检查个人主页和歌单的访问开关是否打开"
                         android:textColor="@color/textGeneral"
-                        android:textSize="14dp"/>
+                        android:textSize="14sp"/>
                 </LinearLayout>
             </RelativeLayout>
 

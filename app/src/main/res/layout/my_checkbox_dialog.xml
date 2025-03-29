@@ -31,7 +31,7 @@
                 android:gravity="center"
                 android:layout_marginTop="15dp"
                 android:textColor="@color/Theme"
-                android:textSize="17dp"
+                android:textSize="17sp"
                 tools:ignore="HardcodedText,SpUsage" />
             <TextView
                 android:id="@+id/message"
@@ -45,7 +45,7 @@
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/textTinge"
                 android:text="提示文字"
-                android:textSize="14dp"
+                android:textSize="14sp"
                 tools:ignore="HardcodedText" />
 
 
@@ -67,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="不再提示"
-                    android:textSize="13dp"
+                    android:textSize="13sp"
                     android:textColor="@color/textTinge"
                     tools:ignore="HardcodedText,SpUsage" />
             </LinearLayout>
@@ -93,7 +93,7 @@
                     android:lines="1"
                     android:text="取消"
                     android:textColor="@color/textTinge"
-                    android:textSize="16dp"/>
+                    android:textSize="16sp"/>
                 <View
                     android:id="@+id/center_view"
                     android:layout_width="0.2dp"
@@ -109,7 +109,7 @@
                     android:lines="1"
                     android:text="确定"
                     android:textColor="@color/Theme"
-                    android:textSize="16dp"/>
+                    android:textSize="16sp"/>
             </LinearLayout>
         </com.zhouyu.pet_science.views.CardView>
     </LinearLayout>

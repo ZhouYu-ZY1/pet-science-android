@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.zhouyu.pet_science" >
-     <!-- 网络请求权限 -->
+    package="com.zhouyu.pet_science">
+    <!-- 网络请求权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name="com.zhouyu.pet_science.application.Application"
         android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:debuggable="false"
         android:extractNativeLibs="true"
         android:hardwareAccelerated="true"
@@ -21,18 +22,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:dataExtractionRules="@xml/data_extraction_rules"
         tools:ignore="AllowBackup,HardcodedDebugMode,UnusedAttribute"
         tools:replace="android:allowBackup">
 
-        <!--Web浏览器-->
-        <activity android:name="com.zhouyu.pet_science.activities.WebBrowserActivity"/>
-        <!--主页-->
-        <activity android:name="com.zhouyu.pet_science.activities.MainActivity"/>
-        <!--错误页-->
-        <activity android:name="com.zhouyu.pet_science.activities.base.ErrorActivity"/>
         <!--启动页-->
-        <activity android:name="com.zhouyu.pet_science.activities.StartActivity"
+        <activity
+            android:name="com.zhouyu.pet_science.activities.StartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,6 +35,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- 登录页 -->
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="false" />
+        <!--主页-->
+        <activity android:name="com.zhouyu.pet_science.activities.MainActivity" />
+
+        <!--错误页-->
+        <activity android:name="com.zhouyu.pet_science.activities.base.ErrorActivity" />
+        <!--Web浏览器-->
+        <activity android:name="com.zhouyu.pet_science.activities.WebBrowserActivity" />
+
+
     </application>
 
 </manifest>

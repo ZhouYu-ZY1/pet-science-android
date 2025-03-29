@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <!-- 基础颜色 -->
+    <color name="primary">#ff6b81</color>
+    <color name="secondary">#ff9eb5</color>
+    <color name="dark_gray">#666666</color>
+    <color name="medium_gray">#999999</color>
+    <color name="light_gray">#EEEEEE</color>
+    
+    <!-- 社交媒体颜色 -->
+    <color name="wechat">#07C160</color>
+    <color name="qq">#12B7F5</color>
+    <color name="weibo">#E6162D</color>
+
     <color name="colorPrimary">@color/Theme</color>
     <color name="colorPrimaryDark">#FFFFFF</color>
     <color name="colorAccent">#FFFFFF</color>
@@ -18,10 +30,10 @@
 
     <!--主题-->
     <color name="Theme">#18A2FD</color>
-<!--    <color name="Theme">#e8989a</color>-->
+    <!--    <color name="Theme">#e8989a</color>-->
     <color name="ThemeTinge">#66C1FB</color>
     <color name="Theme2">#FF3C3C</color>
-<!--    <color name="Theme">#22D59D</color>-->
+    <!--    <color name="Theme">#22D59D</color>-->
 
 
     <!--一般组件颜色-->
@@ -29,8 +41,8 @@
 
     <!--一般Activity背景颜色-->
     <color name="themeColor">#F8F8F8</color>
-<!--    <color name="themeColor">#F8F9FD</color>-->
-<!--    <color name="themeColor">#F7FCFF</color>-->
+    <!--    <color name="themeColor">#F8F9FD</color>-->
+    <!--    <color name="themeColor">#F7FCFF</color>-->
 
     <!--音乐item默认图片背景颜色-->
     <color name="music_default_back_color">#A9D5F6</color>
@@ -74,7 +86,8 @@
     <!--操作栏颜色-->
     <color name="easy_photos_bar_primary">#ffffff</color> <!--操作栏主色，如相册页顶部和底部操作栏-->
     <color name="easy_photos_bar_primary_dark">#f9f9f9</color> <!--操作栏偏暗色，操作栏间隔线颜色，如相册页返回按钮右边的竖线-->
-    <color name="easy_photos_bar_primary_translation">#b4ffffff</color> <!--操作栏带透明的色值，如预览页的底部操作栏颜色，相册页的相机按钮背景颜色。-->
+    <color name="easy_photos_bar_primary_translation">#b4ffffff
+    </color> <!--操作栏带透明的色值，如预览页的底部操作栏颜色，相册页的相机按钮背景颜色。-->
     <!--状态栏-->
     <color name="easy_photos_status_bar">#ffffff</color>
 

@@ -89,4 +89,46 @@
         <item name="vertical_Space">20dp</item>
         <item name="isFull">false</item>
     </style>
+
+
+
+    <!-- 输入框下划线样式 -->
+    <style name="LoginInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="boxStrokeColor">@color/medium_gray</item>
+        <item name="hintTextColor">@color/dark_gray</item>
+    </style>
+    
+    <!-- 登录按钮样式 -->
+    <style name="LoginButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="cornerRadius">25dp</item>
+        <item name="backgroundTint">@color/primary</item>
+    </style>
+    
+    <!-- 获取验证码按钮样式 -->
+    <style name="GetCodeButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="rippleColor">@android:color/transparent</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+    </style>
+    
+    <!-- 社交登录按钮样式 -->
+    <style name="SocialLoginButton">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:tint">@android:color/white</item>
+    </style>
 </resources>

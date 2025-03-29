@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 - 萌宠世界</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/home.css">
+</head>
+<body>
+    <div class="home-container">
+        <!-- 顶部搜索栏 -->
+        <div class="search-bar">
+            <div class="search-input">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="搜索宠物、用品或话题">
+            </div>
+        </div>
+        
+        <!-- 分类标签 -->
+        <div class="category-tabs">
+            <div class="category active">推荐</div>
+            <div class="category">猫咪</div>
+            <div class="category">狗狗</div>
+            <div class="category">小宠</div>
+            <div class="category">水族</div>
+        </div>
+        
+        <!-- 内容瀑布流 -->
+        <div class="content-waterfall">
+            <!-- 内容卡片1 -->
+            <div class="content-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba" alt="猫咪照片">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">如何正确给猫咪洗澡？新手必看指南</h3>
+                    <div class="card-user">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="用户头像" class="user-avatar">
+                        <span class="user-name">猫咪爱好者</span>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat"><i class="far fa-heart"></i> 328</div>
+                        <div class="stat"><i class="far fa-comment"></i> 42</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 内容卡片2 -->
+            <div class="content-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1" alt="狗狗照片">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">狗狗训练小技巧，让你的爱犬更听话</h3>
+                    <div class="card-user">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="user-avatar">
+                        <span class="user-name">汪星人训练师</span>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat"><i class="far fa-heart"></i> 256</div>
+                        <div class="stat"><i class="far fa-comment"></i> 38</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 内容卡片3 -->
+            <div class="content-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1548767797-d8c844163c4c" alt="宠物用品照片">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">2023年最受欢迎的猫咪玩具推荐</h3>
+                    <div class="card-user">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="用户头像" class="user-avatar">
+                        <span class="user-name">宠物用品测评</span>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat"><i class="far fa-heart"></i> 412</div>
+                        <div class="stat"><i class="far fa-comment"></i> 56</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 内容卡片4 -->
+            <div class="content-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e" alt="小狗照片">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">如何为你的爱犬选择最适合的狗粮</h3>
+                    <div class="card-user">
+                        <img src="https://randomuser.me/api/portraits/men/52.jpg" alt="用户头像" class="user-avatar">
+                        <span class="user-name">宠物营养师</span>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat"><i class="far fa-heart"></i> 287</div>
+                        <div class="stat"><i class="far fa-comment"></i> 34</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/home.js"></script>
+</body>
+</html>

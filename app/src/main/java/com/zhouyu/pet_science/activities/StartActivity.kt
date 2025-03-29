@@ -14,9 +14,10 @@ class StartActivity : BaseActivity() {
             startActivity(
                 Intent(
                     this@StartActivity,
-                    MainActivity::class.java
+                    LoginActivity::class.java  // 修改这里，跳转到 LoginActivity
                 )
             )
+            finish()  // 添加这行，关闭启动页
         }, 1000)
     }
 }

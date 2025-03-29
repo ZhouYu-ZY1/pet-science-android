@@ -130,11 +130,11 @@ class ShopFragment : BaseFragment() {
         categoryTitles!!.add("女装")
         categoryTitles!!.add("包袋")
         categoryTitles!!.add("美妆")
-        categoryTitles!!.add("AA")
-        categoryTitles!!.add("BB")
-        categoryTitles!!.add("CC")
-        categoryTitles!!.add("CC")
-        categoryTitles!!.add("CC")
+        categoryTitles!!.add("数码")
+        categoryTitles!!.add("食饮")
+        categoryTitles!!.add("手表")
+        categoryTitles!!.add("潮玩")
+        categoryTitles!!.add("运动")
         val fragments: MutableList<Fragment> = ArrayList()
         // 为每个分类创建Tab
         for (title in categoryTitles!!) {

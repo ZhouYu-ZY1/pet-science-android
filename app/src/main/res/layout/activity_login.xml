@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/themeColor"
+    tools:context=".activities.LoginActivity"
+    android:id="@+id/container"
+    tools:ignore="ContentDescription,RtlHardcoded,UselessLeaf,Autofill,LabelFor,TextFields,HardcodedText">
+    
+    <RelativeLayout
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.9"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        tools:ignore="MissingConstraints">
+
+        <!-- 顶部Logo区域 -->
+        <LinearLayout
+            android:id="@+id/logo_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="萌宠世界"
+                android:textColor="@color/Theme"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="爱宠人士的社区与商城"
+                android:textColor="@color/textTinge"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- 登录表单区域 -->
+        <RelativeLayout
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/logo_area"
+            android:gravity="center">
+            
+            <!-- 登录选项卡 -->
+            <LinearLayout
+                android:id="@+id/login_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/login_tabs_background"
+                android:padding="8dp">
+
+                <LinearLayout
+                    android:id="@+id/tab_sms_login"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tab_sms_login_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="验证码登录"
+                        android:textColor="@color/Theme"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/tab_indicator_sms"
+                        android:layout_width="100dp"
+                        android:layout_height="2dp"
+                        android:background="@color/Theme" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab_password_login"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tab_password_login_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:text="密码登录"
+                        android:textColor="@color/textTinge"
+                        android:textSize="14sp" />
+
+                    <View
+                        android:id="@+id/tab_indicator_password"
+                        android:layout_width="100dp"
+                        android:layout_height="2dp"
+                        android:background="@android:color/transparent" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <!-- 验证码登录表单 -->
+            <RelativeLayout
+                android:id="@+id/sms_login_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/login_tabs"
+                android:layout_marginTop="20dp"
+                android:visibility="visible">
+
+                <!-- 邮箱输入框 -->
+                <RelativeLayout
+                    android:id="@+id/email_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/view_semicircle">
+                    <ImageView
+                        android:tint="@color/Theme"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:src="@android:drawable/ic_dialog_email"
+                        android:layout_marginLeft="18dp"
+                        android:layout_centerVertical="true"
+                        tools:ignore="UseAppTint" />
+                    <EditText
+                        android:id="@+id/et_email_sms"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="50dp"
+                        android:background="@drawable/view_semicircle"
+                        android:hint="请输入邮箱"
+                        android:inputType="textEmailAddress"
+                        android:textColor="@color/textGeneral"
+                        android:textColorHint="@color/textTinge"
+                        android:textCursorDrawable="@drawable/input_gb"
+                        android:textSize="15sp"
+                        android:layout_centerVertical="true"
+                        android:paddingRight="40dp"
+                        android:maxLength="50"/>
+                </RelativeLayout>
+
+                <!-- 验证码输入框 -->
+                <RelativeLayout
+                    android:id="@+id/code_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_below="@id/email_container"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/view_semicircle">
+                    <ImageView
+                        android:tint="@color/Theme"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:src="@drawable/verification_code_icon"
+                        android:layout_marginLeft="18dp"
+                        android:layout_centerVertical="true"
+                        tools:ignore="UseAppTint" />
+                    <EditText
+                        android:id="@+id/et_sms_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="50dp"
+                        android:background="@drawable/view_semicircle"
+                        android:hint="请输入验证码"
+                        android:inputType="number"
+                        android:textColor="@color/textGeneral"
+                        android:textColorHint="@color/textTinge"
+                        android:textCursorDrawable="@drawable/input_gb"
+                        android:textSize="15sp"
+                        android:layout_centerVertical="true"
+                        android:paddingRight="100dp"
+                        android:maxLength="6"/>
+                    <LinearLayout
+                        android:layout_centerVertical="true"
+                        android:layout_width="90dp"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="5dp">
+                        <Button
+                            android:id="@+id/btn_get_code"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:text="获取验证码"
+                            android:textColor="@color/Theme"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <!-- 登录按钮 -->
+                <LinearLayout
+                    android:id="@+id/btn_sms_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_below="@id/code_container"
+                    android:layout_marginTop="30dp"
+                    android:backgroundTint="@color/Theme"
+                    android:background="@drawable/view_semicircle"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="登录"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- 用户协议 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/btn_sms_login"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:text="登录即表示您同意《用户协议》和《隐私政策》"
+                    android:textColor="@color/textTinge"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <!-- 密码登录表单 -->
+            <RelativeLayout
+                android:id="@+id/password_login_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/login_tabs"
+                android:layout_marginTop="20dp"
+                android:visibility="gone">
+
+                <!-- 邮箱输入框 -->
+                <RelativeLayout
+                    android:id="@+id/email_password_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/view_semicircle">
+                    <ImageView
+                        android:tint="@color/Theme"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:src="@android:drawable/ic_dialog_email"
+                        android:layout_marginLeft="18dp"
+                        android:layout_centerVertical="true"
+                        tools:ignore="UseAppTint" />
+                    <EditText
+                        android:id="@+id/et_email_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="50dp"
+                        android:background="@drawable/view_semicircle"
+                        android:hint="请输入邮箱"
+                        android:inputType="textEmailAddress"
+                        android:textColor="@color/textGeneral"
+                        android:textColorHint="@color/textTinge"
+                        android:textCursorDrawable="@drawable/input_gb"
+                        android:textSize="15sp"
+                        android:layout_centerVertical="true"
+                        android:paddingRight="40dp"
+                        android:maxLength="50"/>
+                </RelativeLayout>
+
+                <!-- 密码输入框 -->
+                <RelativeLayout
+                    android:id="@+id/password_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_below="@id/email_password_container"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/view_semicircle">
+                    <ImageView
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:src="@drawable/password_icon"
+                        android:layout_marginLeft="18dp"
+                        android:layout_centerVertical="true" />
+                    <EditText
+                        android:id="@+id/et_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="50dp"
+                        android:background="@drawable/view_semicircle"
+                        android:hint="请输入密码"
+                        android:inputType="textPassword"
+                        android:textColor="@color/textGeneral"
+                        android:textColorHint="@color/textTinge"
+                        android:textCursorDrawable="@drawable/input_gb"
+                        android:textSize="15sp"
+                        android:layout_centerVertical="true"
+                        android:paddingRight="40dp"
+                        android:maxLength="15" />
+                    <LinearLayout
+                        android:id="@+id/password_eye"
+                        android:layout_centerVertical="true"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp">
+                        <ImageView
+                            android:id="@+id/password_eye_image"
+                            android:layout_width="19dp"
+                            android:layout_height="19dp"
+                            android:src="@drawable/close_eye_icon" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <!-- 忘记密码 -->
+                <TextView
+                    android:id="@+id/tv_forgot_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/password_container"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="10dp"
+                    android:text="忘记密码?"
+                    android:textColor="@color/textTinge"
+                    android:textSize="14sp" />
+
+                <!-- 登录按钮 -->
+                <LinearLayout
+                    android:id="@+id/btn_password_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:backgroundTint="@color/Theme"
+                    android:layout_below="@id/tv_forgot_password"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/view_semicircle"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="登录"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- 用户协议 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/btn_password_login"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:text="登录即表示您同意《用户协议》和《隐私政策》"
+                    android:textColor="@color/textTinge"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <!-- 其他登录方式 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="30dp"
+                android:orientation="vertical">
+
+                <!-- 分割线 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/textTinge" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="15dp"
+                        android:text="其他登录方式"
+                        android:textColor="@color/textTinge"
+                        android:textSize="14sp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/textTinge" />
+                </LinearLayout>
+
+                <!-- 社交媒体登录按钮 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/btn_wechat_login"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginHorizontal="15dp"
+                        android:background="@drawable/view_semicircle"
+                        android:src="@android:drawable/ic_menu_share"
+                        app:tint="@color/Theme" />
+
+                    <ImageButton
+                        android:id="@+id/btn_qq_login"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginHorizontal="15dp"
+                        android:background="@drawable/view_semicircle"
+                        android:src="@android:drawable/ic_menu_share"
+                        app:tint="@color/Theme" />
+
+                    <ImageButton
+                        android:id="@+id/btn_weibo_login"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginHorizontal="15dp"
+                        android:background="@drawable/view_semicircle"
+                        android:src="@android:drawable/ic_menu_share"
+                        app:tint="@color/Theme" />
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
