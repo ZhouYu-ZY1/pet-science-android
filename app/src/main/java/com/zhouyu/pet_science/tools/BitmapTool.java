@@ -19,7 +19,7 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Base64;
 
 import com.zhouyu.pet_science.application.Application;
-import com.zhouyu.pet_science.tools.HttpTool.HttpTool;
+import com.zhouyu.pet_science.network.HttpTool;
 import com.zhouyu.pet_science.tools.utils.GlideEngine;
 
 import java.io.ByteArrayInputStream;

@@ -22,8 +22,8 @@
         <item name="android:windowFullscreen">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowBackground">#40B1FB</item>
-<!--        <item name="android:windowBackground">@drawable/start_background</item>-->
+<!--        <item name="android:windowBackground">#40B1FB</item>-->
+        <item name="android:windowBackground">@drawable/start_background_layer</item>
 <!--        <item name="android:windowBackground">@mipmap/back</item>-->
     </style>
 

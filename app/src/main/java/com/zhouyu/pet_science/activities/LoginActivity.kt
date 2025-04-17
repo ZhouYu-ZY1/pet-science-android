@@ -6,9 +6,11 @@ import android.os.CountDownTimer
 import android.view.View
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
-import com.zhouyu.pet_science.tools.HttpTool.UserHttpTool
+import com.zhouyu.pet_science.network.UserHttpTool
 import android.content.Intent
 import com.zhouyu.pet_science.databinding.ActivityLoginBinding
+import com.zhouyu.pet_science.tools.StorageTool
+import com.zhouyu.pet_science.tools.utils.ConsoleUtils
 
 class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -76,11 +78,33 @@ class LoginActivity : BaseActivity() {
                 showToast("请输入6位验证码")
                 return@setOnClickListener
             }
-            
-            // 登录成功后跳转到主页
-            showToast("登录成功")
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+
+            executeThread{
+                val (success, data) = UserHttpTool.verifyVerificationCode(email, code)
+                ConsoleUtils.logErr(data.toString())
+                runOnUiThread {
+                    if (success) {
+                        try {
+                            StorageTool.put("token",data.getString("token"))
+                            if(data.getBoolean("isRegister")){  // 判断是否为注册
+                                // 注册成功后跳转到个人信息填写页面
+                                showToast("注册成功")
+                                startActivity(Intent(this, MainActivity::class.java))
+                                finish()
+                            }else {
+                                // 登录成功后跳转到主页
+                                showToast("登录成功")
+                                startActivity(Intent(this, MainActivity::class.java))
+                                finish()
+                            }
+                        }catch (e: Exception){
+                            showToast("登录失败："+e.message)
+                        }
+                    } else {
+                        showToast("验证码过期/错误")
+                    }
+                }
+            }
         }
         
         // 设置密码登录按钮点击事件

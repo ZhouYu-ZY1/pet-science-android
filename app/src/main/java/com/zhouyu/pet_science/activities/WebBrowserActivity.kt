@@ -25,7 +25,7 @@ import android.widget.Toast
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.tools.CustomSys.MyToast
-import com.zhouyu.pet_science.tools.HttpTool.HttpTool
+import com.zhouyu.pet_science.network.HttpTool
 import com.zhouyu.pet_science.tools.TextTool
 import com.zhouyu.pet_science.tools.utils.ConsoleUtils
 import com.zhouyu.pet_science.views.dialog.MyDialog

@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:background="@color/viewColor">
+    android:padding="5dp"
+    android:background="@drawable/view_radius">
 
     <!-- 商品图片 -->
     <ImageView
@@ -13,7 +13,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
-        android:src="@mipmap/maoliang"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginStart="5dp"
-        android:maxLines="2"
+        android:lines="1"
         android:ellipsize="end"
         android:text="鸿星尔克 流云 网事拼接 耐"
         android:textColor="@color/textGeneral"
@@ -63,14 +62,14 @@
         app:layout_constraintTop_toBottomOf="@id/product_price"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- 分割线 -->
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/cutOffLine"
-        app:layout_constraintTop_toBottomOf="@id/product_sales"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+<!--    &lt;!&ndash; 分割线 &ndash;&gt;-->
+<!--    <View-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0.5dp"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:background="@color/cutOffLine"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/product_sales"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

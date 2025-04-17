@@ -1,0 +1,4 @@
+商品分类标题动画
+商品分类fragment懒加载
+
+商品分类使用 RecycledViewPool ：如果各个 Fragment 中有 RecyclerView，可以共享 RecycledViewPool 来减少内存使用。

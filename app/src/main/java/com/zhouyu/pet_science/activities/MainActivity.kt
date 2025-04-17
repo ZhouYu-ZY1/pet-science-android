@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
+import com.zhouyu.pet_science.databinding.ActivityMainBinding
 import com.zhouyu.pet_science.fragments.shop.ShopFragment
 import com.zhouyu.pet_science.manager.ActivityManager
 import com.zhouyu.pet_science.tools.CleanCacheTool
@@ -37,11 +38,13 @@ class MainActivity : BaseActivity() {
     private var viewPager: CustomViewPager? = null
     private var smoothBottomBar: SmoothBottomBar? = null
     var drawerLayout: DrawerLayout? = null
+    private lateinit var binding: ActivityMainBinding
 
     @SuppressLint("RtlHardcoded")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // 初始化布局元素
         initViews()
@@ -61,13 +64,15 @@ class MainActivity : BaseActivity() {
 
     @SuppressLint("RtlHardcoded")
     private fun initViews() {
-        setTopBarView(findViewById(R.id.main_view_pager), true)
-        viewPager = findViewById(R.id.main_view_pager)
+        setTopBarView(binding.mainViewPager, true)
+        viewPager = binding.mainViewPager
         fragmentList = ArrayList()
-        fragmentList!!.add(ShopFragment())
-        fragmentList!!.add(ShopFragment())
-        fragmentList!!.add(ShopFragment())
-        fragmentList!!.add(ShopFragment())
+        fragmentList!!.let {
+            it.add(ShopFragment())
+            it.add(ShopFragment())
+            it.add(Fragment())
+            it.add(Fragment())
+        }
 
         //设置预加载页数
         viewPager!!.setOffscreenPageLimit(fragmentList!!.size)
@@ -99,14 +104,14 @@ class MainActivity : BaseActivity() {
             override fun onPageScrollStateChanged(state: Int) {}
         })
 
-        smoothBottomBar = findViewById(R.id.main_bottomBar)
+        smoothBottomBar = binding.mainBottomBar
         smoothBottomBar!!.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelect(pos: Int): Boolean {
                 viewPager!!.setCurrentItem(pos)
                 return false
             }
         }
-        val leftView = findViewById<LinearLayout>(R.id.main_left_view)
+        val leftView = binding.mainLeftView
         leftView.setPadding(0, PhoneMessage.statusBarHeight, 0, 0)
         leftView.setOnClickListener { } //防止点击到底部组件
 
@@ -114,7 +119,7 @@ class MainActivity : BaseActivity() {
         // 设置宽度为屏幕宽度的 80%
         leftViewLayoutParams.width = (PhoneMessage.getWidthPixels() * 0.8).toInt()
         leftView.layoutParams = leftViewLayoutParams
-        drawerLayout = findViewById(R.id.main_drawer_layout)
+        drawerLayout = binding.mainDrawerLayout
         drawerLayout!!.addDrawerListener(object : DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 // 实现整个 Activity 左移效果

@@ -201,7 +201,7 @@
                             android:background="@null"
                             android:text="获取验证码"
                             android:textColor="@color/Theme"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
                     </LinearLayout>
                 </RelativeLayout>
 

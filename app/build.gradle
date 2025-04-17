@@ -65,9 +65,9 @@ android {
         main {
             res.srcDirs =
                     [
+                            'src/main/res',
                             'src/main/res_layout_item',
-                            'src/main/res_drawable_icon',
-                            'src/main/res'
+                            'src/main/res_drawable_icon'
                     ]
         }
     }
@@ -128,7 +128,10 @@ dependencies {
     implementation 'com.edmodo:cropper:1.0.1'
 
     //下拉刷新 下拉加载
-    implementation 'com.jwenfeng.pulltorefresh:library:1.2.7'
+//    implementation 'com.jwenfeng.pulltorefresh:library:1.2.7'
+    implementation  'io.github.scwang90:refresh-layout-kernel:3.0.0-alpha'      //核心必须依赖
+    implementation  'io.github.scwang90:refresh-header-classics:3.0.0-alpha'    //经典刷新头
+    implementation  'io.github.scwang90:refresh-footer-classics:3.0.0-alpha'    //经典加载
 
     //相册图片选择
     //使用：https://github.com/HuanTanSheng/EasyPhotos/wiki/02-%E7%9B%B8%E6%9C%BA%E4%B8%8E%E7%9B%B8%E5%86%8C
@@ -174,4 +177,7 @@ dependencies {
 
     //汉字转拼音
     implementation 'com.belerweb:pinyin4j:2.5.0'
+
+    // Banner图片轮播库
+    implementation 'io.github.youth5201314:banner:2.2.3'
 }

@@ -28,6 +28,8 @@
         <!--启动页-->
         <activity
             android:name="com.zhouyu.pet_science.activities.StartActivity"
+            android:theme="@style/WelcomeTheme"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

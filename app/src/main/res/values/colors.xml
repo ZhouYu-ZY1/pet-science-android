@@ -40,8 +40,8 @@
     <color name="viewColor">#FFFFFF</color>
 
     <!--一般Activity背景颜色-->
-    <color name="themeColor">#F8F8F8</color>
-    <!--    <color name="themeColor">#F8F9FD</color>-->
+<!--    <color name="themeColor">#F8F8F8</color>-->
+  <color name="themeColor">#F5F5F5</color>
     <!--    <color name="themeColor">#F7FCFF</color>-->
 
     <!--音乐item默认图片背景颜色-->
