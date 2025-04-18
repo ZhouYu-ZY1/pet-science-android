@@ -26,7 +26,7 @@
             android:layout_height="20dp"
             android:layout_gravity="end|bottom"
             android:background="@drawable/online_indicator"
-             />
+            android:visibility="gone"/>
     </FrameLayout>
 
     <LinearLayout
@@ -41,11 +41,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-
             android:textColor="@color/black"
             android:text="昵称"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="17sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/lastMessageText"
@@ -57,7 +57,8 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="#666666"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <LinearLayout
@@ -86,15 +87,16 @@
             android:text="1"
             android:textColor="@color/white"
             android:textSize="12sp"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText"
+            android:visibility="invisible"/>
     </LinearLayout>
 
-    <!-- 分割线 -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="68dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
-        android:background="@color/cutOffLine" />
+<!--    &lt;!&ndash; 分割线 &ndash;&gt;-->
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:layout_marginStart="68dp"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:background="@color/cutOffLine" />-->
 </RelativeLayout>

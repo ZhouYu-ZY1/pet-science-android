@@ -44,9 +44,9 @@ class MessageListAdapter(
                 holder.unreadCountText.text = unreadCount.toString()
             }
         } else {
-            holder.unreadCountText.visibility = View.GONE
+            holder.unreadCountText.visibility = View.INVISIBLE
         }
-        holder.itemView.setOnClickListener { v: View? ->
+        holder.itemView.setOnClickListener {
             //跳转到聊天界面
             val intent = Intent(context, ChatActivity::class.java)
             intent.putExtra("userId", item.userId)
