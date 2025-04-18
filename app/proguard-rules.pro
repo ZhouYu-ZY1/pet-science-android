@@ -53,7 +53,7 @@
 #Gson
 -keep class com.google.gson.** { *; }
 #GsonBean
--keep class com.zhouyu.pet_science.tools.area_select.CityJsonBean { *; }
+-keep class com.zhouyu.pet_science.pojo.CityJsonBean { *; }
 ##读取js
 #-keep class org.mozilla.javascript.**{ *; }
 #xml转json

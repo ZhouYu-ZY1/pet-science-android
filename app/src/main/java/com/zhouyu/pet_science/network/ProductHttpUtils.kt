@@ -4,11 +4,10 @@ package com.zhouyu.pet_science.network
 import PageResult
 import Product
 import com.zhouyu.pet_science.model.Category
-import com.zhouyu.pet_science.network.HttpTool.BASE_URL
-import com.zhouyu.pet_science.tools.utils.ConsoleUtils
+import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import okhttp3.Request
 import org.json.JSONObject
-class ProductHttpTool {
+class ProductHttpUtils {
     companion object {
         /**
          * 获取分类列表
@@ -20,7 +19,7 @@ class ProductHttpTool {
                    .get()
                    .build()
 
-               val response = HttpTool.client.newCall(request).execute()
+               val response = HttpUtils.client.newCall(request).execute()
                val responseBody = response.body?.string()
 
                if (response.code == 200 && responseBody != null) {
@@ -71,7 +70,7 @@ class ProductHttpTool {
                     .get()
                     .build()
 
-                val response = HttpTool.client.newCall(request).execute()
+                val response = HttpUtils.client.newCall(request).execute()
                 val responseBody = response.body?.string()
 
                 if (response.code == 200 && responseBody != null) {

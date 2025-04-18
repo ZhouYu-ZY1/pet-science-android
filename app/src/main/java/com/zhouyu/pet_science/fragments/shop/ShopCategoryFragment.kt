@@ -12,22 +12,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle.Translate
-import com.youth.banner.adapter.BannerImageAdapter
-import com.youth.banner.holder.BannerImageHolder
 import com.youth.banner.indicator.CircleIndicator
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.adapter.ProductAdapter
 import com.zhouyu.pet_science.databinding.FragmentShopCategoryBinding
 import com.zhouyu.pet_science.fragments.BaseFragment
 import com.zhouyu.pet_science.model.Category
-import com.zhouyu.pet_science.network.HttpTool.BASE_URL
-import com.zhouyu.pet_science.network.ProductHttpTool
-import com.zhouyu.pet_science.tools.CustomSys.MyToast
+import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
+import com.zhouyu.pet_science.network.ProductHttpUtils
+import com.zhouyu.pet_science.tools.MyToast
 import com.zhouyu.pet_science.tools.utils.PhoneMessage
 import com.zhouyu.pet_science.adapter.BannerTextAdapter
 
@@ -138,23 +134,23 @@ class ShopCategoryFragment() : BaseFragment() {
         // 创建Banner数据
         val bannerItems = listOf(
             BannerTextAdapter.BannerItem(
-                "https://images.unsplash.com/photo-1583337130417-3346a1be7dee",
+                "$BASE_URL/statics/images/banner/photo-1583337130417-3346a1be7dee.jpg",
                 "新品上市","精选宠物折优惠"
             ),
             BannerTextAdapter.BannerItem(
-                "https://plus.unsplash.com/premium_photo-1707353401897-da9ba223f807",
+                "$BASE_URL/statics/images/banner/premium_photo-1707353401897-da9ba223f807.jpg",
                 "买二赠一","宠物保健品"
             ),
             BannerTextAdapter.BannerItem(
-                "https://plus.unsplash.com/premium_photo-1708724049005-192fe5c23269",
+                "$BASE_URL/statics/images/banner/premium_photo-1708724049005-192fe5c23269.jpg",
                 "限时特惠","优质宠物食品"
             ),
             BannerTextAdapter.BannerItem(
-                "https://images.unsplash.com/photo-1450778869180-41d0601e046e",
+                "$BASE_URL/statics/images/banner/photo-1599572743109-61c820b3a79d.jpg",
                 "满300减50","宠物服饰专区"
             ),
             BannerTextAdapter.BannerItem(
-                "https://images.unsplash.com/photo-1548199973-03cce0bbc87b",
+                "$BASE_URL/statics/images/banner/photo-1548199973-03cce0bbc87b.jpg",
                 "全场低至5折","宠物玩具大促"
             )
         )
@@ -301,7 +297,7 @@ class ShopCategoryFragment() : BaseFragment() {
 
         // 在IO线程执行网络请求
         executeThread {
-            val result = ProductHttpTool.getProductList(page, pageSize, null, category.categoryCode)
+            val result = ProductHttpUtils.getProductList(page, pageSize, null, category.categoryCode)
             result?.let { pageResult ->
                 // 获取商品列表
                 val products = pageResult.list.toMutableList()
@@ -309,7 +305,7 @@ class ShopCategoryFragment() : BaseFragment() {
                 products.shuffle()
                 // 处理商品列表
                 products.forEach { product ->
-                    val imageUrl = ProductHttpTool.getFirstImage(product.mainImage)
+                    val imageUrl = ProductHttpUtils.getFirstImage(product.mainImage)
                     // 处理每个商品
                     productItems.add(
                         ProductAdapter.ProductItem(

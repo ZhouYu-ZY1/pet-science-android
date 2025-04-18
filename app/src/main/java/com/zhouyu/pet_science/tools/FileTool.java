@@ -11,7 +11,6 @@ import android.os.Build;
 import android.util.Log;
 
 import com.zhouyu.pet_science.application.Application;
-import com.zhouyu.pet_science.tools.CustomSys.MyToast;
 
 import java.io.BufferedWriter;
 import java.io.EOFException;

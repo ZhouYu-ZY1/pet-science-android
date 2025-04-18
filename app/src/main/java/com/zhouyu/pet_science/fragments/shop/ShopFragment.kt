@@ -19,7 +19,7 @@ import com.zhouyu.pet_science.application.Application
 import com.zhouyu.pet_science.databinding.FragmentShopBinding
 import com.zhouyu.pet_science.fragments.BaseFragment
 import com.zhouyu.pet_science.model.Category
-import com.zhouyu.pet_science.network.ProductHttpTool
+import com.zhouyu.pet_science.network.ProductHttpUtils
 import com.zhouyu.pet_science.tools.StorageTool
 
 class ShopFragment : BaseFragment() {
@@ -65,7 +65,7 @@ class ShopFragment : BaseFragment() {
         
         // 然后再从网络获取最新数据
         executeThread {
-            val categoryList = ProductHttpTool.getCategoryList()
+            val categoryList = ProductHttpUtils.getCategoryList()
             if (categoryList != null) {
                 val needUpdateUI = if (cachedCategoryList != null) {
                     // 比较网络数据和缓存数据是否有差异

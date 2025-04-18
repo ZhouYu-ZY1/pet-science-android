@@ -1,0 +1,110 @@
+package com.zhouyu.pet_science.fragments
+
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.zhouyu.pet_science.adapter.MessageListAdapter
+import com.zhouyu.pet_science.databinding.FragmentMessageBinding
+import com.zhouyu.pet_science.model.User
+import com.zhouyu.pet_science.network.UserHttpUtils
+import com.zhouyu.pet_science.pojo.MessageListItem
+import com.zhouyu.pet_science.tools.StorageTool
+
+class MessageFragment : BaseFragment() {
+    private var binding: FragmentMessageBinding? = null
+    private var messageListAdapter: MessageListAdapter? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentMessageBinding.inflate(inflater, container, false)
+        initViews()
+        loadMessages()
+        refreshList()
+        return binding!!.root
+    }
+
+    private fun initViews() {
+        binding?.messageListRecyclerView?.layoutManager = LinearLayoutManager(context)
+        messageListAdapter = MessageListAdapter(requireContext(), getMessageList()!!)
+        binding?.messageListRecyclerView?.adapter = messageListAdapter
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
+    private var isLoad = false
+    @SuppressLint("NotifyDataSetChanged")
+    private fun loadMessages() {
+        if (isLoad) {
+            return
+        }
+        isLoad = true
+        executeThread {
+            val token = StorageTool.get<String>("token")
+            val followList: List<User> = UserHttpUtils.getFollowList()
+            for (user in followList) {
+                var isExist = false
+                val id: String = java.lang.String.valueOf(user.userId).trim { it <= ' ' }
+                for (messageListItem in getMessageList()!!) {
+                    if (messageListItem.userId.trim() == id) {
+                        isExist = true
+                        break
+                    }
+                }
+                if (!isExist) {
+                    val messageListItem: MessageListItem =
+                        MessageListItem.userToMessageItem(user, token)
+                    (getMessageList() as MutableList).add(messageListItem)
+                }
+            }
+            requireActivity().runOnUiThread { messageListAdapter?.notifyDataSetChanged() }
+            isLoad = false
+        }
+    }
+
+    private fun refreshList() {
+        binding?.root?.post(object : Runnable {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun run() {
+                if (refreshList) {
+                    refreshList = false
+                    messageListAdapter?.notifyDataSetChanged()
+                }
+                if (refreshFollowList) {
+                    refreshFollowList = false
+                    loadMessages()
+                }
+                binding?.root?.postDelayed(this, 500)
+            }
+        })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        refreshList = true
+    }
+
+    companion object {
+        var refreshList = false
+        var refreshFollowList = false
+        private var messageList: MutableList<MessageListItem>? = null
+        fun getMessageList(): List<MessageListItem>? {
+            if (messageList == null) {
+                messageList = ArrayList()
+            }
+            return messageList
+        }
+
+        fun setMessageList(messageList: MutableList<MessageListItem>?) {
+            Companion.messageList = messageList
+        }
+    }
+}

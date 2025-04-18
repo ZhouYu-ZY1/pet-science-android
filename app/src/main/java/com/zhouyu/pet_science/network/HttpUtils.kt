@@ -19,11 +19,13 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 
-object HttpTool {
+object HttpUtils {
 //    private const val IP = "172.18.13.253"
 //    private const val IP = "192.168.83.202"
 //    const val BASE_URL = "http://$IP:8888"
-    const val BASE_URL = "https://www.u1156996.nyat.app:50327" //内网渗透地址
+    const val URL = "www.u1156996.nyat.app:50327" //内网渗透地址
+//    const val URL = "192.168.83.202:8888" //内网渗透地址
+    const val BASE_URL = "https://$URL"
 
     @JvmField
     var client = OkHttpClient()

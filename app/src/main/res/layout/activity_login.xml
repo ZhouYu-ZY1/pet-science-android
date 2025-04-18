@@ -189,16 +189,18 @@
                         android:maxLength="6"/>
                     <LinearLayout
                         android:layout_centerVertical="true"
-                        android:layout_width="90dp"
-                        android:layout_height="30dp"
+                        android:layout_width="120dp"
+                        android:layout_height="match_parent"
                         android:gravity="center"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="5dp">
-                        <Button
+                        <TextView
                             android:id="@+id/btn_get_code"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
+                            android:layout_height="35dp"
+                            android:gravity="center"
+                            android:background="@drawable/view_radius"
+                            android:backgroundTint="@color/themeColor"
                             android:text="获取验证码"
                             android:textColor="@color/Theme"
                             android:textSize="13sp" />

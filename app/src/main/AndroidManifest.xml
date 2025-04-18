@@ -5,6 +5,14 @@
     <!-- 网络请求权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!--通知-->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
+<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />  &lt;!&ndash;文件访问权限 &ndash;&gt;-->
+<!--    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"-->
+<!--        tools:ignore="ScopedStorage" />-->
+
     <application
         android:name="com.zhouyu.pet_science.application.Application"
         android:allowBackup="false"
@@ -22,7 +30,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,HardcodedDebugMode,UnusedAttribute"
+        tools:ignore="AllowBackup,DataExtractionRules,HardcodedDebugMode,UnusedAttribute"
         tools:replace="android:allowBackup">
 
         <!--启动页-->
@@ -30,7 +38,8 @@
             android:name="com.zhouyu.pet_science.activities.StartActivity"
             android:theme="@style/WelcomeTheme"
             android:screenOrientation="portrait"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,8 +50,15 @@
         <activity
             android:name=".activities.LoginActivity"
             android:exported="false" />
+        <!-- 个人信息修改页 -->
+        <activity
+            android:name=".activities.UserInfoEditActivity"
+            android:exported="false" />
         <!--主页-->
         <activity android:name="com.zhouyu.pet_science.activities.MainActivity" />
+        <!--聊天页面-->
+        <activity android:name="com.zhouyu.pet_science.activities.ChatActivity"
+            android:exported="false"/>
 
         <!--错误页-->
         <activity android:name="com.zhouyu.pet_science.activities.base.ErrorActivity" />

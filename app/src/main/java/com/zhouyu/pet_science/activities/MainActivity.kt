@@ -2,6 +2,7 @@ package com.zhouyu.pet_science.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.text.SpannableString
@@ -12,7 +13,6 @@ import android.text.style.ClickableSpan
 import android.text.style.UnderlineSpan
 import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
@@ -22,11 +22,15 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
+import com.zhouyu.pet_science.application.WebSocketManager
 import com.zhouyu.pet_science.databinding.ActivityMainBinding
+import com.zhouyu.pet_science.fragments.MessageFragment
 import com.zhouyu.pet_science.fragments.shop.ShopFragment
 import com.zhouyu.pet_science.manager.ActivityManager
 import com.zhouyu.pet_science.tools.CleanCacheTool
+import com.zhouyu.pet_science.tools.NotificationHelper
 import com.zhouyu.pet_science.tools.StorageTool
+import com.zhouyu.pet_science.tools.utils.ConsoleUtils
 import com.zhouyu.pet_science.tools.utils.PhoneMessage
 import com.zhouyu.pet_science.views.CustomViewPager
 import com.zhouyu.pet_science.views.dialog.MyDialog
@@ -60,6 +64,25 @@ class MainActivity : BaseActivity() {
 //        if(!isAgreeStatement){
 //            showStatementDialog(this);
 //        }
+
+        // 连接WebSocket
+        WebSocketManager.connectWebSocket(this)
+
+        // 获取通知权限
+        NotificationHelper.getNotification(this)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        ConsoleUtils.logErr("onNewIntent")
+        if (intent.getBooleanExtra(OPEN_CHAT_ACTIVITY, false)) {
+            val startIntent = Intent(this, ChatActivity::class.java)
+            val extras = intent.extras
+            if (extras != null) {
+                startIntent.putExtras(extras)
+            }
+            startActivity(startIntent)
+        }
     }
 
     @SuppressLint("RtlHardcoded")
@@ -68,9 +91,9 @@ class MainActivity : BaseActivity() {
         viewPager = binding.mainViewPager
         fragmentList = ArrayList()
         fragmentList!!.let {
+//            it.add(ShopFragment())
             it.add(ShopFragment())
-            it.add(ShopFragment())
-            it.add(Fragment())
+            it.add(MessageFragment())
             it.add(Fragment())
         }
 
@@ -168,6 +191,7 @@ class MainActivity : BaseActivity() {
             return
         }
         if (isRemove) {
+            WebSocketManager.closeWebSocket()
             super.finish()
             return
         }
@@ -184,6 +208,7 @@ class MainActivity : BaseActivity() {
     }
 
     companion object {
+        const val OPEN_CHAT_ACTIVITY = "OPEN_CHAT_ACTIVITY"
         private var isAgreeStatement = false
         fun showStatementDialog(context: Context) {
             val myDialog = MyDialog(context, true)

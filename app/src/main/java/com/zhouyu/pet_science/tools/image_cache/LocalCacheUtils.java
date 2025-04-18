@@ -1,4 +1,4 @@
-package com.zhouyu.pet_science.tools.imageCache;
+package com.zhouyu.pet_science.tools.image_cache;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

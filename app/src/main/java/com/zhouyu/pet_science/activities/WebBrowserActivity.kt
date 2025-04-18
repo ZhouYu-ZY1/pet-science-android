@@ -24,8 +24,8 @@ import android.widget.TextView
 import android.widget.Toast
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
-import com.zhouyu.pet_science.tools.CustomSys.MyToast
-import com.zhouyu.pet_science.network.HttpTool
+import com.zhouyu.pet_science.tools.MyToast
+import com.zhouyu.pet_science.network.HttpUtils
 import com.zhouyu.pet_science.tools.TextTool
 import com.zhouyu.pet_science.tools.utils.ConsoleUtils
 import com.zhouyu.pet_science.views.dialog.MyDialog
@@ -199,7 +199,7 @@ class WebBrowserActivity : BaseActivity() {
                 settings.builtInZoomControls = true
                 settings.setSupportZoom(true)
             } else if (ua.equals("android", ignoreCase = true)) {
-                settings.userAgentString = HttpTool.randomUA("android")
+                settings.userAgentString = HttpUtils.randomUA("android")
                 settings.useWideViewPort = false
                 settings.loadWithOverviewMode = false
                 settings.builtInZoomControls = false

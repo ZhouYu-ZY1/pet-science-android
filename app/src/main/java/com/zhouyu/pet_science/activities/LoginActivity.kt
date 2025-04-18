@@ -6,7 +6,7 @@ import android.os.CountDownTimer
 import android.view.View
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
-import com.zhouyu.pet_science.network.UserHttpTool
+import com.zhouyu.pet_science.network.UserHttpUtils
 import android.content.Intent
 import com.zhouyu.pet_science.databinding.ActivityLoginBinding
 import com.zhouyu.pet_science.tools.StorageTool
@@ -52,7 +52,7 @@ class LoginActivity : BaseActivity() {
             
             // 发送验证码请求
             executeThread {
-                val (success, errorMessage) = UserHttpTool.sendVerificationCode(email)
+                val (success, errorMessage) = UserHttpUtils.sendVerificationCode(email)
                 runOnUiThread {
                     if (success) {
                         showToast("验证码已发送")
@@ -80,7 +80,7 @@ class LoginActivity : BaseActivity() {
             }
 
             executeThread{
-                val (success, data) = UserHttpTool.verifyVerificationCode(email, code)
+                val (success, data) = UserHttpUtils.verifyVerificationCode(email, code)
                 ConsoleUtils.logErr(data.toString())
                 runOnUiThread {
                     if (success) {
@@ -89,7 +89,8 @@ class LoginActivity : BaseActivity() {
                             if(data.getBoolean("isRegister")){  // 判断是否为注册
                                 // 注册成功后跳转到个人信息填写页面
                                 showToast("注册成功")
-                                startActivity(Intent(this, MainActivity::class.java))
+                                // 跳转到 UserInfoEidtActivity
+                                startActivity(Intent(this, UserInfoEditActivity::class.java))
                                 finish()
                             }else {
                                 // 登录成功后跳转到主页

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/viewColor"
+    android:id="@+id/main"
+    tools:ignore="HardcodedText"
+    tools:context=".activities.UserInfoEditActivity">
+
+    <!-- 模拟 Top Bar -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="完善个人信息"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/btnSkip"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="跳过"
+            android:textColor="@color/Theme"
+            android:textSize="14sp"
+            android:padding="8dp"
+            android:background="@drawable/touch_anim_default_radius"
+            app:backgroundTint="@color/themeColor"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintBottom_toTopOf="@+id/btnComplete"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:scrollbars="none"
+        android:overScrollMode="never"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- 头像上传 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginBottom="30dp">
+
+                <ImageView
+                    android:id="@+id/ivAvatarPreview"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/developer_icon"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/circle_border_gray"
+                    android:padding="2dp"
+                    android:contentDescription="头像预览"/>
+
+                <TextView
+                    android:id="@+id/tvUploadAvatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="点击上传头像"
+                    android:textColor="@color/textTinge"
+                    android:textSize="14sp"
+                    android:layout_marginTop="10dp"/>
+            </LinearLayout>
+
+            <!-- 昵称 -->
+            <TextView
+                style="@style/UserInfoLabel"
+                android:text="昵称" />
+            <EditText
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:id="@+id/etNickname"
+                style="@style/UserInfoEditText"
+                android:hint="请输入昵称（2-15个字符）"
+                android:maxLength="15"
+                android:inputType="text"
+                android:importantForAutofill="no" />
+
+            <!-- 性别 -->
+            <TextView
+                style="@style/UserInfoLabel"
+                android:text="性别" />
+            <RadioGroup
+                android:id="@+id/rgGender"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:background="@drawable/radio_group_background"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp">
+                <RadioButton
+                    android:id="@+id/rbGenderMale"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    style="@style/SwitchStyleRadioButton"
+                    android:text="男"
+                    android:checked="true"/>
+                <RadioButton
+                    android:id="@+id/rbGenderFemale"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    style="@style/SwitchStyleRadioButton"
+                    android:text="女"/>
+                <RadioButton
+                    android:id="@+id/rbGenderOther"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    style="@style/SwitchStyleRadioButton"
+                    android:text="保密" />
+            </RadioGroup>
+
+            <!-- 生日 -->
+            <TextView
+                style="@style/UserInfoLabel"
+                android:text="生日"
+                tools:ignore="HardcodedText" />
+            <TextView
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:id="@+id/tvBirthday"
+                style="@style/UserInfoEditText"
+                android:gravity="center_vertical"
+                android:hint="请选择生日"
+                android:focusable="true"
+                android:clickable="true"
+                tools:ignore="HardcodedText"
+                app:drawableEndCompat="@drawable/ic_calendar" />
+
+            <!-- 所在地 -->
+            <TextView
+                style="@style/UserInfoLabel"
+                android:text="所在地"/>
+            <TextView
+                android:id="@+id/tvLocation"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                style="@style/UserInfoEditText"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:hint="请选择所在地"
+                android:focusable="true"
+                android:clickable="true"
+                app:drawableEndCompat="@drawable/ic_location" />
+
+
+            <!-- 个人简介 -->
+            <TextView
+                style="@style/UserInfoLabel"
+                android:text="个人简介"/>
+            <EditText
+                android:id="@+id/etBio"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                style="@style/UserInfoEditText"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:hint="介绍一下自己吧（最多100字）"
+                android:inputType="textMultiLine"
+                android:gravity="top"
+                android:lines="3"
+                android:maxLength="100"/>
+            <TextView
+                android:id="@+id/tvBioCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0/100"
+                android:textSize="12sp"
+                android:textColor="@color/textTinge"
+                android:gravity="end"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- 我的宠物 -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="我的宠物"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"/>
+                <Button
+                    android:id="@+id/btnAddPet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="+ 添加宠物"
+                    android:textSize="14sp"
+                    android:textColor="@color/Theme"
+                    android:background="@null"
+                    android:paddingHorizontal="10dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+            <!-- 宠物列表容器 -->
+            <LinearLayout
+                android:id="@+id/layoutPetList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+            <!-- 宠物项会动态添加到这里 -->
+            <TextView
+                android:id="@+id/tvEmptyPetTip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="添加您的宠物信息，获得更精准的内容推荐"
+                android:gravity="center"
+                android:padding="20dp"
+                style="@style/UserInfoEditText"
+                android:textColor="@color/textTinge"
+                android:drawableTop="@drawable/ic_paw"
+                android:drawablePadding="10dp"
+                tools:ignore="HardcodedText,UseCompatTextViewDrawableXml" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnComplete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="完成"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="@drawable/view_radius"
+        app:backgroundTint="@color/Theme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="20dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

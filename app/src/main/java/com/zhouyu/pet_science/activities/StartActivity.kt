@@ -9,8 +9,12 @@ import android.view.WindowManager
 import com.bumptech.glide.Glide
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
+import com.zhouyu.pet_science.fragments.MessageFragment
+import com.zhouyu.pet_science.pojo.MessageListItem
+import com.zhouyu.pet_science.tools.MessageArrayList
 import com.zhouyu.pet_science.tools.StorageTool
 import com.zhouyu.pet_science.tools.Tool
+import com.zhouyu.pet_science.tools.utils.ConsoleUtils
 
 class StartActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,16 +38,27 @@ class StartActivity : BaseActivity() {
             .centerCrop()
             .into(findViewById(R.id.back_image))
 
-
-        val token = StorageTool.get<String>("token")
-        Handler(Looper.getMainLooper()).postDelayed({
-            val intent = if(token != null && token.isNotEmpty()){
-                Intent(this, MainActivity::class.java)
-            }else{
-                Intent(this, LoginActivity::class.java)
+        executeThread{
+            // 加载数据
+            val messageList = MessageArrayList.loadList(this)
+            if(!messageList.isNullOrEmpty()){
+                // 遍历列表
+                for (item in messageList) {
+                    ConsoleUtils.logErr(item.lastMessage)
+                }
+                MessageFragment.setMessageList(messageList as ArrayList<MessageListItem>)
             }
-            startActivity(intent)
-            finish()  // 添加这行，关闭启动页
-        }, 1000)
+
+            val token = StorageTool.get<String>("token")
+            Handler(Looper.getMainLooper()).postDelayed({
+                val intent = if(token != null && token.isNotEmpty()){
+                    Intent(this, MainActivity::class.java)
+                }else{
+                    Intent(this, LoginActivity::class.java)
+                }
+                startActivity(intent)
+                finish()  // 添加这行，关闭启动页
+            }, 1000)
+        }
     }
 }

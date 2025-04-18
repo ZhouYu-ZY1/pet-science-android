@@ -19,7 +19,7 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Base64;
 
 import com.zhouyu.pet_science.application.Application;
-import com.zhouyu.pet_science.network.HttpTool;
+import com.zhouyu.pet_science.network.HttpUtils;
 import com.zhouyu.pet_science.tools.utils.GlideEngine;
 
 import java.io.ByteArrayInputStream;
@@ -291,7 +291,7 @@ public class BitmapTool {
     public static Bitmap getBitmap(final String imgUrl) {
         Bitmap bm;
         Request request = new Request.Builder().url(imgUrl).build();
-        try (Response response = HttpTool.client.newCall(request).execute()) {
+        try (Response response = HttpUtils.client.newCall(request).execute()) {
             //发送请求
             InputStream bis = Objects.requireNonNull(response.body()).byteStream();
             bm = BitmapFactory.decodeStream(bis);

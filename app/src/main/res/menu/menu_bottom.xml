@@ -12,11 +12,11 @@
 
 
 
-    <item
-        android:id="@+id/item1"
-        android:title="首页"
-        android:icon="@drawable/my_icon"
-        tools:ignore="HardcodedText,MenuTitle" />
+<!--    <item-->
+<!--        android:id="@+id/item1"-->
+<!--        android:title="首页"-->
+<!--        android:icon="@drawable/tool_icon"-->
+<!--        tools:ignore="HardcodedText,MenuTitle" />-->
 
     <item
         android:id="@+id/item2"
@@ -26,14 +26,14 @@
 
     <item
         android:id="@+id/item3"
-        android:title="排行"
-        android:icon="@drawable/my_icon"
+        android:title="消息"
+        android:icon="@drawable/message"
         tools:ignore="HardcodedText,MenuTitle" />
 
     <item
         android:id="@+id/item4"
         android:title="我的"
-        android:icon="@drawable/my_icon"
+        android:icon="@drawable/person"
         tools:ignore="HardcodedText,MenuTitle" />
 
     <!--    <item-->

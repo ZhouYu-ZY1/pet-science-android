@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
 <!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
@@ -131,4 +131,47 @@
         <item name="android:scaleType">fitCenter</item>
         <item name="android:tint">@android:color/white</item>
     </style>
+
+    <!-- 用户信息标签样式 -->
+    <style name="UserInfoLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <!-- 用户信息输入框样式 -->
+    <style name="UserInfoEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/textTinge</item>
+        <item name="android:background">@drawable/edit_text_background</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+    </style>
+
+    <!-- 用户信息单选按钮样式 -->
+    <style name="SwitchStyleRadioButton" parent="Theme.AppCompat">
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/radio_button_selector</item>
+        <item name="android:textColor">@color/radio_button_text_selector</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <!-- 用户信息下拉框样式 -->
+    <style name="UserInfoSpinner">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/spinner_background</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+    </style>
+
 </resources>
