@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -63,7 +64,7 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
 
     private fun initViews() {
         val main = findViewById<View>(R.id.main)
-        setTopBarView(main,true)
+        setTopBarView(findViewById(R.id.toolbar),true)
 
         // 自动适应软键盘，软键盘不遮挡输入框
         ViewCompat.setOnApplyWindowInsetsListener(main) { v, insets ->
@@ -77,6 +78,11 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
         editTextMessage = findViewById(R.id.editTextMessage)
         buttonSend = findViewById(R.id.buttonSend)
         buttonSend?.setOnClickListener { sendMessage() }
+
+        findViewById<TextView>(R.id.textTitle).text = targetUserName
+        findViewById<View>(R.id.buttonBack).setOnClickListener{
+            finish()
+        }
     }
 
     private fun setupWebSocket() {

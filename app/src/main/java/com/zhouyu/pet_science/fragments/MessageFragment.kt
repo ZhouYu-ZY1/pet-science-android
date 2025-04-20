@@ -1,17 +1,21 @@
 package com.zhouyu.pet_science.fragments
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.zhouyu.pet_science.R
+import com.zhouyu.pet_science.activities.AIChatActivity
 import com.zhouyu.pet_science.adapter.MessageListAdapter
 import com.zhouyu.pet_science.databinding.FragmentMessageBinding
 import com.zhouyu.pet_science.model.User
 import com.zhouyu.pet_science.network.UserHttpUtils
 import com.zhouyu.pet_science.pojo.MessageListItem
 import com.zhouyu.pet_science.tools.StorageTool
+import com.zhouyu.pet_science.tools.TimeUtils
 
 class MessageFragment : BaseFragment() {
     private var binding: FragmentMessageBinding? = null
@@ -29,10 +33,14 @@ class MessageFragment : BaseFragment() {
         return binding!!.root
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initViews() {
-        binding?.messageListRecyclerView?.layoutManager = LinearLayoutManager(context)
-        messageListAdapter = MessageListAdapter(requireContext(), getMessageList()!!)
-        binding?.messageListRecyclerView?.adapter = messageListAdapter
+        binding?.let {
+            loadAIMessage()
+            it.messageListRecyclerView.layoutManager = LinearLayoutManager(context)
+            messageListAdapter = MessageListAdapter(requireContext(), getMessageList()!!)
+            it.messageListRecyclerView.adapter = messageListAdapter
+        }
     }
 
     override fun onDestroyView() {
@@ -40,8 +48,43 @@ class MessageFragment : BaseFragment() {
         binding = null
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun loadAIMessage(){
+        executeThread{
+            var aiChat: MessageListItem?
+            var messageTime = ""
+            try {
+                aiChat = StorageTool.get<MessageListItem>("ai_last_message")
+                messageTime = TimeUtils.getMessageTime(aiChat.lastTime.toLong())
+            }catch (e: Exception){
+                aiChat = null
+            }
+            runUiThread{
+                binding?.aiItem!!.apply{
+                    avatarImage.setImageResource(R.drawable.ai_icon)
+                    usernameText.text = "AI助手"
+                    lastMessageText.text = "您的专属宠物AI助手"
+                    onlineIndicator.visibility = View.GONE
+                    unreadCountText.visibility = View.INVISIBLE
+                    timeText.visibility = View.INVISIBLE
+                    root.setOnClickListener{
+                        Intent(context, AIChatActivity::class.java).apply {
+                            startActivity(this)
+                        }
+                    }
+
+                    if (aiChat != null) {
+                        lastMessageText.text = aiChat.lastMessage
+                        timeText.text = messageTime
+                        timeText.visibility = View.VISIBLE
+                    }
+                }
+            }
+        }
+    }
+
     private var isLoad = false
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     private fun loadMessages() {
         if (isLoad) {
             return
@@ -76,6 +119,7 @@ class MessageFragment : BaseFragment() {
             override fun run() {
                 if (refreshList) {
                     refreshList = false
+                    loadAIMessage()
                     messageListAdapter?.notifyDataSetChanged()
                 }
                 if (refreshFollowList) {

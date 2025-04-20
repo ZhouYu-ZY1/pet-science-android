@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI宠物顾问 - 萌宠世界</title>
+    <link rel="stylesheet" href="./css/all.min.css">
+    <link rel="stylesheet" href="./webfonts/fa-solid-900.woff2">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./ai-chat.css">
+</head>
+<body>
+    <div class="ai-chat-container">
+        <!-- 顶部导航 -->
+        <div class="chat-header">
+            <button class="back-btn" id="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="ai-info">
+                <h1>AI宠物顾问</h1>
+                <div class="model-selector" id="model-selector">
+                    <span class="current-model">萌宠GPT</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+            <button class="more-btn">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+        
+        <!-- 聊天内容区域 -->
+        <div class="chat-content" id="chat-content">
+            <!-- 欢迎消息 -->
+            <div class="chat-day-divider">
+                <span>今天</span>
+            </div>
+            
+            <div class="chat-message ai-message">
+                <div class="message-avatar">
+                    <img src="../images/ai_icon.svg" alt="AI头像">
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        <p>你好！我是萌宠AI顾问，有任何关于宠物的问题都可以问我哦！</p>
+                        <p>我可以帮你解答：</p>
+                        <ul>
+                            <li>宠物健康与疾病</li>
+                            <li>宠物行为与训练</li>
+                            <li>宠物饮食与营养</li>
+                            <li>宠物用品选择</li>
+                        </ul>
+                    </div>
+                    <div class="message-time">10:30</div>
+                </div>
+            </div>
+
+            <!-- 聊天记录 -->
+        </div>
+        
+        <!-- 输入区域 -->
+        <div class="chat-input-area">
+            <div class="input-actions">
+                <button class="action-btn">
+                    <i class="fas fa-image"></i>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-microphone"></i>
+                </button>
+            </div>
+            <div class="input-box">
+                <textarea id="message-input" placeholder="输入问题..."></textarea>
+                <button id="send-btn" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 模型选择弹窗 -->
+        <div class="model-modal" id="model-modal">
+            <div class="model-content">
+                <div class="model-header">
+                    <h3>选择AI模型</h3>
+                    <button class="close-model-btn" id="close-model-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="model-list">
+                    <div class="model-item active" data-model="pet-gpt">
+                        <div class="model-icon">
+                            <i class="fas fa-dog"></i>
+                        </div>
+                        <div class="model-info">
+                            <h4>萌宠GPT</h4>
+                            <p>专注于宠物健康、行为和护理的AI助手</p>
+                        </div>
+                    </div>
+                    <div class="model-item" data-model="vet-gpt">
+                        <div class="model-icon">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div class="model-info">
+                            <h4>兽医GPT</h4>
+                            <p>由兽医知识库训练的专业宠物健康顾问</p>
+                        </div>
+                    </div>
+                    <div class="model-item" data-model="trainer-gpt">
+                        <div class="model-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="model-info">
+                            <h4>训练师GPT</h4>
+                            <p>专注于宠物行为和训练技巧的AI助手</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./ai-chat.js"></script>
+</body>
+</html>

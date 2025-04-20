@@ -117,6 +117,10 @@ dependencies {
 
     //网络通信库
     implementation "com.squareup.okhttp3:okhttp:4.9.0"
+//    // Retrofit 核心库
+//    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+//    // Gson 转换器（用于 JSON 解析）
+//    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     //音乐视频缓存库
 //    implementation 'com.danikula:videocache:2.7.1'

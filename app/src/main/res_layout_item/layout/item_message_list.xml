@@ -4,6 +4,7 @@
     android:layout_height="70dp"
     android:paddingStart="20dp"
     android:paddingEnd="20dp"
+    android:layout_marginTop="10dp"
     android:background="?attr/selectableItemBackground">
 
     <FrameLayout
@@ -25,8 +26,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="end|bottom"
-            android:background="@drawable/online_indicator"
-            android:visibility="gone"/>
+            android:background="@drawable/online_indicator" />
     </FrameLayout>
 
     <LinearLayout
@@ -87,8 +87,7 @@
             android:text="1"
             android:textColor="@color/white"
             android:textSize="12sp"
-            tools:ignore="HardcodedText"
-            android:visibility="invisible"/>
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
 <!--    &lt;!&ndash; 分割线 &ndash;&gt;-->
