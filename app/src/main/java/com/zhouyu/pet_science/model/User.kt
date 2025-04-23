@@ -17,7 +17,7 @@ data class User(
     val createdAt: Date, // 账号创建时间
     val updatedAt: Date, // 信息更新时间
     val status: Int, // 账号状态（0：正常，1：封禁）
-    val isFollowed : Boolean = false, // 是否已关注
+    var isFollowed : Boolean = false, // 是否已关注
     val followTime: Long, // 关注时间
     var followCount: Int, // 关注数
     val fansCount: Int // 粉丝数

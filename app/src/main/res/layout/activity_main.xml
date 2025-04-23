@@ -15,21 +15,21 @@
         <com.zhouyu.pet_science.views.CustomViewPager
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="56dp"
             android:background="@color/viewColor"
             android:id="@+id/main_view_pager" />
 
         <View
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="55dp"
             android:layout_alignParentBottom="true"
-            android:layout_height="0.5dp"
+            android:layout_height="1dp"
             android:layout_width="match_parent"
             android:background="@color/cutOffLine" />
 
         <me.ibrahimsn.lib.SmoothBottomBar
             android:id="@+id/main_bottomBar"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="55dp"
             android:layout_alignParentBottom="true"
             app:backgroundColor="@color/viewColor"
             app:duration="250"

@@ -78,7 +78,7 @@ public class WarpLinearLayout extends ViewGroup {
         mWarpLineGroup = new ArrayList<>();
         for (int i = 0; i < childCount; i++) {
             if (warpLine.lineWidth + getChildAt(i).getMeasuredWidth() + mType.horizontal_Space > with) {
-                if (warpLine.lineView.size() == 0) {
+                if (warpLine.lineView.isEmpty()) {
                     warpLine.addView(getChildAt(i));
                     mWarpLineGroup.add(warpLine);
                     warpLine = new WarpLine();

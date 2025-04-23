@@ -1,4 +1,4 @@
-package com.zhouyu.pet_science.adapter
+package com.zhouyu.pet_science.adapter.message
 
 import android.annotation.SuppressLint
 import android.content.Context

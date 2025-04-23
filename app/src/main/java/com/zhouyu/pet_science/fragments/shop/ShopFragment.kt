@@ -1,8 +1,10 @@
 package com.zhouyu.pet_science.fragments.shop
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
+import android.provider.Telephony.Mms.Intents
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zhouyu.pet_science.R
+import com.zhouyu.pet_science.activities.SearchActivity
 import com.zhouyu.pet_science.application.Application
 import com.zhouyu.pet_science.databinding.FragmentShopBinding
 import com.zhouyu.pet_science.fragments.BaseFragment
@@ -51,6 +54,11 @@ class ShopFragment : BaseFragment() {
         binding.tabLayout.setSelectedTabIndicator(R.drawable.tab_indicator)
         binding.tabLayout.isTabIndicatorFullWidth = false
 
+        binding.searchView.setOnClickListener{
+            val intent = Intent(context, SearchActivity::class.java)
+            intent.putExtra("type", "product")
+            startActivity(intent)
+        }
         initTabLayoutAnim()
     }
 
@@ -67,6 +75,7 @@ class ShopFragment : BaseFragment() {
         executeThread {
             val categoryList = ProductHttpUtils.getCategoryList()
             if (categoryList != null) {
+                (categoryList as ArrayList<Category>).add(0, Category(-1, "all","全部")) // 添加"全部"分类
                 val needUpdateUI = if (cachedCategoryList != null) {
                     // 比较网络数据和缓存数据是否有差异
                     val isDifferent = categoryList.size != cachedCategoryList.size || 

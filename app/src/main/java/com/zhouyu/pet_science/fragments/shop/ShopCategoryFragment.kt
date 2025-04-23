@@ -26,6 +26,9 @@ import com.zhouyu.pet_science.network.ProductHttpUtils
 import com.zhouyu.pet_science.tools.MyToast
 import com.zhouyu.pet_science.tools.utils.PhoneMessage
 import com.zhouyu.pet_science.adapter.BannerTextAdapter
+import com.zhouyu.pet_science.model.ProductItem
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class ShopCategoryFragment() : BaseFragment() {
@@ -43,7 +46,7 @@ class ShopCategoryFragment() : BaseFragment() {
     private var currentPage = 1
     private val pageSize = 10
     private var isLoading = false
-    private val productItems: MutableList<ProductAdapter.ProductItem> = ArrayList()
+    private val productItems: MutableList<ProductItem> = ArrayList()
 
     // 懒加载相关变量
     private var isViewCreated = false  // 视图是否已创建
@@ -95,22 +98,17 @@ class ShopCategoryFragment() : BaseFragment() {
         binding.productRecyclerView.adapter = productAdapter
 
         // 设置下拉刷新和加载更多
-        binding.refreshLayout.setReboundDuration(500) // 设置回弹动画时间
+        binding.refreshLayout.setReboundDuration(300) // 设置回弹动画时间
 
         // 设置刷新头
         val classicsHeader = ClassicsHeader(requireContext())
-        classicsHeader.setProgressResource(R.drawable.ic_header_progress)  // 刷新加载图标
-        classicsHeader.setArrowResource(R.drawable.ic_header_progress) // 下拉图标
 
         // 设置加载更多
         val classicsFooter = ClassicsFooter(requireContext())
-        classicsFooter.setProgressResource(R.drawable.ic_header_progress)
-        classicsFooter.setArrowResource(R.drawable.ic_header_progress)
-        classicsFooter.spinnerStyle = Translate
 
         classicsHeader.setFinishDuration(100) // 设置完成动画时间
         classicsFooter.setFinishDuration(100)
-        binding.refreshLayout.setEnableLoadMoreWhenContentNotFull(false) // 不满一页禁止刷新
+        binding.refreshLayout.setEnableLoadMoreWhenContentNotFull(false) // 不满一页禁止加载更多
 
         binding.refreshLayout.setRefreshHeader(classicsHeader)
         binding.refreshLayout.setRefreshFooter(classicsFooter)
@@ -134,23 +132,23 @@ class ShopCategoryFragment() : BaseFragment() {
         // 创建Banner数据
         val bannerItems = listOf(
             BannerTextAdapter.BannerItem(
-                "$BASE_URL/statics/images/banner/photo-1583337130417-3346a1be7dee.jpg",
+                "$BASE_URL/image/banner/photo-1583337130417-3346a1be7dee.jpg",
                 "新品上市","精选宠物折优惠"
             ),
             BannerTextAdapter.BannerItem(
-                "$BASE_URL/statics/images/banner/premium_photo-1707353401897-da9ba223f807.jpg",
+                "$BASE_URL/image/banner/premium_photo-1707353401897-da9ba223f807.jpg",
                 "买二赠一","宠物保健品"
             ),
             BannerTextAdapter.BannerItem(
-                "$BASE_URL/statics/images/banner/premium_photo-1708724049005-192fe5c23269.jpg",
+                "$BASE_URL/image/banner/premium_photo-1708724049005-192fe5c23269.jpg",
                 "限时特惠","优质宠物食品"
             ),
             BannerTextAdapter.BannerItem(
-                "$BASE_URL/statics/images/banner/photo-1599572743109-61c820b3a79d.jpg",
+                "$BASE_URL/image/banner/photo-1599572743109-61c820b3a79d.jpg",
                 "满300减50","宠物服饰专区"
             ),
             BannerTextAdapter.BannerItem(
-                "$BASE_URL/statics/images/banner/photo-1548199973-03cce0bbc87b.jpg",
+                "$BASE_URL/image/banner/photo-1548199973-03cce0bbc87b.jpg",
                 "全场低至5折","宠物玩具大促"
             )
         )
@@ -308,7 +306,7 @@ class ShopCategoryFragment() : BaseFragment() {
                     val imageUrl = ProductHttpUtils.getFirstImage(product.mainImage)
                     // 处理每个商品
                     productItems.add(
-                        ProductAdapter.ProductItem(
+                        ProductItem(
                             imageUrl,
                             product.productName,
                             "¥" + product.price,

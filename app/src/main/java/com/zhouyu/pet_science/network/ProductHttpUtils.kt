@@ -4,6 +4,7 @@ package com.zhouyu.pet_science.network
 import PageResult
 import Product
 import com.zhouyu.pet_science.model.Category
+import com.zhouyu.pet_science.model.ProductItem
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import okhttp3.Request
 import org.json.JSONObject
@@ -53,7 +54,7 @@ class ProductHttpUtils {
          * @param pageNum 页码
          * @param pageSize 每页数量
          * @param productName 商品名称（可选）
-         * @param categoryId 分类ID（可选）
+         * @param categoryCode 分类ID（可选）
          */
         fun getProductList(pageNum: Int, pageSize: Int, productName: String? = null, categoryCode: String? = null): PageResult<Product>? {
             try {
@@ -61,7 +62,7 @@ class ProductHttpUtils {
                 if (!productName.isNullOrEmpty()) {
                     urlBuilder.append("&productName=$productName")
                 }
-                if (categoryCode != null) {
+                if (categoryCode != null && categoryCode != "all") {
                     urlBuilder.append("&category=$categoryCode")
                 }
 
@@ -109,6 +110,70 @@ class ProductHttpUtils {
             } catch (e: Exception) {
                 e.printStackTrace()
                 return null
+            }
+        }
+
+        /**
+         * 搜索商品
+         * @param pageNum 页码
+         * @param pageSize 每页数量
+         * @param keyword 搜索关键字
+         */
+        fun searchProduct(pageNum: Int, pageSize: Int,keyword: String): MutableList<ProductItem> {
+            try {
+                if(keyword.isEmpty()) return ArrayList()
+                val urlBuilder = StringBuilder("$BASE_URL/product/search?pageNum=$pageNum&pageSize=$pageSize&keyword=$keyword")
+
+                val request = Request.Builder()
+                    .url(urlBuilder.toString())
+                    .get()
+                    .build()
+                val response = HttpUtils.client.newCall(request).execute()
+                val responseBody = response.body?.string()
+
+                if (response.code == 200 && responseBody != null) {
+                    val jsonObject = JSONObject(responseBody)
+                    val dataObject = jsonObject.getJSONObject("data")
+                    val productArray = dataObject.getJSONArray("list")
+
+                    val products = ArrayList<Product>()
+                    for (i in 0 until productArray.length()) {
+                        val item = productArray.getJSONObject(i)
+                        products.add(
+                            Product(
+                                productId = item.getInt("productId"),
+                                productName = item.getString("productName"),
+                                category = item.getString("category"),
+                                price = item.getDouble("price"),
+                                stock = item.getInt("stock"),
+                                description = item.getString("description"),
+                                mainImage = item.getString("mainImage"),
+                                status = item.getInt("status"),
+                                createdAt = item.getString("createdAt"),
+                                updatedAt = item.getString("updatedAt")
+                            )
+                        )
+                    }
+                    val productItems = ArrayList<ProductItem>()
+                    products.forEach { product ->
+                        val imageUrl = getFirstImage(product.mainImage)
+                        // 处理每个商品
+                        productItems.add(
+                            ProductItem(
+                                imageUrl,
+                                product.productName,
+                                "¥" + product.price,
+                                "2.3万+人付款"
+                            )
+                        )
+                    }
+                    return productItems
+                } else {
+                    return ArrayList()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return ArrayList()
             }
         }
 

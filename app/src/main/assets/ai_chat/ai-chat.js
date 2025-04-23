@@ -27,6 +27,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let apiKey = '';
     let baseUrl = '';
 
+    // 用户滚动状态跟踪
+    let isNearBottom = true;
+
     // 从Android获取模型列表和API配置
     if (window.Android) {
         try {
@@ -113,6 +116,24 @@ document.addEventListener('DOMContentLoaded', function() {
         closeModelBtn.addEventListener('click', function() {
             modelModal.style.display = 'none';
         });
+
+        // 添加滚动事件监听
+        chatContent.addEventListener('scroll', handleScroll);
+        
+        // 初始化滚动状态
+        checkIfNearBottom();
+    }
+
+    // 处理滚动事件
+    function handleScroll() {
+        checkIfNearBottom();
+    }
+    // 检查是否接近底部
+    function checkIfNearBottom() {
+        const scrollPosition = chatContent.scrollTop + chatContent.clientHeight;
+        const scrollHeight = chatContent.scrollHeight;
+        // 如果距离底部小于10px，认为是在底部附近
+        isNearBottom = (scrollHeight - scrollPosition) < 5;
     }
 
     // 更新模型选择器UI
@@ -128,11 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
         modelConfigs.forEach((config, index) => {
             const isActive = index === currentModelIndex;
 
-//            // 为不同模型类型选择不同图标
-//            let iconClass = 'fa-robot';
-//            if (config.type === 'aliyun') iconClass = 'fa-cloud';
-//            else if (config.type === 'deepseek') iconClass = 'fa-whale';
-//            else if (config.type === 'hunyuan') iconClass = 'fa-globe-africa';
             // 根据模型类型确定图标图片路径
             let iconSrc = '../images/deepseek.svh'; // 默认图标
             if (config.type === 'aliyun') {
@@ -230,6 +246,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 清空输入框
         messageInput.value = '';
+
+        // 发送消息时重置滚动状态，确保显示新消息
+        isNearBottom = true;
 
         // 调用AI API
         callAIAPI(message);
@@ -559,7 +578,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 滚动到底部
     function scrollToBottom() {
-        chatContent.scrollTop = chatContent.scrollHeight;
+        // 已经在底部附近时，才自动滚动到底部
+        if (isNearBottom) {
+            chatContent.scrollTop = chatContent.scrollHeight;
+        }
     }
 
     // 初始化

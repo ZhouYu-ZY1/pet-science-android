@@ -9,7 +9,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.AIChatActivity
-import com.zhouyu.pet_science.adapter.MessageListAdapter
+import com.zhouyu.pet_science.activities.SearchActivity
+import com.zhouyu.pet_science.adapter.message.MessageListAdapter
 import com.zhouyu.pet_science.databinding.FragmentMessageBinding
 import com.zhouyu.pet_science.model.User
 import com.zhouyu.pet_science.network.UserHttpUtils
@@ -35,11 +36,17 @@ class MessageFragment : BaseFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun initViews() {
-        binding?.let {
+        binding?.apply {
             loadAIMessage()
-            it.messageListRecyclerView.layoutManager = LinearLayoutManager(context)
+            messageListRecyclerView.layoutManager = LinearLayoutManager(context)
             messageListAdapter = MessageListAdapter(requireContext(), getMessageList()!!)
-            it.messageListRecyclerView.adapter = messageListAdapter
+            messageListRecyclerView.adapter = messageListAdapter
+
+            userSearchBtn.setOnClickListener {
+                val intent = Intent(context, SearchActivity::class.java)
+                intent.putExtra("type", "user")
+                startActivity(intent)
+            }
         }
     }
 
@@ -62,7 +69,7 @@ class MessageFragment : BaseFragment() {
             runUiThread{
                 binding?.aiItem!!.apply{
                     avatarImage.setImageResource(R.drawable.ai_icon)
-                    usernameText.text = "AI助手"
+                    usernameText.text = "萌宠AI助手"
                     lastMessageText.text = "您的专属宠物AI助手"
                     onlineIndicator.visibility = View.GONE
                     unreadCountText.visibility = View.INVISIBLE

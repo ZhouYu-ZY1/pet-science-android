@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingBottom="10dp"
+    android:paddingEnd="10dp"
+    tools:ignore="RtlSymmetry">
+
+
+    <TextView
+        android:minWidth="45dp"
+        android:background="@drawable/view_radius"
+        android:backgroundTint="#F3F5F6"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingEnd="12dp"
+        android:paddingStart="12dp"
+        android:gravity="center"
+        android:id="@+id/history_search_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="keyword"
+        android:textSize="13dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/textGeneral"
+        tools:ignore="HardcodedText,SpUsage" />
+</LinearLayout>

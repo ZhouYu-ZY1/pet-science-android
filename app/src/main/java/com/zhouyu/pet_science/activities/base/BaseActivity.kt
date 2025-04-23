@@ -16,22 +16,17 @@ import com.zhouyu.pet_science.manager.ActivityManager.Companion.instance
 import com.zhouyu.pet_science.tools.utils.PhoneMessage
 
 open class BaseActivity : AppCompatActivity() {
+    var isDarkBack = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.enableEdgeToEdge()
         val actionBar = supportActionBar
         actionBar?.hide()
-//        View main = findViewById(R.id.main);
-//        if(main != null){
-//            ViewCompat.setOnApplyWindowInsetsListener(main, (v, insets) -> {
-//                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//                return insets;
-//            });
-//        }
 
         //状态栏透明
         setStatusBarFullTransparent(window)
+        if (!isDarkBack) {
+            setStatusBarTextColor(true)
+        }
 
         //添加Activity到管理器
         instance.addActivity(this)

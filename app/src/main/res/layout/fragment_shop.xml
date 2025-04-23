@@ -18,6 +18,7 @@
         android:gravity="center_vertical">
 
         <LinearLayout
+            android:id="@+id/search_view"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:background="@drawable/view_radius"
@@ -33,18 +34,16 @@
                 android:tint="@color/textTinge"
                 tools:ignore="UseAppTint" />
 
-            <EditText
-                android:id="@+id/search_edit_text"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:background="@null"
-                android:hint="搜索商品"
-                android:textColorHint="@color/textTinge"
-                android:textColor="@color/textGeneral"
+                android:text="搜索商品"
+                android:textColor="@color/textTinge"
                 android:textSize="14sp"
                 android:singleLine="true"
-                android:imeOptions="actionSearch" />
+                tools:ignore="HardcodedText" />
         </LinearLayout>
     </LinearLayout>
 

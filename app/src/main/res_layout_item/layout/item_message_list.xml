@@ -9,8 +9,8 @@
 
     <FrameLayout
         android:id="@+id/avatarContainer"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true">
 
@@ -43,7 +43,7 @@
             android:layout_marginStart="12dp"
             android:textColor="@color/black"
             android:text="昵称"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
@@ -57,7 +57,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="#666666"
-            android:textSize="14sp"
+            android:textSize="13sp"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 

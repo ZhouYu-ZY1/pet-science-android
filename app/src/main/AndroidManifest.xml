@@ -33,6 +33,8 @@
         <activity android:name="com.zhouyu.pet_science.activities.ChatActivity" android:exported="false"/>
         <!-- AI聊天页面 -->
         <activity android:name=".activities.AIChatActivity" android:windowSoftInputMode="adjustResize" />
+        <!-- 搜索页面 -->
+        <activity android:name=".activities.SearchActivity"  />
         <!--错误页-->
         <activity android:name="com.zhouyu.pet_science.activities.base.ErrorActivity" />
         <!--Web浏览器-->

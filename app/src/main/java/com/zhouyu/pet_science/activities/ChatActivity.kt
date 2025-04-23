@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
-import com.zhouyu.pet_science.adapter.MessageAdapter
+import com.zhouyu.pet_science.adapter.message.MessageAdapter
 import com.zhouyu.pet_science.application.WebSocketManager
 import com.zhouyu.pet_science.fragments.MessageFragment
 import com.zhouyu.pet_science.pojo.ChatMessage
@@ -91,7 +91,7 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun loadHistoryMessages() {
-        messageAdapter = MessageAdapter(chatMessages, currentUserId)
+        messageAdapter = MessageAdapter(chatMessages!!, currentUserId!!)
         val layoutManager = LinearLayoutManager(this)
         recyclerViewChat?.setLayoutManager(layoutManager)
         recyclerViewChat?.setAdapter(messageAdapter)

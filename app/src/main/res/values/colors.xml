@@ -75,6 +75,8 @@
     <color name="desktopLrcColor4">#FF5722</color>
     <color name="desktopLrcColor5">#A850F0</color>
     <color name="desktopLrcColor6">#FFEB3B</color>
+    <color name="follow_color">#3AA8FF</color> <!-- 蓝色 -->
+    <color name="unfollow_color">#FF6054</color> <!-- 红色 -->
 
 
     <!--相册选择样式-->

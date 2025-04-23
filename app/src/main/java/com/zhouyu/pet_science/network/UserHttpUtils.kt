@@ -1,15 +1,21 @@
 package com.zhouyu.pet_science.network
 
 import android.net.Uri
+import com.google.gson.Gson
+import com.orhanobut.hawk.Hawk
 import com.zhouyu.pet_science.activities.UserInfoEditActivity
 import com.zhouyu.pet_science.model.User
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
-import okhttp3.Request
+import com.zhouyu.pet_science.network.HttpUtils.client
+import com.zhouyu.pet_science.tools.utils.ConsoleUtils
+import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Date
+import java.util.Objects
 
 class UserHttpUtils {
     companion object {
@@ -27,12 +33,14 @@ class UserHttpUtils {
                     .post(jsonString.toRequestBody("application/json".toMediaType()))
                     .build()
 
-                val response = HttpUtils.client.newCall(request).execute()
+                val response = client.newCall(request).execute()
                 val responseBody = response.body?.string()
+                ConsoleUtils.logErr(responseBody)
                 if (response.code == 200 && responseBody != null) {
                     Pair(true, null)
                 } else {
-                    Pair(false, "验证码发送失败")
+                    val jsonObject = JSONObject(responseBody!!)
+                    Pair(false, jsonObject.getString("message"))
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -51,7 +59,7 @@ class UserHttpUtils {
                     .post(jsonString.toRequestBody("application/json".toMediaType()))
                     .build()
 
-                val response = HttpUtils.client.newCall(request).execute()
+                val response = client.newCall(request).execute()
                 val responseBody = response.body?.string()
                 if (response.code == 200 && responseBody != null) {
                     Pair(true, JSONObject(responseBody).getJSONObject("data"))
@@ -106,7 +114,7 @@ class UserHttpUtils {
                     .put(jsonString.toRequestBody("application/json".toMediaType()))
                     .build()
 
-                val response = HttpUtils.client.newCall(request).execute()
+                val response = client.newCall(request).execute()
                 if (response.code == 200) {
                     Pair(true, null)
                 } else {
@@ -118,31 +126,148 @@ class UserHttpUtils {
             }
         }
 
-        /**
-         * 获取关注列表
+      /**
+         * 搜索用户
+         * @param keyword 搜索关键字，可以是用户名、邮箱或手机号
+         * @return 返回匹配的用户列表
          */
+        fun searchUser(keyword: String): List<User> {
+            return try {
+                if(keyword.isEmpty()) {
+                    return emptyList()
+                }
+                // 构建请求URL，传递搜索关键字
+                val url = "$BASE_URL/user/list?pageNum=1&pageSize=10&keyword=$keyword"
+
+                ConsoleUtils.logErr(url)
+                val request = Request.Builder()
+                    .url(url)
+                    .get()
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string()
+                ConsoleUtils.logErr(responseBody)
+
+                if (response.code == 200 && responseBody != null) {
+                    // 解析响应数据
+                    val jsonArray = JSONObject(responseBody).getJSONObject("data").getJSONArray("list")
+                    val userList = mutableListOf<User>()
+
+                    for (i in 0 until jsonArray.length()) {
+                        val userObj = jsonArray.getJSONObject(i)
+                        userList.add(formatUser(userObj))
+                    }
+                    userList
+                } else {
+                    emptyList()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emptyList()
+            }
+        }
+
+
+        /**
+         * 关注或取消关注用户
+         */
+        fun followUser(id: Int, isFollow: Boolean): Boolean {
+            val builder = FormBody.Builder()
+            builder.add("toUserId", id.toString())
+            builder.add("isFollow", isFollow.toString())
+            val request: Request = Request.Builder().url("$BASE_URL/user/followUser")
+                .post(builder.build())
+                .build()
+            return try {
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string()
+                val jsonObject = JSONObject(responseBody!!)
+                val code = jsonObject.getInt("code")
+                code == 200
+            } catch (e: java.lang.Exception) {
+                false
+            }
+        }
+
         fun getFollowList(): List<User> {
-            val user = User(
-                1,
-                "test",
-                "test",
-                "test",
-                "test",
-                "/statics/images/defaultAvatar.jpg",
-                "test",
-                0,
-                Date(),
-                "",
-                "",
-                Date(),
-                Date(),
-                0,
-                true,
-                0,
-                0,
-                0
+            val request: Request = Request.Builder().url("$BASE_URL/user/getFollowList")
+                .get()
+                .build()
+            val users = ArrayList<User>()
+            try {
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string()
+                val jsonObject = JSONObject(responseBody!!)
+                if (response.code == 200) {
+                    val data = jsonObject.getJSONArray("data")
+                    for (i in 0 until data.length()) {
+                        val userObj = data.getJSONObject(i)
+                        users.add(formatUser(userObj))
+                    }
+                    return users
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+            return users
+        }
+
+        fun getFansList(): List<User> {
+            val request: Request = Request.Builder().url("$BASE_URL/user/getFansList")
+                .build()
+            val users = ArrayList<User>()
+            try {
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string()
+                val jsonObject = JSONObject(responseBody!!)
+                if (response.code == 200) {
+                    val data = jsonObject.getJSONArray("data")
+                    for (i in 0 until data.length()) {
+                        val userJson = data.getJSONObject(i)
+                        users.add(formatUser(userJson))
+                    }
+                    return users
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+            return users
+        }
+
+        private fun formatUser(userObj: JSONObject) : User{
+            return User(
+                userId = userObj.getInt("userId"),
+                username = userObj.getString("username"),
+                nickname = userObj.getString("nickname"),
+                email = userObj.getString("email"),
+                mobile = userObj.getString("mobile"),
+                avatarUrl = userObj.getString("avatarUrl"),
+                bio = if (!userObj.isNull("bio")) {
+                    userObj.getString("bio")
+                } else {
+                    ""
+                },
+                gender = userObj.getInt("gender"),
+                birthday = if (!userObj.isNull("birthday")) {
+                    Date(userObj.getLong("birthday"))
+                } else {
+                    Date()
+                },
+                location = userObj.getString("location"),
+                createdAt = Date(userObj.getLong("createdAt")),
+                updatedAt = Date(userObj.getLong("updatedAt")),
+                status = userObj.getInt("status"),
+                isFollowed = userObj.getBoolean("isFollowed"),
+                followCount = userObj.getInt("followCount"),
+                fansCount = userObj.getInt("fansCount"),
+                followTime = if (!userObj.isNull("followTime")) {
+                    userObj.getLong("followTime")
+                } else {
+                    0L
+                },
+                password = ""
             )
-            return listOf(user)
         }
     }
 }

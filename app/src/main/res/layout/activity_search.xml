@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/frame"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/view_semicircle"
+        android:orientation="horizontal"
+        android:backgroundTint="@color/themeColor"
+        android:transitionName="searchView">
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/search_icon"
+            android:layout_marginStart="15dp"
+            android:layout_centerVertical="true"/>
+
+        <EditText
+            android:id="@+id/search_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="45dp"
+            android:background="@drawable/view_semicircle"
+            android:hint="请输入搜索内容"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:paddingRight="40dp"
+            android:backgroundTint="@color/themeColor"
+            android:textColor="@color/textGeneral"
+            android:textColorHint="@color/textTinge"
+            android:textCursorDrawable="@drawable/input_gb"
+            android:textSize="15dp" />
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/remove_all_keyword"-->
+<!--            android:layout_width="30dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:gravity="center"-->
+<!--            android:layout_alignParentRight="true"-->
+<!--            android:layout_marginEnd="5dp"-->
+<!--            android:visibility="gone">-->
+<!--            <ImageView-->
+<!--                android:layout_width="15dp"-->
+<!--                android:layout_height="15dp"-->
+<!--                android:src="@drawable/remove_icon" />-->
+<!--        </LinearLayout>-->
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!-- 历史搜索容器 -->
+        <LinearLayout
+            android:id="@+id/history_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="历史搜索"
+                    android:textColor="@color/textGeneral"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/clear_history_search"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:background="@drawable/touch_radius"
+                    tools:ignore="RtlHardcoded">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/remove_trash_icon"
+                        tools:ignore="ContentDescription" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <ScrollView
+                android:layout_centerHorizontal="true"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:scrollbarThumbVertical="@drawable/scroll_bar"
+                tools:ignore="ObsoleteLayoutParam">
+                <com.zhouyu.pet_science.views.WarpLinearLayout
+                    android:id="@+id/history_search_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:grivate="left"
+                    android:orientation="horizontal">
+                </com.zhouyu.pet_science.views.WarpLinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+        <!-- 搜索结果容器 -->
+        <LinearLayout
+            android:id="@+id/search_result_container"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/viewColor"
+                app:tabRippleColor="@android:color/transparent"
+                app:tabMinWidth="0dp"
+                app:tabIndicatorColor="@color/Theme"
+                app:tabSelectedTextColor="@color/Theme"
+                app:tabTextColor="@color/textGeneral"
+                app:tabIndicatorHeight="2dp"
+                app:tabIndicatorFullWidth="false"
+                app:tabPaddingStart="0dp"
+                app:tabPaddingEnd="0dp"
+                app:tabGravity="fill"
+                app:tabMode="fixed" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
