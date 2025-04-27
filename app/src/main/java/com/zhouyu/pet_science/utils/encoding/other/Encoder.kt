@@ -1,5 +1,6 @@
-package com.zhouyu.pet_science.tools.encoding.other;
+package com.zhouyu.pet_science.utils.encoding.other
 
-public interface Encoder {
-    Object encode(Object var1) throws EncoderException;
+interface Encoder {
+    @Throws(EncoderException::class)
+    fun encode(var1: Any?): Any
 }

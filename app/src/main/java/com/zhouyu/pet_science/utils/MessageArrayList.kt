@@ -1,10 +1,7 @@
-package com.zhouyu.pet_science.tools
+package com.zhouyu.pet_science.utils
 
 import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.zhouyu.pet_science.application.Application
-import com.zhouyu.pet_science.fragments.MessageFragment.Companion.getMessageList
 import com.zhouyu.pet_science.pojo.MessageListItem
 
 class MessageArrayList<T> : ArrayList<T>() {

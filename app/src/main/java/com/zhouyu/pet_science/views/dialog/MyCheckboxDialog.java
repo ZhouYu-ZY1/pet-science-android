@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.zhouyu.pet_science.R;
 import com.zhouyu.pet_science.activities.base.BaseActivity;
-import com.zhouyu.pet_science.tools.Tool;
-import com.zhouyu.pet_science.tools.utils.PhoneMessage;
+import com.zhouyu.pet_science.utils.Tool;
+import com.zhouyu.pet_science.utils.PhoneMessage;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
@@ -134,7 +134,7 @@ public class MyCheckboxDialog extends Dialog {
         //初始化界面控件的事件
         initEvent();
     }
-    
+
     /**
      * 初始化界面控件
      */

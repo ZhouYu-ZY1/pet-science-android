@@ -1,20 +1,12 @@
-package com.zhouyu.pet_science.tools.encoding.other;
+package com.zhouyu.pet_science.utils.encoding.other
 
-public class DecoderException extends Exception {
-    private static final long serialVersionUID = 1L;
+class DecoderException : Exception {
+    constructor()
+    constructor(message: String?) : super(message)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
 
-    public DecoderException() {
-    }
-
-    public DecoderException(String message) {
-        super(message);
-    }
-
-    public DecoderException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DecoderException(Throwable cause) {
-        super(cause);
+    companion object {
+        private const val serialVersionUID = 1L
     }
 }

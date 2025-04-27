@@ -1,6 +1,6 @@
-package com.zhouyu.pet_science.tools.encoding.other;
+package com.zhouyu.pet_science.utils.encoding.other
 
-public interface Decoder {
-    Object decode(Object var1) throws DecoderException;
+interface Decoder {
+    @Throws(DecoderException::class)
+    fun decode(var1: Any): Any?
 }
-

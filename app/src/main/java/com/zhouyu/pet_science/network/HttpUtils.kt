@@ -1,7 +1,7 @@
 package com.zhouyu.pet_science.network
 
 import android.annotation.SuppressLint
-import com.zhouyu.pet_science.tools.StorageTool
+import com.zhouyu.pet_science.utils.StorageUtils
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -34,7 +34,7 @@ object HttpUtils {
         .addInterceptor { //添加token
             val originalRequest: Request = it.request()
             if(originalRequest.url.toString().startsWith(BASE_URL)){
-                val token = StorageTool.get<String>("token")
+                val token = StorageUtils.get<String>("token")
                 val requestWithToken: Request = originalRequest.newBuilder()
                     .header("Authorization", "Bearer $token")
                     .build()

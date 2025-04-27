@@ -1,4 +1,4 @@
-package com.zhouyu.pet_science.tools
+package com.zhouyu.pet_science.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -10,7 +10,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.AudioAttributes
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.widget.RemoteViews
@@ -20,8 +19,6 @@ import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.ChatActivity
 import com.zhouyu.pet_science.activities.MainActivity
 import com.zhouyu.pet_science.pojo.MessageListItem
-import com.zhouyu.pet_science.tools.utils.ConsoleUtils
-import com.zhouyu.pet_science.tools.utils.PhoneMessage
 import com.zhouyu.pet_science.views.dialog.MyDialog
 
 object NotificationHelper {
@@ -36,7 +33,7 @@ object NotificationHelper {
         avatar: Bitmap?,
         item: MessageListItem
     ) {
-        val roundedAvatar = BitmapTool.getRoundedCornerBitmap(avatar, PhoneMessage.dpToPx(24f))
+        val roundedAvatar = BitmapUtils.getRoundedCornerBitmap(avatar, PhoneMessage.dpToPx(24f))
         ChatActivity.messageListItem = item
         val intent = Intent(context, MainActivity::class.java)
         intent.putExtra(MainActivity.OPEN_CHAT_ACTIVITY, true)

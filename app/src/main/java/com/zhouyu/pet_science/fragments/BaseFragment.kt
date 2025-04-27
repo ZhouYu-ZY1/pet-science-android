@@ -1,7 +1,9 @@
 package com.zhouyu.pet_science.fragments
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.zhouyu.pet_science.utils.PhoneMessage
 
 open class BaseFragment : Fragment() {
     private var layoutView: View? = null
@@ -25,5 +27,22 @@ open class BaseFragment : Fragment() {
             e.printStackTrace()
         }
         return runnable
+    }
+
+    fun setTopBarView(view: View, isPadding: Boolean) {
+        if (isPadding) {
+            view.setPadding(
+                view.paddingLeft,
+                PhoneMessage.statusBarHeight,
+                view.paddingRight,
+                view.paddingBottom
+            )
+        } else {
+            val layoutParams = view.layoutParams
+            if (layoutParams is ViewGroup.MarginLayoutParams) {
+                layoutParams.topMargin = PhoneMessage.statusBarHeight
+                view.layoutParams = layoutParams
+            }
+        }
     }
 }

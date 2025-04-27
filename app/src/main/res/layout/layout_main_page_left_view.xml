@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/themeColor">
+    android:background="@color/themeColor"
+    tools:ignore="HardcodedText,ContentDescription">
 
     <LinearLayout
         android:layout_marginTop="15dp"
@@ -44,153 +45,215 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <com.zhouyu.pet_science.views.CardView
-                app:view_radius="3dp"
-                android:orientation="vertical"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/viewColor">
-<!--                <RelativeLayout-->
-<!--                    android:id="@+id/uploading"-->
-<!--                    android:padding="10dp"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:background="?android:attr/selectableItemBackground">-->
-<!--                    <LinearLayout-->
-<!--                        android:layout_marginEnd="20dp"-->
-<!--                        android:layout_centerVertical="true"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:orientation="vertical">-->
-<!--                        <TextView-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="上传数据"-->
-<!--                            android:textSize="14sp"-->
-<!--                            android:textColor="@color/textGeneral"-->
-<!--                            tools:ignore="HardcodedText,SpUsage" />-->
-<!--                        <TextView-->
-<!--                            android:layout_marginTop="5dp"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="为减少服务器压力，部分数据（歌单、收藏歌曲等）每15分钟自动同步一次。请在退出登录或清除数据之前手动上传保存"-->
-<!--                            android:textSize="11sp"-->
-<!--                            android:textColor="@color/textTinge"-->
-<!--                            tools:ignore="HardcodedText,SpUsage" />-->
-<!--                    </LinearLayout>-->
-<!--                    <ImageView-->
-<!--                        android:layout_centerVertical="true"-->
-<!--                        android:layout_alignParentRight="true"-->
-<!--                        android:layout_width="13dp"-->
-<!--                        android:layout_height="13dp"-->
-<!--                        android:src="@drawable/next_icon"-->
-<!--                        tools:ignore="ContentDescription,RtlHardcoded"-->
-<!--                        app:tint="@color/textGeneral" />-->
-<!--                </RelativeLayout>-->
-<!--                <View-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="0.8dp"-->
-<!--                    android:background="@color/cutOffLine"/>-->
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
 
-                <RelativeLayout
-                    android:id="@+id/clear_cache"
-                    android:padding="10dp"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:orientation="vertical">
+
                     <LinearLayout
-                        android:layout_marginEnd="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/clear_cache"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/clean_cache_icon"
+                            app:tint="@color/Theme" />
+
+                        <LinearLayout
+                            android:layout_marginStart="12dp"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="清除缓存"
-                            android:textSize="14sp"
-                            android:textColor="@color/textGeneral"
-                            tools:ignore="HardcodedText,SpUsage" />
-                        <TextView
-                            android:id="@+id/cache_size"
-                            android:layout_marginTop="5dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="计算中..."
-                            android:textSize="11sp"
-                            android:textColor="@color/textTinge"
-                            tools:ignore="HardcodedText,SpUsage" />
+                            android:gravity="center_vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="清除缓存"
+                                android:textSize="14sp"
+                                android:textColor="@color/textGeneral"
+                                tools:ignore="HardcodedText,SpUsage" />
+                            <TextView
+                                android:id="@+id/cache_size"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="（计算中...）"
+                                android:textSize="12sp"
+                                android:textColor="@color/textTinge"
+                                tools:ignore="HardcodedText,SpUsage" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/next_icon"
+                            app:tint="@color/textTinge" />
                     </LinearLayout>
-                    <ImageView
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_width="13dp"
-                        android:layout_height="13dp"
-                        android:src="@drawable/next_icon"
-                        tools:ignore="ContentDescription,RtlHardcoded"
-                        app:tint="@color/textGeneral" />
-                </RelativeLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.8dp"
-                    android:background="@color/cutOffLine"/>
-                <RelativeLayout
-                    android:id="@+id/setting"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="15dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground">
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/cutOffLine"
+                        />
+
                     <LinearLayout
-                        android:layout_marginEnd="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/layoutMyOrders"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/shop_icon"
+                            app:tint="@color/Theme" />
+
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:text="我的订单"
+                            android:textColor="@color/textGeneral"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/next_icon"
+                            app:tint="@color/textTinge" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/cutOffLine" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_location"
+                            app:tint="@color/Theme" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:text="收货地址"
+                            android:textColor="@color/textGeneral"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/next_icon"
+                            app:tint="@color/textTinge" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/cutOffLine" />
+
+
+                    <LinearLayout
+                        android:id="@+id/layoutHelp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/help_icon"
+                            app:tint="@color/Theme" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:text="帮助中心"
+                            android:textColor="@color/textGeneral"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/next_icon"
+                            app:tint="@color/textTinge" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/cutOffLine" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutSettings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/setting_icon"
+                            app:tint="@color/Theme" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
                             android:text="设置"
-                            android:textSize="14sp"
                             android:textColor="@color/textGeneral"
-                            tools:ignore="HardcodedText,SpUsage" />
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/next_icon"
+                            app:tint="@color/textTinge" />
                     </LinearLayout>
-                    <ImageView
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_width="13dp"
-                        android:layout_height="13dp"
-                        android:src="@drawable/next_icon"
-                        tools:ignore="ContentDescription,RtlHardcoded"
-                        app:tint="@color/textGeneral" />
-                </RelativeLayout>
-            </com.zhouyu.pet_science.views.CardView>
-
-
-<!--            <LinearLayout-->
-<!--                android:layout_marginTop="30dp"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_marginEnd="20dp"-->
-<!--                android:id="@+id/transition_account"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="40dp"-->
-<!--                android:background="@drawable/view_semicircle"-->
-<!--                android:gravity="center"-->
-<!--                android:visibility="gone">-->
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="迁移至正式账号"-->
-<!--                    android:textColor="@color/Theme"-->
-<!--                    android:textSize="16sp"-->
-<!--                    tools:ignore="HardcodedText,SpUsage" />-->
-<!--            </LinearLayout>-->
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_marginTop="30dp"
@@ -206,7 +269,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="退出/关闭"
+                    android:text="退出登录"
                     android:textColor="#fa5a5a"
                     android:textSize="16sp"
                     tools:ignore="HardcodedText,SpUsage" />

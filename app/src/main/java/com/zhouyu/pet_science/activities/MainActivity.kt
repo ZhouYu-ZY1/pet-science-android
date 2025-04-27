@@ -15,6 +15,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import androidx.fragment.app.Fragment
@@ -25,13 +26,14 @@ import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.application.WebSocketManager
 import com.zhouyu.pet_science.databinding.ActivityMainBinding
 import com.zhouyu.pet_science.fragments.MessageFragment
+import com.zhouyu.pet_science.fragments.PersonalCenterFragment
 import com.zhouyu.pet_science.fragments.shop.ShopFragment
 import com.zhouyu.pet_science.manager.ActivityManager
-import com.zhouyu.pet_science.tools.CleanCacheTool
-import com.zhouyu.pet_science.tools.NotificationHelper
-import com.zhouyu.pet_science.tools.StorageTool
-import com.zhouyu.pet_science.tools.utils.ConsoleUtils
-import com.zhouyu.pet_science.tools.utils.PhoneMessage
+import com.zhouyu.pet_science.utils.CleanCacheUtils
+import com.zhouyu.pet_science.utils.NotificationHelper
+import com.zhouyu.pet_science.utils.StorageUtils
+import com.zhouyu.pet_science.utils.ConsoleUtils
+import com.zhouyu.pet_science.utils.PhoneMessage
 import com.zhouyu.pet_science.views.CustomViewPager
 import com.zhouyu.pet_science.views.dialog.MyDialog
 import me.ibrahimsn.lib.OnItemSelectedListener
@@ -87,14 +89,14 @@ class MainActivity : BaseActivity() {
 
     @SuppressLint("RtlHardcoded")
     private fun initViews() {
-        setTopBarView(binding.mainViewPager, true)
+//        setTopBarView(binding.mainViewPager, true)
         viewPager = binding.mainViewPager
         fragmentList = ArrayList()
         fragmentList!!.let {
 //            it.add(ShopFragment())
             it.add(ShopFragment())
             it.add(MessageFragment())
-            it.add(Fragment())
+            it.add(PersonalCenterFragment())
         }
 
         //设置预加载页数
@@ -121,7 +123,20 @@ class MainActivity : BaseActivity() {
                 if (smoothBottomBar != null) {
                     smoothBottomBar!!.itemActiveIndex = position
                 }
-                viewPager!!.setCurrentItem(position)
+
+                // 设置状态栏文字颜色
+                val fragment = fragmentList!![position]
+                when (fragment) {
+                    is ShopFragment -> {
+                        setStatusBarTextColor(true, window)
+                    }
+                    is MessageFragment -> {
+                        setStatusBarTextColor(true, window)
+                    }
+                    is PersonalCenterFragment -> {
+                        setStatusBarTextColor(false, window)
+                    }
+                }
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
@@ -140,7 +155,7 @@ class MainActivity : BaseActivity() {
 
         val leftViewLayoutParams = leftView.layoutParams
         // 设置宽度为屏幕宽度的 80%
-        leftViewLayoutParams.width = (PhoneMessage.getWidthPixels() * 0.8).toInt()
+        leftViewLayoutParams.width = (PhoneMessage.widthPixels * 0.8).toInt()
         leftView.layoutParams = leftViewLayoutParams
         drawerLayout = binding.mainDrawerLayout
         drawerLayout!!.addDrawerListener(object : DrawerListener {
@@ -149,14 +164,14 @@ class MainActivity : BaseActivity() {
                 // 当侧滑菜单滑动时，移动主内容
                 val content = drawerLayout!!.getChildAt(0)
                 val distance = drawerView.width * slideOffset
-                content.translationX = distance
+                content.translationX = -distance
             }
 
             override fun onDrawerOpened(drawerView: View) {}
             override fun onDrawerClosed(drawerView: View) {}
             override fun onDrawerStateChanged(newState: Int) {}
         })
-        StorageTool.put("noFirstOpenAPP", true)
+        StorageUtils.put("noFirstOpenAPP", true)
     }
 
     @SuppressLint("RtlHardcoded", "SetTextI18n")
@@ -171,7 +186,7 @@ class MainActivity : BaseActivity() {
         calculateCacheSize()
     }
 
-    private val cleanCacheTool = CleanCacheTool.getInstance()
+    private val cleanCacheTool = CleanCacheUtils.instance
     private var cacheSize: TextView? = null
 
     /**
@@ -186,8 +201,8 @@ class MainActivity : BaseActivity() {
 
     @SuppressLint("WrongConstant", "ShowToast", "RtlHardcoded")
     override fun finish() {
-        if (drawerLayout!!.isOpen) {
-            drawerLayout!!.closeDrawer(Gravity.LEFT)
+        if (drawerLayout!!.isDrawerVisible(GravityCompat.END)) {
+            drawerLayout!!.closeDrawer(GravityCompat.END)
             return
         }
         if (isRemove) {
@@ -282,12 +297,12 @@ class MainActivity : BaseActivity() {
             myDialog.setYesOnclickListener("我同意") {
                 myDialog.dismiss()
                 isAgreeStatement = true
-                StorageTool.put("isAgreeStatement", true)
+                StorageUtils.put("isAgreeStatement", true)
             }
             myDialog.setNoOnclickListener("不同意") {
                 myDialog.dismiss()
                 isAgreeStatement = false
-                StorageTool.put("isAgreeStatement", false)
+                StorageUtils.put("isAgreeStatement", false)
             }
             myDialog.setOnDismissListener {
                 if (!isAgreeStatement) {

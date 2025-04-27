@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.zhouyu.pet_science.R;
 import com.zhouyu.pet_science.activities.base.BaseActivity;
-import com.zhouyu.pet_science.tools.utils.PhoneMessage;
+import com.zhouyu.pet_science.utils.PhoneMessage;
 
 import androidx.annotation.NonNull;
 

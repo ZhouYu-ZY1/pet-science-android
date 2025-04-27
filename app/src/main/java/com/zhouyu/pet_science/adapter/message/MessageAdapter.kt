@@ -14,7 +14,7 @@ import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.adapter.message.MessageAdapter.MessageViewHolder
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.pojo.ChatMessage
-import com.zhouyu.pet_science.tools.TimeUtils
+import com.zhouyu.pet_science.utils.TimeUtils
 
 class MessageAdapter(private val messages: List<ChatMessage>, private val currentUserId: String) :
     RecyclerView.Adapter<MessageViewHolder>() {

@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/viewColor"
+    android:id="@+id/message_fragment"
     android:orientation="vertical">
 
     <RelativeLayout

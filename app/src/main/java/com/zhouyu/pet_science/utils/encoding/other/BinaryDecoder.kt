@@ -1,6 +1,6 @@
-package com.zhouyu.pet_science.tools.encoding.other;
+package com.zhouyu.pet_science.utils.encoding.other
 
-
-public interface BinaryDecoder extends Decoder {
-    byte[] decode(byte[] var1) throws DecoderException;
+interface BinaryDecoder : Decoder {
+    @Throws(DecoderException::class)
+    fun decode(var1: ByteArray): ByteArray?
 }

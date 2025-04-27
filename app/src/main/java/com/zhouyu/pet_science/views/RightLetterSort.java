@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.zhouyu.pet_science.R;
-import com.zhouyu.pet_science.tools.utils.PhoneMessage;
+import com.zhouyu.pet_science.utils.PhoneMessage;
 
 public class RightLetterSort extends View {
     private final Paint textPaint = new Paint();

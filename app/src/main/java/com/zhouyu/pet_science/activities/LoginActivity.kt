@@ -9,8 +9,8 @@ import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.network.UserHttpUtils
 import android.content.Intent
 import com.zhouyu.pet_science.databinding.ActivityLoginBinding
-import com.zhouyu.pet_science.tools.StorageTool
-import com.zhouyu.pet_science.tools.utils.ConsoleUtils
+import com.zhouyu.pet_science.utils.StorageUtils
+import com.zhouyu.pet_science.utils.ConsoleUtils
 
 class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -85,7 +85,7 @@ class LoginActivity : BaseActivity() {
                 runOnUiThread {
                     if (success) {
                         try {
-                            StorageTool.put("token",data.getString("token"))
+                            StorageUtils.put("token",data.getString("token"))
                             if(data.getBoolean("isRegister")){  // 判断是否为注册
                                 // 注册成功后跳转到个人信息填写页面
                                 showToast("注册成功")

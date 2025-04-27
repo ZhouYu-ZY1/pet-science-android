@@ -8,8 +8,8 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.zhouyu.pet_science.tools.utils.ConsoleUtils;
-import com.zhouyu.pet_science.tools.utils.PhoneMessage;
+import com.zhouyu.pet_science.utils.ConsoleUtils;
+import com.zhouyu.pet_science.utils.PhoneMessage;
 
 import java.util.Arrays;
 

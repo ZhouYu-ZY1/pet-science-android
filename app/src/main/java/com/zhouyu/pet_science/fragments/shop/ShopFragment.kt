@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import android.provider.Telephony.Mms.Intents
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,7 @@ import com.zhouyu.pet_science.databinding.FragmentShopBinding
 import com.zhouyu.pet_science.fragments.BaseFragment
 import com.zhouyu.pet_science.model.Category
 import com.zhouyu.pet_science.network.ProductHttpUtils
-import com.zhouyu.pet_science.tools.StorageTool
+import com.zhouyu.pet_science.utils.StorageUtils
 
 class ShopFragment : BaseFragment() {
     private var _binding: FragmentShopBinding? = null
@@ -44,6 +43,7 @@ class ShopFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentShopBinding.inflate(inflater, container, false)
+        setTopBarView(binding.shopFragment, true)
         initViews()
         initData()
         return binding.root
@@ -65,7 +65,7 @@ class ShopFragment : BaseFragment() {
     @SuppressLint("InflateParams")
     private fun initData() {
         // 先从本地缓存加载分类列表
-        val cachedCategoryList = StorageTool.get<List<Category>>("category_list")
+        val cachedCategoryList = StorageUtils.get<List<Category>>("category_list")
         if (cachedCategoryList != null) {
             // 如果有缓存数据，先使用缓存数据初始化UI
             initCateGory(cachedCategoryList)
@@ -84,14 +84,14 @@ class ShopFragment : BaseFragment() {
                     
                     if (isDifferent) {
                         // 如果有差异，更新本地缓存
-                        StorageTool.put("category_list", categoryList)
+                        StorageUtils.put("category_list", categoryList)
                         true
                     } else {
                         false
                     }
                 } else {
                     // 如果缓存为空，保存数据到本地缓存
-                    StorageTool.put("category_list", categoryList)
+                    StorageUtils.put("category_list", categoryList)
                     true
                 }
                 

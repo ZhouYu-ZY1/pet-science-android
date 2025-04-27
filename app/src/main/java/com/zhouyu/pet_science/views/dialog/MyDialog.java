@@ -22,10 +22,10 @@ import android.widget.TextView;
 
 import com.zhouyu.pet_science.R;
 import com.zhouyu.pet_science.activities.base.BaseActivity;
-import com.zhouyu.pet_science.tools.InputTool;
-import com.zhouyu.pet_science.tools.TextTool;
-import com.zhouyu.pet_science.tools.Tool;
-import com.zhouyu.pet_science.tools.utils.PhoneMessage;
+import com.zhouyu.pet_science.utils.InputUtils;
+import com.zhouyu.pet_science.utils.AndroidTextUtils;
+import com.zhouyu.pet_science.utils.Tool;
+import com.zhouyu.pet_science.utils.PhoneMessage;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -190,7 +190,7 @@ public class MyDialog extends Dialog {
         //初始化界面控件的事件
         initEvent();
     }
-    
+
     /**
      * 初始化界面控件
      */
@@ -219,7 +219,7 @@ public class MyDialog extends Dialog {
             dialog_input.setHint(dialog_input_hint);
             dialog_input.setText(dialog_input_default_value);
             dialog_input.setInputType(dialog_input_type);
-            if(messageStr == null || TextTool.isEmpty(messageStr.toString())){
+            if(messageStr == null || AndroidTextUtils.isEmpty(messageStr.toString())){
                 message.setVisibility(View.GONE);
             }
         }
@@ -367,7 +367,7 @@ public class MyDialog extends Dialog {
         themeColor = color;
     }
 
-    private InputTool.KeyboardListener keyboardListener;
+    private InputUtils.KeyboardListener keyboardListener;
     @Override
     public void show() {
         Activity activity = Tool.contextToActivity(getContext());
@@ -377,7 +377,7 @@ public class MyDialog extends Dialog {
         super.show();
         if(isInput){
             EditText input = findViewById(R.id.dialog_input);
-            keyboardListener = new InputTool.KeyboardListener(activity, new InputTool.OnKeyboardListener() {
+            keyboardListener = new InputUtils.KeyboardListener(activity, new InputUtils.OnKeyboardListener() {
 
                 private int moveHeight;
                 @Override
@@ -409,10 +409,10 @@ public class MyDialog extends Dialog {
 
             new Handler().postDelayed(() -> {
                 //弹起输入框
-                InputTool.inputShow(activity, input);
+                InputUtils.inputShow(activity, input);
             },200);
 
-            if(!TextTool.isEmpty(dialog_input_default_value)){
+            if(!AndroidTextUtils.isEmpty(dialog_input_default_value)){
                 input.selectAll();
             }
         }

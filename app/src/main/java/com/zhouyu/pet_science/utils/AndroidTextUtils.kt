@@ -1,314 +1,287 @@
-package com.zhouyu.pet_science.tools;
+package com.zhouyu.pet_science.utils
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.graphics.Typeface;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
-import android.text.style.UnderlineSpan;
+import android.content.ClipboardManager
+import android.content.Context
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
+import androidx.annotation.ColorInt
+import com.zhouyu.pet_science.application.Application
+import net.sourceforge.pinyin4j.PinyinHelper
+import java.util.Calendar
+import java.util.Date
+import java.util.Random
+import java.util.regex.Pattern
 
-import androidx.annotation.ColorInt;
-
-import com.zhouyu.pet_science.application.Application;
-
-import net.sourceforge.pinyin4j.PinyinHelper;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-public class TextTool {
-
+object AndroidTextUtils {
     /**
      * 设置文字样式
      * @return
      */
-    public static CharSequence setTextStyle(String text,int dp_size,boolean isBold,boolean isUnderline){
-        SpannableString spannableString = new SpannableString(text);
+    fun setTextStyle(
+        text: String?,
+        dpSize: Int,
+        isBold: Boolean,
+        isUnderline: Boolean
+    ): CharSequence {
+        val spannableString = SpannableString(text)
 
         //设置字体大小
-        spannableString.setSpan(new AbsoluteSizeSpan(dp_size, true), 0, spannableString.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(
+            AbsoluteSizeSpan(dpSize, true),
+            0,
+            spannableString.length,
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
 
         //设置加粗
-        if(isBold){
-            StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-            spannableString.setSpan(boldSpan, 0, spannableString.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        if (isBold) {
+            val boldSpan = StyleSpan(Typeface.BOLD)
+            spannableString.setSpan(
+                boldSpan,
+                0,
+                spannableString.length,
+                Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+            )
         }
 
         //设置下划线
-        if(isUnderline){
-            spannableString.setSpan(new UnderlineSpan(),0,spannableString.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        if (isUnderline) {
+            spannableString.setSpan(
+                UnderlineSpan(),
+                0,
+                spannableString.length,
+                Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+            )
         }
-        return spannableString;
+        return spannableString
     }
-
 
     // 将中文字符串转换为拼音字符串
-    public static String convertToPinyin(String chinese) {
-        StringBuilder pinyin = new StringBuilder();
-        for (int i = 0; i < chinese.length(); i++) {
-            String[] pyArray = PinyinHelper.toHanyuPinyinStringArray(chinese.charAt(i));
+    fun convertToPinyin(chinese: String): String {
+        val pinyin = StringBuilder()
+        for (element in chinese) {
+            val pyArray = PinyinHelper.toHanyuPinyinStringArray(element)
             if (pyArray != null) {
-                pinyin.append(Arrays.toString(pyArray));
-                pinyin.append(" "); //使用空格分割每个拼音
+                pinyin.append(pyArray.contentToString())
+                pinyin.append(" ") //使用空格分割每个拼音
             }
         }
-        if (pinyin.length() > 0) {
-            pinyin.deleteCharAt(pinyin.length() - 1); // 移除最后一个空格
+        if (pinyin.isNotEmpty()) {
+            pinyin.deleteCharAt(pinyin.length - 1) // 移除最后一个空格
         }
-        return pinyin.toString();
+        return pinyin.toString()
     }
-
 
     /**
      * 改变特定文字的颜色
      */
-    public static SpannableString changeFindTextColor(String text, String keyword,@ColorInt int color) {
-        SpannableString ss = new SpannableString(text);
+    fun changeFindTextColor(
+        text: String,
+        keyword: String,
+        @ColorInt color: Int
+    ): SpannableString {
+        val ss = SpannableString(text)
         try {
-            Pattern pattern = Pattern.compile(keyword);
-            Matcher matcher = pattern.matcher(ss);
+            val pattern = Pattern.compile(keyword)
+            val matcher = pattern.matcher(ss)
             while (matcher.find()) {
-                int start = matcher.start();
-                int end = matcher.end();
-                ss.setSpan(new ForegroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                val start = matcher.start()
+                val end = matcher.end()
+                ss.setSpan(ForegroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-//        if (!TextUtils.isEmpty(text) && !TextUtils.isEmpty(text) && text.contains(keyword)) {
+        //        if (!TextUtils.isEmpty(text) && !TextUtils.isEmpty(text) && text.contains(keyword)) {
 //            int start = text.indexOf(keyword);
 //            int end = start + keyword.length();
 //            ss.setSpan(new ForegroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 //        }
-        return ss;
+        return ss
     }
-
 
     /**
      * 解析出url参数中的键值对
      */
-    public static Map<String, String> urlParse(String URL) {
-        Map<String, String> mapRequest = new HashMap<>();
-        String[] arrSplit;
-        String strUrlParam = TruncateUrlPage(URL);
-        if(strUrlParam == null){
-            return mapRequest;
-        }
-        arrSplit = strUrlParam.split("[&]");
-        for(String strSplit : arrSplit){
-            String[] arrSplitEqual;
-            arrSplitEqual = strSplit.split("[=]");
+    fun urlParse(url: String): Map<String, String> {
+        val mapRequest: MutableMap<String, String> = HashMap()
+        val arrSplit: Array<String>
+        val strUrlParam = truncateUrlPage(url) ?: return mapRequest
+        arrSplit = strUrlParam.split("&".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        for (strSplit in arrSplit) {
+            val arrSplitEqual: Array<String> =
+                strSplit.split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             //解析出键值
-            if(arrSplitEqual.length > 1){
+            if (arrSplitEqual.size > 1) {
                 //正确解析
-                mapRequest.put(arrSplitEqual[0], arrSplitEqual[1]);
-            }else{
-                if(!arrSplitEqual[0].equals("")){
-                    mapRequest.put(arrSplitEqual[0], "");
+                mapRequest[arrSplitEqual[0]] = arrSplitEqual[1]
+            } else {
+                if (arrSplitEqual[0] != "") {
+                    mapRequest[arrSplitEqual[0]] = ""
                 }
             }
         }
-        return mapRequest;
+        return mapRequest
     }
+
     /**
      * 去掉url中的路径，留下请求参数部分
      */
-    private static String TruncateUrlPage(String strURL){
-        String strAllParam=null;
-        String[] arrSplit;
-        strURL = strURL.trim();
-        arrSplit = strURL.split("[?]");
-        if(strURL.length() > 1){
-            if(arrSplit.length > 1){
-                for (int i = 1; i < arrSplit.length; i++){
-                    strAllParam = arrSplit[i];
+    private fun truncateUrlPage(strURL: String): String? {
+        var strAllParam: String? = null
+        val arrSplit: Array<String>
+        val trimmedURL = strURL.trim { it <= ' ' }
+        arrSplit = trimmedURL.split("[?]".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        if (trimmedURL.length > 1) {
+            if (arrSplit.size > 1) {
+                for (i in 1 until arrSplit.size) {
+                    strAllParam = arrSplit[i]
                 }
             }
         }
-        return strAllParam;
+        return strAllParam
     }
-
 
     /**
      * 从文本中提取url
      */
-    public static List<String> findUrls(String url) {
-        List<String> result = new ArrayList<>();
-        Pattern pattern = Pattern.compile(
-                "\\b(((ht|f)tp(s?)://|~/|/)|www.)" +
-
-                        "(\\w+:\\w+@)?(([-\\w]+\\.)+(com|org|net|gov" +
-
-                        "|mil|biz|info|mobi|name|aero|jobs|museum" +
-
-                        "|travel|[a-z]{2}))(:[\\d]{1,5})?" +
-
-                        "(((/([-\\w~!$+|.,=]|%[a-f\\d]{2})+)+|/)+|\\?|#)?" +
-
-                        "((\\?([-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?" +
-
-                        "([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)" +
-
-                        "(&(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?" +
-
-                        "([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*" +
-
-                        "(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?\\b");
-        Matcher matcher = pattern.matcher(url);
+    fun findUrls(url: String): List<String> {
+        val result: MutableList<String> = ArrayList()
+        val pattern = Pattern.compile(
+            "\\b(((ht|f)tp(s?)://|~/|/)|www.)" +
+                    "(\\w+:\\w+@)?(([-\\w]+\\.)+(com|org|net|gov" +
+                    "|mil|biz|info|mobi|name|aero|jobs|museum" +
+                    "|travel|[a-z]{2}))(:\\d{1,5})?" +
+                    "(((/([-\\w~!$+|.,=]|%[a-f\\d]{2})+)+|/)+|\\?|#)?" +
+                    "((\\?([-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?" +
+                    "([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)" +
+                    "(&(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?" +
+                    "([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*" +
+                    "(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?\\b"
+        )
+        val matcher = pattern.matcher(url)
         while (matcher.find()) {
-            result.add(matcher.group());
+            result.add(matcher.group())
         }
-        return result;
+        return result
     }
 
     /**
      * 获取cookie的值
      * 类似这样的字符串：
-     * 	c=1;b=12;a=123
+     * c=1;b=12;a=123
      */
-    public static String getCookieValue(String cookies, String key) {
-        Pattern pattern = Pattern.compile(key + "[\\s]*=[\\s]*([^;\\s]{1,})");
-        Matcher matcher = pattern.matcher(cookies);
-        if(matcher.find()){
-            if(matcher.groupCount() == 1){
-                return matcher.group(1);
+    fun getCookieValue(cookies: String, key: String): String? {
+        val pattern = Pattern.compile("$key\\s*=\\s*([^;\\s]+)")
+        val matcher = pattern.matcher(cookies)
+        if (matcher.find()) {
+            if (matcher.groupCount() == 1) {
+                return matcher.group(1)
             }
         }
-        return null;
+        return null
     }
-    public static String setCookieValue(String cookies,String key,String value){
-        return cookies.replaceFirst(key + "[\\s]*=[\\s]*([^;\\s]{1,})", key + " = " + value);
+
+    fun setCookieValue(cookies: String, key: String, value: String): String {
+        return cookies.replaceFirst("$key\\s*=\\s*([^;\\s]+)".toRegex(), "$key = $value")
     }
 
     //判断文本是否为空
-    public static boolean isEmpty(String str){
-        return str == null || str.trim().equals("") || str.trim().equals("null");
+    @JvmStatic
+    fun isEmpty(str: String?): Boolean {
+        return str == null || str.trim { it <= ' ' } == "" || str.trim { it <= ' ' } == "null"
     }
-
 
     /**
      * 获取当前日期是星期几
      */
-    public static String getWeekOfCalendar(Calendar calendar) {
-        String[] weekDays = {"星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
-        int w = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        if (w < 0){
-            w = 0;
+    fun getWeekOfCalendar(calendar: Calendar): String {
+        val weekDays = arrayOf("星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六")
+        var w = calendar[Calendar.DAY_OF_WEEK] - 1
+        if (w < 0) {
+            w = 0
         }
-        return weekDays[w];
+        return weekDays[w]
     }
 
-    /**
-     * 获取当天剩余的时间，单位：秒
-     * @return
-     */
-    public static long getTodayRemainSecondNum() {
-        long current = System.currentTimeMillis();    //当前时间毫秒数
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date(current));
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        long tomorrowZero = calendar.getTimeInMillis();
-        return tomorrowZero - current;
-    }
+    val todayRemainSecondNum: Long
+        /**
+         * 获取当天剩余的时间，单位：秒
+         * @return
+         */
+        get() {
+            val current = System.currentTimeMillis() //当前时间毫秒数
+            val calendar = Calendar.getInstance()
+            calendar.time = Date(current)
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
+            calendar[Calendar.HOUR_OF_DAY] = 0
+            calendar[Calendar.MINUTE] = 0
+            calendar[Calendar.SECOND] = 0
+            calendar[Calendar.MILLISECOND] = 0
+            val tomorrowZero = calendar.timeInMillis
+            return tomorrowZero - current
+        }
 
     /**
      * 生成随机数字和字母组合
      */
-    public static String getRandomNickname(int length) {
-        StringBuilder val = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < length; i++) {
+    fun getRandomNickname(length: Int): String {
+        val `val` = StringBuilder()
+        val random = Random()
+        for (i in 0 until length) {
             // 输出字母还是数字
-            String charOrNum = random.nextInt(2) % 2 == 0 ? "char" : "num";
+            val charOrNum = if (random.nextInt(2) % 2 == 0) "char" else "num"
             // 字符串
-            if ("char".equalsIgnoreCase(charOrNum)) {
+            if ("char".equals(charOrNum, ignoreCase = true)) {
                 // 取得大写字母还是小写字母
-                int choice = random.nextInt(2) % 2 == 0 ? 65 : 97;
-                val.append((char) (choice + random.nextInt(26)));
+                val choice = if (random.nextInt(2) % 2 == 0) 65 else 97
+                `val`.append((choice + random.nextInt(26)).toChar())
             } else { // 数字
-                val.append(random.nextInt(10));
+                `val`.append(random.nextInt(10))
             }
         }
-        return val.toString();
+        return `val`.toString()
     }
 
-    /**
-     * 获取复制内容
-     */
-    public static String getCopyContent(){
-        String content = "";
-        ClipboardManager clipboardManager =(ClipboardManager) Application.context.getSystemService(Context.CLIPBOARD_SERVICE);
-        if (null != clipboardManager) {
+    val copyContent: String
+        /**
+         * 获取复制内容
+         */
+        get() {
+            var content = ""
+            val clipboardManager =
+                Application.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             // 获取剪贴板的剪贴数据集
-            ClipData clipData = clipboardManager.getPrimaryClip();
-            if (null != clipData && clipData.getItemCount() > 0) {
+            val clipData = clipboardManager.primaryClip
+            if (null != clipData && clipData.itemCount > 0) {
                 // 从数据集中获取第一条文本数据
-                ClipData.Item item = clipData.getItemAt(0);
+                val item = clipData.getItemAt(0)
                 if (null != item) {
-                    content = item.getText().toString();
+                    content = item.text.toString()
                 }
             }
+            return content
         }
-        return content;
-    }
 
     /*生成numSize位16进制的数*/
-    public static String getRandomValue(int numSize) {
-        String str = "";
-        for (int i = 0; i < numSize; i++) {
-            char temp = 0;
-            int key = (int) (Math.random() * 2);
-            switch (key) {
-                case 0:
-                    temp = (char) (Math.random() * 10 + 48);//产生随机数字
-                    break;
-                case 1:
-                    temp = (char) (Math.random() * 6 + 'a');//产生a-f
-                    break;
-                default:
-                    break;
+    fun getRandomValue(numSize: Int): String {
+        var str = ""
+        for (i in 0 until numSize) {
+            var temp = 0.toChar()
+            val key = (Math.random() * 2).toInt()
+            when (key) {
+                0 -> temp = (Math.random() * 10 + 48).toInt().toChar() //产生随机数字
+                1 -> temp = (Math.random() * 6 + 'a'.code.toDouble()).toInt().toChar() //产生a-f
+                else -> {}
             }
-            str = str + temp;
+            str += temp
         }
-        return str;
-    }
-
-
-    public static String replaceQQMusicListIntroduce(String introduce){
-        if(isEmpty(introduce)){
-            return "";
-        }
-        return introduce.replace("<br>","\n")
-                .replace("</br>","\n").replace("&ensp;"," ").replace("&emsp;"," ")
-                .replace("&nbsp"," ").replace("&#160;"," ")
-                .replace("&#128156;","").replace("&#8206;","").replace("&#128536;","")
-                .replace("&#32;"," ")
-                .replace("&#124;","|")
-                .replace("&#58;",":")
-                .replace("&#46;",".")
-                .replace("&#45;","-")
-                .replace("&#9996;","✌")
-                .replace("&#10084;","♥")
-                .replace("&#9825;","♡")
-                .replace("&#33;","!")
-                .replace("&#65039;","")
-                .replace("\\n","\n");
+        return str
     }
 }

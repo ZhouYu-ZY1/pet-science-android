@@ -24,10 +24,9 @@ import android.widget.TextView
 import android.widget.Toast
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
-import com.zhouyu.pet_science.tools.MyToast
+import com.zhouyu.pet_science.utils.MyToast
 import com.zhouyu.pet_science.network.HttpUtils
-import com.zhouyu.pet_science.tools.TextTool
-import com.zhouyu.pet_science.tools.utils.ConsoleUtils
+import com.zhouyu.pet_science.utils.ConsoleUtils
 import com.zhouyu.pet_science.views.dialog.MyDialog
 
 class WebBrowserActivity : BaseActivity() {
@@ -46,7 +45,7 @@ class WebBrowserActivity : BaseActivity() {
         ua = intent.getStringExtra("ua")
         notSkipApp = intent.getBooleanExtra("notSkipApp", false)
 
-        if (!TextTool.isEmpty(singleUrl)) {
+        if (!TextUtils.isEmpty(singleUrl)) {
             originalUrl = singleUrl
         }
 
@@ -60,7 +59,7 @@ class WebBrowserActivity : BaseActivity() {
         if (Intent.ACTION_VIEW == intent.action && intent.data != null) {
             intentUrl = intent.data.toString()
         }
-        if (TextTool.isEmpty(originalUrl) && TextTool.isEmpty(intentUrl)) {
+        if (TextUtils.isEmpty(originalUrl) && TextUtils.isEmpty(intentUrl)) {
             MyToast.show("出错了", false)
             finish()
             return
@@ -97,7 +96,7 @@ class WebBrowserActivity : BaseActivity() {
 
             private fun loading(view: WebView, url: String): Boolean {
                 if (TextUtils.isEmpty(url)) return false
-                if (!TextTool.isEmpty(singleUrl) && !url.contains("singleUrl")) {
+                if (!TextUtils.isEmpty(singleUrl) && !url.contains("singleUrl")) {
                     return true // 阻止加载
                 }
                 return if (url.startsWith("http:") || url.startsWith("https:")) {
@@ -187,7 +186,7 @@ class WebBrowserActivity : BaseActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
-        if (!TextTool.isEmpty(ua)) {
+        if (!TextUtils.isEmpty(ua)) {
             if (ua == "windows") {
                 //设置浏览器标识
                 settings.userAgentString =
@@ -261,7 +260,7 @@ class WebBrowserActivity : BaseActivity() {
                         currUrl = url
                     }
                     val title = webView!!.title
-                    if (currTitle != title && !TextTool.isEmpty(title)) {
+                    if (currTitle != title && !TextUtils.isEmpty(title)) {
                         topTitle!!.text = title
                         currTitle = title
                     }
@@ -297,7 +296,7 @@ class WebBrowserActivity : BaseActivity() {
 
     private var isFinish = false
     override fun finish() {
-        if (TextTool.isEmpty(currUrl)) {
+        if (TextUtils.isEmpty(currUrl)) {
             super.finish()
             return
         }

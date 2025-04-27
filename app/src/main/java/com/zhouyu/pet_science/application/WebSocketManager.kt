@@ -10,11 +10,11 @@ import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.network.HttpUtils.URL
 import com.zhouyu.pet_science.pojo.ChatMessage
 import com.zhouyu.pet_science.pojo.MessageListItem
-import com.zhouyu.pet_science.tools.MessageArrayList
-import com.zhouyu.pet_science.tools.NotificationHelper
-import com.zhouyu.pet_science.tools.StorageTool
-import com.zhouyu.pet_science.tools.TimeUtils
-import com.zhouyu.pet_science.tools.utils.ConsoleUtils
+import com.zhouyu.pet_science.utils.MessageArrayList
+import com.zhouyu.pet_science.utils.NotificationHelper
+import com.zhouyu.pet_science.utils.StorageUtils
+import com.zhouyu.pet_science.utils.TimeUtils
+import com.zhouyu.pet_science.utils.ConsoleUtils
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -47,7 +47,7 @@ class WebSocketManager private constructor() {
         val client: OkHttpClient = OkHttpClient.Builder()
             .pingInterval(30, TimeUnit.SECONDS)
             .build()
-        val token = StorageTool.get<String>("token")
+        val token = StorageUtils.get<String>("token")
         val request: Request = Request.Builder()
             .url("$wsUrl?token=$token")
             .build()
@@ -143,7 +143,7 @@ class WebSocketManager private constructor() {
             instance.disconnect()
         }
         fun connectWebSocket(context: Context) {
-            val token = StorageTool.get<String>("token")
+            val token = StorageUtils.get<String>("token")
             messageCallback = object : MessageCallback {
                 override fun onMessage(message: String?) {
                     try {

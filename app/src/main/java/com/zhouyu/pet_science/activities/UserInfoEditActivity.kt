@@ -10,21 +10,28 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder
 import com.bigkoo.pickerview.view.OptionsPickerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.databinding.ActivityUserInfoEditBinding
 import com.zhouyu.pet_science.databinding.DialogAddPetBinding
 import com.zhouyu.pet_science.databinding.ItemPetInfoBinding
+import com.zhouyu.pet_science.fragments.PersonalCenterFragment
+import com.zhouyu.pet_science.model.User
+import com.zhouyu.pet_science.network.HttpUtils
 import com.zhouyu.pet_science.network.UserHttpUtils
 import com.zhouyu.pet_science.pojo.CityJsonBean
-import com.zhouyu.pet_science.tools.GetJsonDataUtil.getJson
-import com.zhouyu.pet_science.tools.GetJsonDataUtil.parseData
+import com.zhouyu.pet_science.utils.FileUtils
+import com.zhouyu.pet_science.utils.GetJsonDataUtil.getJson
+import com.zhouyu.pet_science.utils.GetJsonDataUtil.parseData
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -42,9 +49,12 @@ class UserInfoEditActivity : BaseActivity() {
 
     private lateinit var binding: ActivityUserInfoEditBinding
     private var selectedAvatarUri: Uri? = null
+    private var uploadUrl: String? = null
     private val pets = mutableListOf<PetInfo>()
     private val calendar = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private var editType: String = ""
+    private var editPetId: Int = -1
 
 
     // ActivityResultLauncher 用于选择图片
@@ -53,26 +63,57 @@ class UserInfoEditActivity : BaseActivity() {
             selectedAvatarUri = it
             Glide.with(this)
                 .load(it)
-                .apply(RequestOptions.circleCropTransform()) // 圆形裁剪
-                .placeholder(R.drawable.developer_icon) // 默认头像
+                .apply(RequestOptions())
+                .transform(CircleCrop())
+                .placeholder(R.drawable.default_avatar) // 默认头像
                 .into(binding.ivAvatarPreview)
+
+            // 上传头像
+            uploadAvatar(it)
         }
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUserInfoEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        editType = intent.getStringExtra("type")?.trim() ?: ""
+
         setTopBarView(binding.main, true)
 
         setupViews()
         setupClickListeners()
 
+        getUserData()
+
         updatePetListView() // 初始时更新宠物列表（显示空提示）
     }
 
     private fun setupViews() {
+        when (editType) {
+            "editUserInfo" -> {
+                // 编辑用户信息
+                binding.tvTitle.text = "编辑个人信息"
+                binding.btnSkip.visibility = View.GONE
+                binding.layoutPetInfo.visibility = View.GONE
+            }
+            "editPetInfo" -> {
+                // 编辑宠物信息
+                binding.tvTitle.text = "编辑宠物信息"
+                binding.btnSkip.visibility = View.GONE
+                binding.layoutUserInfo.visibility = View.GONE
+
+                // 获取要编辑的宠物 ID
+                editPetId = intent.getIntExtra("petId",-1)
+
+                if(editPetId == -1){
+                    showAddPetDialog()
+                }
+            }
+        }
+
         // 个人简介字数统计
         binding.etBio.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -125,6 +166,47 @@ class UserInfoEditActivity : BaseActivity() {
         }
     }
 
+    // 上传头像到服务器
+    private fun uploadAvatar(uri: Uri) {
+        executeThread {
+            var tempFile: File? = null
+            try {
+                // 获取文件路径
+                tempFile = FileUtils.getRealPathFromURI(uri,this)
+                if(tempFile == null || !tempFile.exists()){
+                    showToast("获取文件路径失败")
+                    return@executeThread
+                }
+                val result = UserHttpUtils.uploadAvatar(tempFile)
+                runOnUiThread {
+                    if (result.first) {
+                        showToast("头像上传成功")
+                        // 更新头像 URL
+                        uploadUrl = result.second
+                        PersonalCenterFragment.refreshInfo = true
+                    } else {
+                        showToast("头像上传失败: ${result.second}")
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                runOnUiThread {
+                    showToast("头像上传失败: ${e.message}")
+                }
+            } finally {
+                // 删除临时缓存文件
+                try {
+                    tempFile?.let {
+                        if (it.exists() && it.absolutePath.startsWith(cacheDir.absolutePath)) {
+                            it.delete()
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
 
     private fun showDatePickerDialog() {
         val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -138,6 +220,54 @@ class UserInfoEditActivity : BaseActivity() {
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)).show()
+    }
+
+
+    private fun loadUserData(userInfo: User?){
+        if (userInfo != null) {
+            // 更新用户信息
+            binding.etNickname.setText(userInfo.nickname)
+            binding.etBio.setText(userInfo.bio.ifEmpty { "" })
+            binding.tvLocation.text = userInfo.location
+            if (userInfo.birthday.time != 0L) {
+                binding.tvBirthday.text = dateFormat.format(userInfo.birthday)
+                calendar.time = userInfo.birthday
+            }
+            binding.rgGender.check(when(userInfo.gender) {
+                0 -> R.id.rbGenderMale
+                1 -> R.id.rbGenderFemale
+                else -> R.id.rbGenderOther
+            })
+
+            // 加载头像
+            Glide.with(this)
+                .load(HttpUtils.BASE_URL + userInfo.avatarUrl)
+                .apply(RequestOptions())
+                .transform(CircleCrop())
+                .into(binding.ivAvatarPreview)
+
+            // 更新宠物列表
+//            updatePetList(userInfo.pets)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun getUserData() {
+        // 先加载传入的User数据，再从后台重新获取，确保数据与后台一致
+        loadUserData(putUserInfo)
+        executeThread {
+            try {
+                val userInfo = UserHttpUtils.getUserInfo()
+                runOnUiThread {
+                    loadUserData(userInfo)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                runOnUiThread {
+                    Toast.makeText(this, "加载用户数据失败", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun showAddPetDialog(petToEdit: PetInfo? = null) {
@@ -264,9 +394,9 @@ class UserInfoEditActivity : BaseActivity() {
         itemBinding.tvPetBreedAge.text = "${pet.breed} · $ageText"
 
         val iconRes = when (pet.type) {
-            "dog" -> R.drawable.ic_dog // 需要准备 dog 图标
+            "dog" -> R.mipmap.default_dog // 需要准备 dog 图标
             "other" -> R.drawable.ic_paw // 需要准备 paw 图标
-            else -> R.drawable.ic_cat // 需要准备 cat 图标
+            else -> R.mipmap.default_cat // 需要准备 cat 图标
         }
         itemBinding.ivPetIcon.setImageResource(iconRes)
 
@@ -403,15 +533,33 @@ class UserInfoEditActivity : BaseActivity() {
 
 
          executeThread {
-            val result = UserHttpUtils.updateUserInfo(
-                avatarUri = selectedAvatarUri, // 可能需要处理 Uri 到文件的转换
-                nickname = nickname,
-                gender = gender,
-                birthday = birthday,
-                location = location,
-                bio = bio,
-                pets = pets
-            )
+             val result:Pair<Boolean, String?>
+             when (editType) {
+                 "editUserInfo" -> {
+                     result = UserHttpUtils.updateUserInfo(
+                         avatarUrl = uploadUrl, // 可能需要处理 Uri 到文件的转换
+                         nickname = nickname,
+                         gender = gender,
+                         birthday = birthday,
+                         location = location,
+                         bio = bio,
+                     )
+                 }
+                 "editPetInfo" -> {
+                     result = Pair(true, null)
+                 }
+                 else -> {
+                      result = UserHttpUtils.updateUserInfo(
+                         avatarUrl = uploadUrl, // 可能需要处理 Uri 到文件的转换
+                         nickname = nickname,
+                         gender = gender,
+                         birthday = birthday,
+                         location = location,
+                         bio = bio,
+                     )
+                 }
+             }
+
             runOnUiThread {
                 if (result.first) {
                     showToast("信息保存成功")
@@ -421,16 +569,22 @@ class UserInfoEditActivity : BaseActivity() {
                 }
             }
          }
-
-//        // 临时模拟保存成功
-//        ConsoleUtils.logErr("保存用户信息: nickname=$nickname, gender=$gender, birthday=$birthday, location=$location, bio=$bio")
-//        ConsoleUtils.logErr("宠物信息: ${pets.joinToString()}")
-//        showToast("信息已保存（模拟）")
-//        navigateToMain()
     }
 
     private fun navigateToMain() {
-        startActivity(Intent(this, MainActivity::class.java))
+        if(editType == ""){
+            startActivity(Intent(this, MainActivity::class.java))
+        }else{
+            PersonalCenterFragment.refreshInfo = true
+        }
         finish() // 关闭当前 Activity
+    }
+    override fun finish() {
+        putUserInfo = null
+        super.finish()
+    }
+
+    companion object {
+        var putUserInfo: User? = null
     }
 }

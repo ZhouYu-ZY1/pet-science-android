@@ -1,50 +1,48 @@
-package com.zhouyu.pet_science.tools;
+package com.zhouyu.pet_science.utils
 
-import com.orhanobut.hawk.Hawk;
+import com.orhanobut.hawk.Hawk
 
-public class StorageTool {
+object StorageUtils {
     /**
      * 添加
      */
-    public static boolean put(String key,Object value){
-        try {
-            return Hawk.put(key,value);
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
+    fun put(key: String?, value: Any): Boolean {
+        return try {
+            Hawk.put(key, value)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
 
     /**
      * 删除
      */
-    public static boolean delete(String key){
-        try {
-            return Hawk.delete(key);
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
+    fun delete(key: String?): Boolean {
+        return try {
+            Hawk.delete(key)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
-
 
     /**
      * 获取
      */
-    public static <T> T get(String key){
-        return Hawk.get(key);
+    operator fun <T> get(key: String?): T {
+        return Hawk.get(key)
     }
 
     /**
      * 判断指定Key是否存在
      */
-    public static boolean contains(String key){
-        try {
-            return Hawk.contains(key);
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
+    operator fun contains(key: String?): Boolean {
+        return try {
+            Hawk.contains(key)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
-
 }

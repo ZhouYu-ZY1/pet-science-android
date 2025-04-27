@@ -1,228 +1,309 @@
-package com.zhouyu.pet_science.tools.encoding.other;
+package com.zhouyu.pet_science.utils.encoding.other
 
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.nio.ByteBuffer
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
-public class Hex implements BinaryEncoder, BinaryDecoder {
-    public static final Charset DEFAULT_CHARSET;
-    public static final String DEFAULT_CHARSET_NAME = "UTF-8";
-    private static final char[] DIGITS_LOWER;
-    private static final char[] DIGITS_UPPER;
-    private final Charset charset;
+class Hex : BinaryEncoder, BinaryDecoder {
+    val charset: Charset?
 
-    public static byte[] decodeHex(char[] data) throws DecoderException {
-        byte[] out = new byte[data.length >> 1];
-        decodeHex(data, out, 0);
-        return out;
+    constructor() {
+        charset = DEFAULT_CHARSET
     }
 
-    public static int decodeHex(char[] data, byte[] out, int outOffset) throws DecoderException {
-        int len = data.length;
-        if ((len & 1) != 0) {
-            throw new DecoderException("Odd number of characters.");
-        } else {
-            int outLen = len >> 1;
-            if (out.length - outOffset < outLen) {
-                throw new DecoderException("Output array is not large enough to accommodate decoded data.");
-            } else {
-                int i = outOffset;
-
-                for(int j = 0; j < len; ++i) {
-                    int f = toDigit(data[j], j) << 4;
-                    ++j;
-                    f |= toDigit(data[j], j);
-                    ++j;
-                    out[i] = (byte)(f & 255);
-                }
-
-                return outLen;
-            }
-        }
+    constructor(charset: Charset?) {
+        this.charset = charset
     }
 
-    public static byte[] decodeHex(String data) throws DecoderException {
-        return decodeHex(data.toCharArray());
-    }
+    constructor(charsetName: String?) : this(Charset.forName(charsetName))
 
-    public static char[] encodeHex(byte[] data) {
-        return encodeHex(data, true);
-    }
-
-    public static char[] encodeHex(byte[] data, boolean toLowerCase) {
-        return encodeHex(data, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
-    }
-
-    protected static char[] encodeHex(byte[] data, char[] toDigits) {
-        int l = data.length;
-        char[] out = new char[l << 1];
-        encodeHex(data, 0, data.length, toDigits, out, 0);
-        return out;
-    }
-
-    public static char[] encodeHex(byte[] data, int dataOffset, int dataLen, boolean toLowerCase) {
-        char[] out = new char[dataLen << 1];
-        encodeHex(data, dataOffset, dataLen, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER, out, 0);
-        return out;
-    }
-
-    public static void encodeHex(byte[] data, int dataOffset, int dataLen, boolean toLowerCase, char[] out, int outOffset) {
-        encodeHex(data, dataOffset, dataLen, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER, out, outOffset);
-    }
-
-    private static void encodeHex(byte[] data, int dataOffset, int dataLen, char[] toDigits, char[] out, int outOffset) {
-        int i = dataOffset;
-
-        for(int var7 = outOffset; i < dataOffset + dataLen; ++i) {
-            out[var7++] = toDigits[(240 & data[i]) >>> 4];
-            out[var7++] = toDigits[15 & data[i]];
-        }
-
-    }
-
-    public static char[] encodeHex(ByteBuffer data) {
-        return encodeHex(data, true);
-    }
-
-    public static char[] encodeHex(ByteBuffer data, boolean toLowerCase) {
-        return encodeHex(data, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
-    }
-
-    protected static char[] encodeHex(ByteBuffer byteBuffer, char[] toDigits) {
-        return encodeHex(toByteArray(byteBuffer), toDigits);
-    }
-
-    public static String encodeHexString(byte[] data) {
-        return new String(encodeHex(data));
-    }
-
-    public static String encodeHexString(byte[] data, boolean toLowerCase) {
-        return new String(encodeHex(data, toLowerCase));
-    }
-
-    public static String encodeHexString(ByteBuffer data) {
-        return new String(encodeHex(data));
-    }
-
-    public static String encodeHexString(ByteBuffer data, boolean toLowerCase) {
-        return new String(encodeHex(data, toLowerCase));
-    }
-
-    private static byte[] toByteArray(ByteBuffer byteBuffer) {
-        int remaining = byteBuffer.remaining();
-        byte[] byteArray;
-        if (byteBuffer.hasArray()) {
-            byteArray = byteBuffer.array();
-            if (remaining == byteArray.length) {
-                byteBuffer.position(remaining);
-                return byteArray;
-            }
-        }
-
-        byteArray = new byte[remaining];
-        byteBuffer.get(byteArray);
-        return byteArray;
-    }
-
-    protected static int toDigit(char ch, int index) throws DecoderException {
-        int digit = Character.digit(ch, 16);
-        if (digit == -1) {
-            throw new DecoderException("Illegal hexadecimal character " + ch + " at index " + index);
-        } else {
-            return digit;
-        }
-    }
-
-    public Hex() {
-        this.charset = DEFAULT_CHARSET;
-    }
-
-    public Hex(Charset charset) {
-        this.charset = charset;
-    }
-
-    public Hex(String charsetName) {
-        this(Charset.forName(charsetName));
-    }
-
-    public byte[] decode(byte[] array) {
+    override fun decode(var1: ByteArray): ByteArray? {
         try {
-            return decodeHex((new String(array, this.getCharset())).toCharArray());
-        }catch (DecoderException e){
-            e.printStackTrace();
+            return decodeHex(
+                String(
+                    var1, charset!!
+                ).toCharArray()
+            )
+        } catch (e: DecoderException) {
+            e.printStackTrace()
         }
-        return null;
+        return null
     }
 
-    public byte[] decode(ByteBuffer buffer) throws DecoderException {
-        return decodeHex((new String(toByteArray(buffer), this.getCharset())).toCharArray());
+    @Throws(DecoderException::class)
+    fun decode(buffer: ByteBuffer): ByteArray {
+        return decodeHex(
+            String(toByteArray(buffer), charset!!)
+                .toCharArray()
+        )
     }
 
-    public Object decode(Object object){
+    override fun decode(var1: Any): Any? {
         try {
-            if (object instanceof String) {
-                return this.decode((Object)((String)object).toCharArray());
-            } else if (object instanceof byte[]) {
-                return this.decode((byte[])((byte[])object));
-            } else if (object instanceof ByteBuffer) {
-                return this.decode((ByteBuffer)object);
+            return if (var1 is String) {
+                this.decode(var1.toCharArray() as Any)
+            } else if (var1 is ByteArray) {
+                this.decode(var1)
+            } else if (var1 is ByteBuffer) {
+                this.decode(var1)
             } else {
                 try {
-                    return decodeHex((char[])((char[])object));
-                } catch (ClassCastException var3) {
-                    throw new DecoderException(var3.getMessage(), var3);
+                    decodeHex(var1 as CharArray)
+                } catch (var3: ClassCastException) {
+                    throw DecoderException(var3.message, var3)
                 }
             }
-        }catch (DecoderException e){
-            e.printStackTrace();
+        } catch (e: DecoderException) {
+            e.printStackTrace()
         }
-        return null;
+        return null
     }
 
-    public byte[] encode(byte[] array) {
-        return encodeHexString(array).getBytes(this.getCharset());
+
+    override fun encode(array: ByteArray?): ByteArray {
+        return encodeHexString(array).toByteArray(
+            charset!!
+        )
     }
 
-    public byte[] encode(ByteBuffer array) {
-        return encodeHexString(array).getBytes(this.getCharset());
+    fun encode(array: ByteBuffer): ByteArray {
+        return encodeHexString(array).toByteArray(
+            charset!!
+        )
     }
 
-    public Object encode(Object object)  {
-        byte[] byteArray = null;
-        if (object instanceof String) {
-            byteArray = ((String)object).getBytes(this.getCharset());
-        } else if (object instanceof ByteBuffer) {
-            byteArray = toByteArray((ByteBuffer)object);
+    override fun encode(var1: Any?): Any {
+        var byteArray: ByteArray? = null
+        if (var1 is String) {
+            byteArray = var1.toByteArray(charset!!)
+        } else if (var1 is ByteBuffer) {
+            byteArray = toByteArray(
+                var1
+            )
         } else {
             try {
-                byteArray = (byte[])((byte[])object);
-            } catch (ClassCastException var4) {
+                byteArray = var1 as ByteArray?
+            } catch (var4: ClassCastException) {
                 try {
-                    throw new EncoderException(var4.getMessage(), var4);
-                } catch (EncoderException e) {
-                    e.printStackTrace();
+                    throw EncoderException(var4.message, var4)
+                } catch (e: EncoderException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+        return encodeHex(byteArray)
+    }
+
+    val charsetName: String
+        get() = charset!!.name()
+
+    override fun toString(): String {
+        return super.toString() + "[charsetName=" + charset + "]"
+    }
+
+    companion object {
+        var DEFAULT_CHARSET: Charset? = null
+        const val DEFAULT_CHARSET_NAME = "UTF-8"
+        private val DIGITS_LOWER: CharArray
+        private val DIGITS_UPPER: CharArray
+        @Throws(DecoderException::class)
+        fun decodeHex(data: CharArray): ByteArray {
+            val out = ByteArray(data.size shr 1)
+            decodeHex(data, out, 0)
+            return out
+        }
+
+        @Throws(DecoderException::class)
+        fun decodeHex(data: CharArray, out: ByteArray, outOffset: Int): Int {
+            val len = data.size
+            return if (len and 1 != 0) {
+                throw DecoderException("Odd number of characters.")
+            } else {
+                val outLen = len shr 1
+                if (out.size - outOffset < outLen) {
+                    throw DecoderException("Output array is not large enough to accommodate decoded data.")
+                } else {
+                    var i = outOffset
+                    var j = 0
+                    while (j < len) {
+                        var f =
+                            toDigit(
+                                data[j],
+                                j
+                            ) shl 4
+                        ++j
+                        f = f or toDigit(
+                            data[j],
+                            j
+                        )
+                        ++j
+                        out[i] = (f and 255).toByte()
+                        ++i
+                    }
+                    outLen
                 }
             }
         }
 
-        return encodeHex(byteArray);
-    }
+        @Throws(DecoderException::class)
+        fun decodeHex(data: String): ByteArray {
+            return decodeHex(data.toCharArray())
+        }
 
-    public Charset getCharset() {
-        return this.charset;
-    }
+        @JvmOverloads
+        fun encodeHex(data: ByteArray?, toLowerCase: Boolean = true): CharArray {
+            return encodeHex(data, if (toLowerCase) DIGITS_LOWER else DIGITS_UPPER)
+        }
 
-    public String getCharsetName() {
-        return this.charset.name();
-    }
+        protected fun encodeHex(data: ByteArray?, toDigits: CharArray): CharArray {
+            val l = data!!.size
+            val out = CharArray(l shl 1)
+            encodeHex(data, 0, data.size, toDigits, out, 0)
+            return out
+        }
 
-    public String toString() {
-        return super.toString() + "[charsetName=" + this.charset + "]";
-    }
+        fun encodeHex(
+            data: ByteArray?,
+            dataOffset: Int,
+            dataLen: Int,
+            toLowerCase: Boolean
+        ): CharArray {
+            val out = CharArray(dataLen shl 1)
+            encodeHex(
+                data,
+                dataOffset,
+                dataLen,
+                if (toLowerCase) DIGITS_LOWER else DIGITS_UPPER,
+                out,
+                0
+            )
+            return out
+        }
 
-    static {
-        DEFAULT_CHARSET = StandardCharsets.UTF_8;
-        DIGITS_LOWER = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-        DIGITS_UPPER = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        fun encodeHex(
+            data: ByteArray?,
+            dataOffset: Int,
+            dataLen: Int,
+            toLowerCase: Boolean,
+            out: CharArray,
+            outOffset: Int
+        ) {
+            encodeHex(
+                data,
+                dataOffset,
+                dataLen,
+                if (toLowerCase) DIGITS_LOWER else DIGITS_UPPER,
+                out,
+                outOffset
+            )
+        }
+
+        private fun encodeHex(
+            data: ByteArray?,
+            dataOffset: Int,
+            dataLen: Int,
+            toDigits: CharArray,
+            out: CharArray,
+            outOffset: Int
+        ) {
+            var i = dataOffset
+            var var7 = outOffset
+            while (i < dataOffset + dataLen) {
+                out[var7++] = toDigits[240 and data!![i].toInt() ushr 4]
+                out[var7++] = toDigits[15 and data[i].toInt()]
+                ++i
+            }
+        }
+
+        @JvmOverloads
+        fun encodeHex(data: ByteBuffer, toLowerCase: Boolean = true): CharArray {
+            return encodeHex(data, if (toLowerCase) DIGITS_LOWER else DIGITS_UPPER)
+        }
+
+        protected fun encodeHex(byteBuffer: ByteBuffer, toDigits: CharArray): CharArray {
+            return encodeHex(toByteArray(byteBuffer), toDigits)
+        }
+
+        @JvmStatic
+        fun encodeHexString(data: ByteArray?): String {
+            return String(encodeHex(data))
+        }
+
+        fun encodeHexString(data: ByteArray?, toLowerCase: Boolean): String {
+            return String(encodeHex(data, toLowerCase))
+        }
+
+        fun encodeHexString(data: ByteBuffer): String {
+            return String(encodeHex(data))
+        }
+
+        fun encodeHexString(data: ByteBuffer, toLowerCase: Boolean): String {
+            return String(encodeHex(data, toLowerCase))
+        }
+
+        private fun toByteArray(byteBuffer: ByteBuffer): ByteArray {
+            val remaining = byteBuffer.remaining()
+            var byteArray: ByteArray
+            if (byteBuffer.hasArray()) {
+                byteArray = byteBuffer.array()
+                if (remaining == byteArray.size) {
+                    byteBuffer.position(remaining)
+                    return byteArray
+                }
+            }
+            byteArray = ByteArray(remaining)
+            byteBuffer[byteArray]
+            return byteArray
+        }
+
+        @Throws(DecoderException::class)
+        protected fun toDigit(ch: Char, index: Int): Int {
+            val digit = ch.digitToIntOrNull(16) ?: -1
+            return if (digit == -1) {
+                throw DecoderException("Illegal hexadecimal character $ch at index $index")
+            } else {
+                digit
+            }
+        }
+
+        init {
+            DEFAULT_CHARSET = StandardCharsets.UTF_8
+            DIGITS_LOWER = charArrayOf(
+                '0',
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+                '6',
+                '7',
+                '8',
+                '9',
+                'a',
+                'b',
+                'c',
+                'd',
+                'e',
+                'f'
+            )
+            DIGITS_UPPER = charArrayOf(
+                '0',
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+                '6',
+                '7',
+                '8',
+                '9',
+                'A',
+                'B',
+                'C',
+                'D',
+                'E',
+                'F'
+            )
+        }
     }
 }

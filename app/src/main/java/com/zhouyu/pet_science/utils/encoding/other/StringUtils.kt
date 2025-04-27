@@ -1,117 +1,125 @@
-package com.zhouyu.pet_science.tools.encoding.other;
+package com.zhouyu.pet_science.utils.encoding.other
 
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.io.UnsupportedEncodingException
+import java.nio.ByteBuffer
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
-public class StringUtils {
-    public StringUtils() {
-    }
-
-    public static boolean equals(CharSequence cs1, CharSequence cs2) {
-        if (cs1 == cs2) {
-            return true;
+object StringUtils {
+    fun equals(cs1: CharSequence?, cs2: CharSequence?): Boolean {
+        return if (cs1 === cs2) {
+            true
         } else if (cs1 != null && cs2 != null) {
-            if (cs1 instanceof String && cs2 instanceof String) {
-                return cs1.equals(cs2);
+            if (cs1 is String && cs2 is String) {
+                cs1 == cs2
             } else {
-                return cs1.length() == cs2.length() && CharSequenceUtils.regionMatches(cs1, false, 0, cs2, 0, cs1.length());
+                cs1.length == cs2.length && CharSequenceUtils.regionMatches(
+                    cs1,
+                    false,
+                    0,
+                    cs2,
+                    0,
+                    cs1.length
+                )
             }
         } else {
-            return false;
+            false
         }
     }
 
-    private static ByteBuffer getByteBuffer(String string, Charset charset) {
-        return string == null ? null : ByteBuffer.wrap(string.getBytes(charset));
+    private fun getByteBuffer(string: String?, charset: Charset): ByteBuffer? {
+        return if (string == null) null else ByteBuffer.wrap(string.toByteArray(charset))
     }
 
-    public static ByteBuffer getByteBufferUtf8(String string) {
-        return getByteBuffer(string, StandardCharsets.UTF_8);
+    fun getByteBufferUtf8(string: String?): ByteBuffer? {
+        return getByteBuffer(string, StandardCharsets.UTF_8)
     }
 
-    private static byte[] getBytes(String string, Charset charset) {
-        return string == null ? null : string.getBytes(charset);
+    private fun getBytes(string: String?, charset: Charset): ByteArray? {
+        return string?.toByteArray(charset)
     }
 
-    public static byte[] getBytesIso8859_1(String string) {
-        return getBytes(string, StandardCharsets.ISO_8859_1);
+    fun getBytesIso8859_1(string: String?): ByteArray? {
+        return getBytes(string, StandardCharsets.ISO_8859_1)
     }
 
-    public static byte[] getBytesUnchecked(String string, String charsetName) {
-        if (string == null) {
-            return null;
-        } else {
-            try {
-                return string.getBytes(charsetName);
-            } catch (UnsupportedEncodingException var3) {
-                throw newIllegalStateException(charsetName, var3);
-            }
-        }
-    }
-
-    public static byte[] getBytesUsAscii(String string) {
-        return getBytes(string, StandardCharsets.US_ASCII);
-    }
-
-    public static byte[] getBytesUtf16(String string) {
-        return getBytes(string, StandardCharsets.UTF_16);
-    }
-
-    public static byte[] getBytesUtf16Be(String string) {
-        return getBytes(string, StandardCharsets.UTF_16BE);
-    }
-
-    public static byte[] getBytesUtf16Le(String string) {
-        return getBytes(string, StandardCharsets.UTF_16LE);
-    }
-
-    public static byte[] getBytesUtf8(String string) {
-        return getBytes(string, StandardCharsets.UTF_8);
-    }
-
-    private static IllegalStateException newIllegalStateException(String charsetName, UnsupportedEncodingException e) {
-        return new IllegalStateException(charsetName + ": " + e);
-    }
-
-    private static String newString(byte[] bytes, Charset charset) {
-        return bytes == null ? null : new String(bytes, charset);
-    }
-
-    public static String newString(byte[] bytes, String charsetName) {
-        if (bytes == null) {
-            return null;
+    fun getBytesUnchecked(string: String?, charsetName: String): ByteArray? {
+        return if (string == null) {
+            null
         } else {
             try {
-                return new String(bytes, charsetName);
-            } catch (UnsupportedEncodingException var3) {
-                throw newIllegalStateException(charsetName, var3);
+                string.toByteArray(charset(charsetName))
+            } catch (var3: UnsupportedEncodingException) {
+                throw newIllegalStateException(charsetName, var3)
             }
         }
     }
 
-    public static String newStringIso8859_1(byte[] bytes) {
-        return newString(bytes, StandardCharsets.ISO_8859_1);
+    fun getBytesUsAscii(string: String?): ByteArray? {
+        return getBytes(string, StandardCharsets.US_ASCII)
     }
 
-    public static String newStringUsAscii(byte[] bytes) {
-        return newString(bytes, StandardCharsets.US_ASCII);
+    fun getBytesUtf16(string: String?): ByteArray? {
+        return getBytes(string, StandardCharsets.UTF_16)
     }
 
-    public static String newStringUtf16(byte[] bytes) {
-        return newString(bytes, StandardCharsets.UTF_16);
+    fun getBytesUtf16Be(string: String?): ByteArray? {
+        return getBytes(string, StandardCharsets.UTF_16BE)
     }
 
-    public static String newStringUtf16Be(byte[] bytes) {
-        return newString(bytes, StandardCharsets.UTF_16BE);
+    fun getBytesUtf16Le(string: String?): ByteArray? {
+        return getBytes(string, StandardCharsets.UTF_16LE)
     }
 
-    public static String newStringUtf16Le(byte[] bytes) {
-        return newString(bytes, StandardCharsets.UTF_16LE);
+    @JvmStatic
+    fun getBytesUtf8(string: String?): ByteArray? {
+        return getBytes(string, StandardCharsets.UTF_8)
     }
 
-    public static String newStringUtf8(byte[] bytes) {
-        return newString(bytes, StandardCharsets.UTF_8);
+    private fun newIllegalStateException(
+        charsetName: String,
+        e: UnsupportedEncodingException
+    ): IllegalStateException {
+        return IllegalStateException("$charsetName: $e")
+    }
+
+    private fun newString(bytes: ByteArray?, charset: Charset): String? {
+        return if (bytes == null) null else String(bytes, charset)
+    }
+
+    fun newString(bytes: ByteArray?, charsetName: String): String? {
+        return if (bytes == null) {
+            null
+        } else {
+            try {
+                String(bytes, charset(charsetName))
+            } catch (var3: UnsupportedEncodingException) {
+                throw newIllegalStateException(charsetName, var3)
+            }
+        }
+    }
+
+    fun newStringIso8859_1(bytes: ByteArray?): String? {
+        return newString(bytes, StandardCharsets.ISO_8859_1)
+    }
+
+    fun newStringUsAscii(bytes: ByteArray?): String? {
+        return newString(bytes, StandardCharsets.US_ASCII)
+    }
+
+    fun newStringUtf16(bytes: ByteArray?): String? {
+        return newString(bytes, StandardCharsets.UTF_16)
+    }
+
+    fun newStringUtf16Be(bytes: ByteArray?): String? {
+        return newString(bytes, StandardCharsets.UTF_16BE)
+    }
+
+    fun newStringUtf16Le(bytes: ByteArray?): String? {
+        return newString(bytes, StandardCharsets.UTF_16LE)
+    }
+
+    fun newStringUtf8(bytes: ByteArray?): String? {
+        return newString(bytes, StandardCharsets.UTF_8)
     }
 }

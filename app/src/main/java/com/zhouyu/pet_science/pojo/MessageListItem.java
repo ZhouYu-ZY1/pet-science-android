@@ -2,8 +2,8 @@ package com.zhouyu.pet_science.pojo;
 
 
 import com.zhouyu.pet_science.model.User;
-import com.zhouyu.pet_science.tools.MessageArrayList;
-import com.zhouyu.pet_science.tools.TimeUtils;
+import com.zhouyu.pet_science.utils.MessageArrayList;
+import com.zhouyu.pet_science.utils.TimeUtils;
 
 public class MessageListItem {
     private String userId;

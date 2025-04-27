@@ -1,142 +1,143 @@
-package com.zhouyu.pet_science.tools;
+package com.zhouyu.pet_science.utils
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.zhouyu.pet_science.application.Application;
-import com.zhouyu.pet_science.tools.image_cache.GlideCacheUtil;
-import com.zhouyu.pet_science.views.dialog.MySelectDialog;
-
-import java.io.File;
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.DialogInterface
+import android.os.Handler
+import android.os.Looper
+import android.widget.TextView
+import android.widget.Toast
+import com.zhouyu.pet_science.application.Application
+import com.zhouyu.pet_science.utils.FileUtils.clearImageCache
+import com.zhouyu.pet_science.utils.FileUtils.clearLyricCache
+import com.zhouyu.pet_science.utils.FileUtils.clearMusicCache
+import com.zhouyu.pet_science.utils.FileUtils.clearVideoCache
+import com.zhouyu.pet_science.utils.FileUtils.getDirectorySize
+import com.zhouyu.pet_science.utils.MyToast.Companion.show
+import com.zhouyu.pet_science.views.dialog.MySelectDialog
+import java.io.File
 
 /**
  * 缓存清理
  */
-public class CleanCacheTool {
-
-    public float imageSize = 0.00F;
-    public float musicSize = 0.00F;
-    public float lrcSize = 0.00F;
-    public float videoSize = 0.00F;
-    public float countSize = 0.00F;
-    public boolean isCacheSizeLoadComplete;
-    private final Context context = Application.context;
-
-    @SuppressLint("StaticFieldLeak")
-    private static CleanCacheTool cleanCacheTool;
-    public static synchronized CleanCacheTool getInstance(){
-        if(cleanCacheTool == null){
-            cleanCacheTool = new CleanCacheTool();
-        }
-        return cleanCacheTool;
-    }
-
-    private final Handler cacheHandler = new Handler(Looper.getMainLooper());
-    public void showDialog(Activity activity,TextView textView){
-        cacheHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if(cleanCacheTool.isCacheSizeLoadComplete){
+class CleanCacheUtils {
+    var imageSize = 0.00f
+    var musicSize = 0.00f
+    var lrcSize = 0.00f
+    var videoSize = 0.00f
+    var countSize = 0.00f
+    var isCacheSizeLoadComplete = false
+    private val context = Application.context
+    private val cacheHandler = Handler(Looper.getMainLooper())
+    fun showDialog(activity: Activity?, textView: TextView?) {
+        cacheHandler.post(object : Runnable {
+            override fun run() {
+                if (cleanCacheTool!!.isCacheSizeLoadComplete) {
                     //M为单位
-                    @SuppressLint("DefaultLocale")
-                    String[] items = {"清除图片缓存:"+cleanCacheTool.imageSize+"M","清除音乐缓存:"+cleanCacheTool.musicSize+"M",
-                            "清除歌词缓存:"+cleanCacheTool.lrcSize+"M",
-                            "清除视频缓存:"+cleanCacheTool.videoSize+"M","全部清除:"+ cleanCacheTool.countSize +"M"};
-                    MySelectDialog mySelectDialog = new MySelectDialog(activity,items,-1);
-                    mySelectDialog.setTitle("请选择要清除的缓存");
-                    mySelectDialog.setItemOnClickListener((index2,item,dialog) -> Application.executeThread(() -> {
-                        switch (index2){
-                            case 0:
-                                FileTool.clearImageCache();
-                                GlideCacheUtil.getInstance().clearImageAllCache(context);
-                                break;
-                            case 1:
-                                FileTool.clearMusicCache();
-                                break;
-                            case 2:
-                                FileTool.clearLyricCache();
-                                break;
-                            case 3:
-                                FileTool.clearVideoCache();
-                                break;
-                            case 4:
-                                FileTool.clearImageCache();
-                                GlideCacheUtil.getInstance().clearImageAllCache(context);
-                                FileTool.clearMusicCache();
-                                FileTool.clearLyricCache();
-                                FileTool.clearVideoCache();
-                                break;
+                    @SuppressLint("DefaultLocale") val items = arrayOf(
+                        "清除图片缓存:" + cleanCacheTool!!.imageSize + "M",
+                        "清除视频缓存:" + cleanCacheTool!!.videoSize + "M",
+                        "全部清除:" + cleanCacheTool!!.countSize + "M"
+                    )
+                    val mySelectDialog = MySelectDialog(activity!!, items, -1)
+                    mySelectDialog.setTitle("请选择要清除的缓存")
+                    mySelectDialog.setItemOnClickListener { index2: Int, item: String?, dialog: MySelectDialog ->
+                        Application.executeThread {
+                            when (index2) {
+                                0 -> {
+                                    clearImageCache()
+                                    GlideCacheUtil.getInstance().clearImageAllCache(context)
+                                }
+
+                                1 -> clearVideoCache()
+                                2 -> {
+                                    clearImageCache()
+                                    GlideCacheUtil.getInstance().clearImageAllCache(context)
+                                    clearMusicCache()
+                                    clearLyricCache()
+                                    clearVideoCache()
+                                }
+                            }
+                            Application.mainHandler.post {
+                                show("清除成功", Toast.LENGTH_LONG, true)
+                                dialog.dismiss()
+                                calculateCacheSize(textView)
+                            }
                         }
-                        Application.mainHandler.post(() -> {
-                            MyToast.show("清除成功，日志缓存可使用系统缓存清理工具清理", Toast.LENGTH_LONG,true);
-                            dialog.dismiss();
-                            calculateCacheSize(textView);
-                        });
-                    }));
-                    mySelectDialog.show();
-                    mySelectDialog.setOnDismissListener(dialog -> {
-                        cacheHandler.removeCallbacksAndMessages(null);
-                    });
-                    return;
+                    }
+                    mySelectDialog.show()
+                    mySelectDialog.setOnDismissListener { dialog: DialogInterface? ->
+                        cacheHandler.removeCallbacksAndMessages(
+                            null
+                        )
+                    }
+                    return
                 }
-                cacheHandler.postDelayed(this,10);
+                cacheHandler.postDelayed(this, 10)
             }
-        });
+        })
     }
 
     /**
      * 计算缓存大小
      */
-    @SuppressLint({"SetTextI18n", "DefaultLocale"})
-    public void calculateCacheSize(TextView textView){
-        isCacheSizeLoadComplete = false;
-        Application.executeThread(() -> {
-            countSize = 0;
-            File imageFile = new File(Application.appCachePath +"/image");
-            float img_size;
-            if(imageFile.exists()){
-                img_size = FileTool.getDirectorySize(imageFile);
-            }else {
-                img_size = 0.00F;
-                imageSize = 0.00F;
+    @SuppressLint("SetTextI18n", "DefaultLocale")
+    fun calculateCacheSize(textView: TextView?) {
+        isCacheSizeLoadComplete = false
+        Application.executeThread {
+            countSize = 0f
+            val imageFile = File(Application.appCachePath + "/image")
+            var img_size: Float
+            if (imageFile.exists()) {
+                img_size = getDirectorySize(imageFile).toFloat()
+            } else {
+                img_size = 0.00f
+                imageSize = 0.00f
             }
-            img_size += GlideCacheUtil.getInstance().getCacheSize(context);
-            imageSize = Float.parseFloat(String.format("%.2f",img_size / 1024 /1024));
-
-            File musicFile = new File(Application.appCachePath +"/music");
-            if(musicFile.exists()){
-                float size = FileTool.getDirectorySize(musicFile);
-                musicSize = Float.parseFloat(String.format("%.2f",size / 1024 /1024));
-            }else {
-                musicSize = 0.00F;
+            img_size += GlideCacheUtil.getInstance().getCacheSize(context).toFloat()
+            imageSize = String.format("%.2f", img_size / 1024 / 1024).toFloat()
+            val musicFile = File(Application.appCachePath + "/music")
+            musicSize = if (musicFile.exists()) {
+                val size = getDirectorySize(musicFile).toFloat()
+                String.format("%.2f", size / 1024 / 1024).toFloat()
+            } else {
+                0.00f
             }
-            File lyricFile = new File(Application.appCachePath +"/lyric");
-            if(lyricFile.exists()){
-                float size = FileTool.getDirectorySize(lyricFile);
-                lrcSize = Float.parseFloat(String.format("%.2f",size / 1024 /1024));
-            }else {
-                lrcSize = 0.00F;
+            val lyricFile = File(Application.appCachePath + "/lyric")
+            lrcSize = if (lyricFile.exists()) {
+                val size = getDirectorySize(lyricFile).toFloat()
+                String.format("%.2f", size / 1024 / 1024).toFloat()
+            } else {
+                0.00f
             }
-            File videoFile = new File(Application.appCachePath +"/video");
-            if(videoFile.exists()){
-                float size = FileTool.getDirectorySize(videoFile);
-                videoSize = Float.parseFloat(String.format("%.2f",size / 1024 /1024));
-            }else {
-                videoSize = 0.00F;
+            val videoFile = File(Application.appCachePath + "/video")
+            videoSize = if (videoFile.exists()) {
+                val size = getDirectorySize(videoFile).toFloat()
+                String.format("%.2f", size / 1024 / 1024).toFloat()
+            } else {
+                0.00f
             }
-
-            countSize = Float.parseFloat(String.format("%.2f",musicSize + imageSize + lrcSize + videoSize));
-            Application.mainHandler.post(() -> {
-                if(textView != null){
-                    textView.setText((cleanCacheTool.countSize)+"M");
+            countSize = String.format("%.2f", musicSize + imageSize + lrcSize + videoSize).toFloat()
+            Application.mainHandler.post {
+                if (textView != null) {
+                    textView.text = "（" + cleanCacheTool!!.countSize + "M" + "）"
                 }
-                isCacheSizeLoadComplete = true;
-            });
-        });
+                isCacheSizeLoadComplete = true
+            }
+        }
+    }
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        private var cleanCacheTool: CleanCacheUtils? = null
+
+        @get:Synchronized
+        val instance: CleanCacheUtils
+            get() {
+                if (cleanCacheTool == null) {
+                    cleanCacheTool = CleanCacheUtils()
+                }
+                return cleanCacheTool!!
+            }
     }
 }

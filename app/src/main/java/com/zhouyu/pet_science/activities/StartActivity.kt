@@ -6,19 +6,17 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.ClassicsHeader
-import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.fragments.MessageFragment
 import com.zhouyu.pet_science.pojo.MessageListItem
-import com.zhouyu.pet_science.tools.MessageArrayList
-import com.zhouyu.pet_science.tools.StorageTool
-import com.zhouyu.pet_science.tools.Tool
-import com.zhouyu.pet_science.tools.utils.ConsoleUtils
+import com.zhouyu.pet_science.utils.MessageArrayList
+import com.zhouyu.pet_science.utils.StorageUtils
+import com.zhouyu.pet_science.utils.Tool
+import com.zhouyu.pet_science.utils.ConsoleUtils
 
 
 class StartActivity : BaseActivity() {
@@ -57,7 +55,7 @@ class StartActivity : BaseActivity() {
                 MessageFragment.setMessageList(messageList as ArrayList<MessageListItem>)
             }
 
-            val token = StorageTool.get<String>("token")
+            val token = StorageUtils.get<String>("token")
             Handler(Looper.getMainLooper()).postDelayed({
                 val intent = if(token != null && token.isNotEmpty()){
                     Intent(this, MainActivity::class.java)

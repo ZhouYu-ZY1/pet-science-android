@@ -19,10 +19,10 @@ import com.zhouyu.pet_science.application.WebSocketManager
 import com.zhouyu.pet_science.fragments.MessageFragment
 import com.zhouyu.pet_science.pojo.ChatMessage
 import com.zhouyu.pet_science.pojo.MessageListItem
-import com.zhouyu.pet_science.tools.MessageArrayList
-import com.zhouyu.pet_science.tools.MyToast
-import com.zhouyu.pet_science.tools.StorageTool
-import com.zhouyu.pet_science.tools.TimeUtils
+import com.zhouyu.pet_science.utils.MessageArrayList
+import com.zhouyu.pet_science.utils.MyToast
+import com.zhouyu.pet_science.utils.StorageUtils
+import com.zhouyu.pet_science.utils.TimeUtils
 import kotlin.math.max
 
 class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
@@ -42,7 +42,7 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
         // 获取传递的用户信息
         targetUserId = intent.getStringExtra("userId")
         targetUserName = intent.getStringExtra("username")
-        currentUserId = StorageTool.get("token")
+        currentUserId = StorageUtils.get("token")
         if(currentUserId == null){
             MyToast.show("登录异常，请重新登录")
             finish()
@@ -104,7 +104,7 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
         if (!WebSocketManager.isConnectWebSocket) {
             WebSocketManager.instance.connect()
         }
-        val token = StorageTool.get<String>("token")
+        val token = StorageUtils.get<String>("token")
         val messageText = editTextMessage!!.text.toString().trim { it <= ' ' }
         if (messageText.isNotEmpty()) {
             // 创建消息对象

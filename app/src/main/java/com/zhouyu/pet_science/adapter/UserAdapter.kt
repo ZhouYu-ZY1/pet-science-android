@@ -13,9 +13,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.databinding.ItemUserBinding
 import com.zhouyu.pet_science.fragments.MessageFragment
+import com.zhouyu.pet_science.fragments.PersonalCenterFragment
 import com.zhouyu.pet_science.model.User
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
-import com.zhouyu.pet_science.network.UserHttpUtils.Companion.followUser
+import com.zhouyu.pet_science.network.UserHttpUtils.followUser
 
 class UserAdapter(private val context: Context, private var users: List<User>) :
     RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
@@ -67,7 +68,7 @@ class UserAdapter(private val context: Context, private var users: List<User>) :
                     }
                 } else {
                     MessageFragment.refreshFollowList = true
-//                    PersonalFragment.refreshInfo = true
+                    PersonalCenterFragment.refreshInfo = true
                 }
             }.start()
         }

@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 import com.zhouyu.pet_science.R;
 import com.zhouyu.pet_science.activities.base.BaseActivity;
-import com.zhouyu.pet_science.tools.FileTool;
-import com.zhouyu.pet_science.tools.utils.PhoneMessage;
+import com.zhouyu.pet_science.utils.FileUtils;
+import com.zhouyu.pet_science.utils.PhoneMessage;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
@@ -42,7 +42,7 @@ public class MyDownloadProgressDialog extends Dialog {
     public MyDownloadProgressDialog(@NonNull Context context, @StyleRes int themeResId) {
         super(context, themeResId);
     }
-    
+
 
     /**
      * 设置取消按钮的显示内容和监听
@@ -57,8 +57,8 @@ public class MyDownloadProgressDialog extends Dialog {
     public void setYesOnclickListener(onYesOnclickListener yesOnclickListener) {
         this.yesOnclickListener = yesOnclickListener;
     }
-    
-    
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +89,7 @@ public class MyDownloadProgressDialog extends Dialog {
 
         //初始化界面控件
         initView();
-        
+
         //初始化界面控件的事件
         initEvent();
     }
@@ -109,7 +109,7 @@ public class MyDownloadProgressDialog extends Dialog {
         curr_size = findViewById(R.id.curr_size);
         total_size = findViewById(R.id.total_size);
     }
-    
+
     /**
      * 初始化界面的确定和取消监听
      */
@@ -148,13 +148,13 @@ public class MyDownloadProgressDialog extends Dialog {
     }
     @SuppressLint("DefaultLocale")
     public void updateCurrentSize(long size){
-        String format = FileTool.longToMBStr(size);
+        String format = FileUtils.longToMBStr(size);
         curr_size.setText(format);
     }
 
     @SuppressLint("DefaultLocale")
     public void updateTotalSize(long size){
-        String format = FileTool.longToMBStr(size);
+        String format = FileUtils.longToMBStr(size);
         total_size.setText(format);
     }
 

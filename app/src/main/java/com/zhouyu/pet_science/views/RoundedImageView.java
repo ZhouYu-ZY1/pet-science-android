@@ -18,7 +18,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.zhouyu.pet_science.R;
-import com.zhouyu.pet_science.tools.utils.PhoneMessage;
+import com.zhouyu.pet_science.utils.PhoneMessage;
 
 /**
  * 圆角图片（可设置圆角度）

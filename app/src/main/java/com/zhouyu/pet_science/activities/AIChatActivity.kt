@@ -15,8 +15,7 @@ import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.fragments.MessageFragment
 import com.zhouyu.pet_science.pojo.MessageListItem
-import com.zhouyu.pet_science.tools.StorageTool
-import com.zhouyu.pet_science.tools.TimeUtils
+import com.zhouyu.pet_science.utils.StorageUtils
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -167,7 +166,7 @@ class AIChatActivity : BaseActivity() {
             lastTime = time.toString()
             unreadCount = 0
         }
-        StorageTool.put("ai_last_message", aiItem)
+        StorageUtils.put("ai_last_message", aiItem)
         MessageFragment.refreshFollowList = true
     }
 

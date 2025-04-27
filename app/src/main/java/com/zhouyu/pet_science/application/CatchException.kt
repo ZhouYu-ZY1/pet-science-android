@@ -7,9 +7,9 @@ import android.widget.Toast
 import com.zhouyu.pet_science.activities.base.ErrorActivity
 import com.zhouyu.pet_science.activities.base.ErrorActivity.Companion.collectDeviceInfo
 import com.zhouyu.pet_science.manager.ActivityManager
-import com.zhouyu.pet_science.tools.FileTool
-import com.zhouyu.pet_science.tools.utils.ConsoleUtils
-import com.zhouyu.pet_science.tools.utils.PhoneMessage
+import com.zhouyu.pet_science.utils.FileUtils
+import com.zhouyu.pet_science.utils.ConsoleUtils
+import com.zhouyu.pet_science.utils.PhoneMessage
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.Writer
@@ -102,7 +102,7 @@ class CatchException  //保证只有一个实例
                 ${collectDeviceInfo(true)}
                 """.trimIndent()
                 PhoneMessage.copy(msg)
-                FileTool.commonStream.write(msg, path)
+                FileUtils.commonStream.write(msg, path)
             } catch (ignored: Exception) {
             } catch (ignored: Error) {
             } finally {
@@ -133,13 +133,13 @@ class CatchException  //保证只有一个实例
         //本类实例
         private var mInstance: CatchException? = null
         @JvmStatic
-        val instance: CatchException?
+        val instance: CatchException
             //单例模式
             get() {
                 if (mInstance == null) {
                     mInstance = CatchException()
                 }
-                return mInstance
+                return mInstance!!
             }
 
         /**

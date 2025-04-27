@@ -9,19 +9,15 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zhouyu.pet_science.activities.base.BaseActivity
-import com.zhouyu.pet_science.adapter.SearchHistoryAdapter
 import com.zhouyu.pet_science.databinding.ActivitySearchBinding
 import com.zhouyu.pet_science.databinding.ItemHistorySearchBinding
 import com.zhouyu.pet_science.fragments.SearchProductFragment
 import com.zhouyu.pet_science.fragments.SearchUserFragment
-import com.zhouyu.pet_science.tools.MyToast
-import com.zhouyu.pet_science.tools.StorageTool
+import com.zhouyu.pet_science.utils.StorageUtils
 import com.zhouyu.pet_science.views.dialog.MyDialog
 
 class SearchActivity : BaseActivity() {
@@ -34,8 +30,7 @@ class SearchActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
-        setStatusBarTextColor(true)
+
         setTopBarView(binding.main, true)
         
         initView()
@@ -195,8 +190,8 @@ class SearchActivity : BaseActivity() {
         searchHistoryList.clear()
 
         // 加载历史记录
-        if(StorageTool.contains("search_history")) {
-            searchHistoryList.addAll(StorageTool.get("search_history"))
+        if(StorageUtils.contains("search_history")) {
+            searchHistoryList.addAll(StorageUtils.get("search_history"))
         }
     }
     
@@ -217,7 +212,7 @@ class SearchActivity : BaseActivity() {
         refreshHistoryList()
         
         // 保存历史搜索记录
-        StorageTool.put("search_history", searchHistoryList)
+        StorageUtils.put("search_history", searchHistoryList)
     }
     
     @SuppressLint("NotifyDataSetChanged")
@@ -225,6 +220,6 @@ class SearchActivity : BaseActivity() {
         searchHistoryList.clear()
         binding.historySearchList.removeAllViews() // 清空历史搜索列表
         // 清空历史记录
-        StorageTool.delete("search_history")
+        StorageUtils.delete("search_history")
     }
 }

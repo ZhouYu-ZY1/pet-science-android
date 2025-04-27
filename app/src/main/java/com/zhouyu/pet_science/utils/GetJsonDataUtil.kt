@@ -1,4 +1,4 @@
-package com.zhouyu.pet_science.tools
+package com.zhouyu.pet_science.utils
 
 import android.content.Context
 import com.google.gson.Gson

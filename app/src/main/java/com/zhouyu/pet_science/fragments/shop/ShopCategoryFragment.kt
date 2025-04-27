@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.ClassicsHeader
-import com.scwang.smart.refresh.layout.constant.SpinnerStyle.Translate
 import com.youth.banner.indicator.CircleIndicator
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.adapter.ProductAdapter
@@ -23,12 +22,10 @@ import com.zhouyu.pet_science.fragments.BaseFragment
 import com.zhouyu.pet_science.model.Category
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.network.ProductHttpUtils
-import com.zhouyu.pet_science.tools.MyToast
-import com.zhouyu.pet_science.tools.utils.PhoneMessage
+import com.zhouyu.pet_science.utils.MyToast
+import com.zhouyu.pet_science.utils.PhoneMessage
 import com.zhouyu.pet_science.adapter.BannerTextAdapter
 import com.zhouyu.pet_science.model.ProductItem
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 
 class ShopCategoryFragment() : BaseFragment() {
@@ -132,23 +129,23 @@ class ShopCategoryFragment() : BaseFragment() {
         // 创建Banner数据
         val bannerItems = listOf(
             BannerTextAdapter.BannerItem(
-                "$BASE_URL/image/banner/photo-1583337130417-3346a1be7dee.jpg",
+                "$BASE_URL/images/banner/photo-1583337130417-3346a1be7dee.jpg",
                 "新品上市","精选宠物折优惠"
             ),
             BannerTextAdapter.BannerItem(
-                "$BASE_URL/image/banner/premium_photo-1707353401897-da9ba223f807.jpg",
+                "$BASE_URL/images/banner/premium_photo-1707353401897-da9ba223f807.jpg",
                 "买二赠一","宠物保健品"
             ),
             BannerTextAdapter.BannerItem(
-                "$BASE_URL/image/banner/premium_photo-1708724049005-192fe5c23269.jpg",
+                "$BASE_URL/images/banner/premium_photo-1708724049005-192fe5c23269.jpg",
                 "限时特惠","优质宠物食品"
             ),
             BannerTextAdapter.BannerItem(
-                "$BASE_URL/image/banner/photo-1599572743109-61c820b3a79d.jpg",
+                "$BASE_URL/images/banner/photo-1599572743109-61c820b3a79d.jpg",
                 "满300减50","宠物服饰专区"
             ),
             BannerTextAdapter.BannerItem(
-                "$BASE_URL/image/banner/photo-1548199973-03cce0bbc87b.jpg",
+                "$BASE_URL/images/banner/photo-1548199973-03cce0bbc87b.jpg",
                 "全场低至5折","宠物玩具大促"
             )
         )

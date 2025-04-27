@@ -6,7 +6,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.zhouyu.pet_science.tools.utils.PhoneMessage;
+import com.zhouyu.pet_science.utils.PhoneMessage;
 
 public class BottomSpaceItemDecoration extends RecyclerView.ItemDecoration {
     private final int bottomSpace;

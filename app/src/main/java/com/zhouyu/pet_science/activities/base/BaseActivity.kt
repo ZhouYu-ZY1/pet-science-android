@@ -1,19 +1,20 @@
 package com.zhouyu.pet_science.activities.base
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.Window
+import android.view.WindowInsetsController
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.manager.ActivityManager.Companion.instance
-import com.zhouyu.pet_science.tools.utils.PhoneMessage
+import com.zhouyu.pet_science.utils.PhoneMessage
 
 open class BaseActivity : AppCompatActivity() {
     var isDarkBack = false
@@ -25,7 +26,7 @@ open class BaseActivity : AppCompatActivity() {
         //状态栏透明
         setStatusBarFullTransparent(window)
         if (!isDarkBack) {
-            setStatusBarTextColor(true)
+            setStatusBarTextColor(true,window)
         }
 
         //添加Activity到管理器
@@ -94,18 +95,27 @@ open class BaseActivity : AppCompatActivity() {
         Toast.makeText(this, text, duration).show()
     }
 
-    fun setStatusBarTextColor(dark: Boolean) {
-        val decor = window.decorView
-        if (dark) {
-            decor.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        } else {
-            decor.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        }
-    }
-
     companion object {
+        /**
+         * 设置状态栏文字颜色
+         */
+        fun setStatusBarTextColor(dark: Boolean, window: Window) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // Android 11+ 推荐方式
+                window.insetsController?.setSystemBarsAppearance(
+                    if (dark) WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS else 0,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                )
+            } else
+                // Android 6.0-10 的回退方案
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility = if (dark) {
+                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                } else {
+                    0
+                }
+        }
+
         /**
          * 状态栏透明
          */

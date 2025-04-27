@@ -1,368 +1,296 @@
-package com.zhouyu.pet_science.tools;
+package com.zhouyu.pet_science.utils
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Build;
-import android.util.Log;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Build
+import android.provider.OpenableColumns
+import android.util.Log
+import androidx.core.content.FileProvider
+import androidx.documentfile.provider.DocumentFile
+import com.zhouyu.pet_science.application.Application
+import java.io.BufferedWriter
+import java.io.EOFException
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.io.OutputStream
+import java.io.OutputStreamWriter
+import java.io.UnsupportedEncodingException
+import java.nio.charset.StandardCharsets
 
-import com.zhouyu.pet_science.application.Application;
-
-import java.io.BufferedWriter;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-
-import androidx.core.content.FileProvider;
-import androidx.documentfile.provider.DocumentFile;
-
-public class FileTool {
-    /**
-     * 对象输入输出流
-     */
-    public static class ObjectStream {
-        public static void writeObjectToFile(Object obj, String path) {
-            File file = new File(path);
-            try {
-                File directoryFile = new File(path.substring(0,path.lastIndexOf("/")));
-                if(!directoryFile.exists()){
-                    boolean mkdirs = directoryFile.mkdirs();
-                    if(!mkdirs){
-                        return;
-                    }
-                }
-
-                FileOutputStream outputStream = new FileOutputStream(file);
-                ObjectOutputStream objOut = new ObjectOutputStream(outputStream);
-                objOut.writeObject(obj);
-                objOut.flush();
-                objOut.close();
-            }catch (IOException e) {
-                Log.e("main", "存储失败");
-                e.printStackTrace();
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        public static <T> T readObjectFromFile(String path) {
-            T temp = null;
-            File file = new File(path);
-            try {
-                FileInputStream inputStream = new FileInputStream(file);
-                ObjectInputStream objIn = new ObjectInputStream(inputStream);
-                temp = (T) objIn.readObject();
-                objIn.close();
-            } catch (EOFException e){
-                boolean b = file.delete();
-                if(b){
-                    return null;
-                }
-            }catch (IOException e) {
-                Log.e("main", "读取失败");
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                Log.e("main", "文件不存在");
-                e.printStackTrace();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            return temp;
-        }
-    }
+object FileUtils {
 
     /**
-     * 普通文件读写
+     * 获取Uri对应的真实路径
      */
-    public static class commonStream {
-
-        public static String read(String url){
-            String encoding = "UTF-8";
-            File file = new File(url);
-            int file_length = (int) file.length();
-            byte[] file_content = new byte[file_length];
-            try {
-                FileInputStream in = new FileInputStream(file);
-                in.read(file_content);
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                return new String(file_content, encoding);
-            } catch (UnsupportedEncodingException e) {
-                System.err.println("The OS does not support " + encoding);
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        public static void write(String content,String url){
-            OutputStreamWriter outputStreamWriter = null;
-            BufferedWriter writer = null;
-            try {
-                File file = new File(url.substring(0,url.lastIndexOf("/")));
-                if(!file.exists()){
-                    boolean mkdirs = file.mkdirs();
-                    if(!mkdirs){
-                        MyToast.show("文件创建失败",false);
-                        return;
-                    }
-                }
-                outputStreamWriter = new OutputStreamWriter(new FileOutputStream(url), StandardCharsets.UTF_8);
-                writer = new BufferedWriter(outputStreamWriter);
-                writer.write(content);
-                writer.close();
-            }catch (Exception e){
-                e.printStackTrace();
-            }finally {
+    fun getRealPathFromURI(uri: Uri, contextWrapper: ContextWrapper): File? {
+        val returnCursor = contextWrapper.contentResolver.query(uri, null, null, null, null)
+        returnCursor?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+//                val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+//                val size = cursor.getLong(sizeIndex).toString()
+                val name = cursor.getString(nameIndex)
+                val file = File(contextWrapper.cacheDir, name)
                 try {
-                    if(outputStreamWriter!=null){
-                        outputStreamWriter.close();
+                    val inputStream = contextWrapper.contentResolver.openInputStream(uri)
+                    val outputStream = FileOutputStream(file)
+                    inputStream?.use { input ->
+                        outputStream.use { output ->
+                            val buffer = ByteArray(4 * 1024) // 4k buffer
+                            var read: Int
+                            while (input.read(buffer).also { read = it } != -1) {
+                                output.write(buffer, 0, read)
+                            }
+                            output.flush()
+                        }
                     }
-                    if(writer!=null){
-                        writer.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    return file
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    file.delete() // 如果复制失败，删除临时文件
                 }
             }
         }
+        return null
     }
 
-    public static boolean BitmapToImage(Bitmap bitmap,int quality,String path,boolean isDocument,String type) {
-        try {
-            File bitmapFile = new File(path);
-            File file = new File(path.substring(0,path.lastIndexOf("/")));
-            if(!file.exists()){
-                boolean mkdirs = file.mkdirs();
-                if(!mkdirs){
-                    return false;
+    /**
+     * bitmap保存图片
+     * @param bitmap bitmap参数
+     * @param quality 压缩率
+     * @param path 保存路径
+     */
+    @JvmOverloads
+    fun BitmapToImage(
+        bitmap: Bitmap,
+        quality: Int,
+        path: String,
+        isDocument: Boolean,
+        type: String? = "image/jpeg"
+    ): Boolean {
+        return try {
+            val bitmapFile = File(path)
+            val file = File(path.substring(0, path.lastIndexOf("/")))
+            if (!file.exists()) {
+                val mkdirs = file.mkdirs()
+                if (!mkdirs) {
+                    return false
                 }
             }
-            OutputStream out;
-            String name = bitmapFile.getName();
-            if(isDocument){
-                DocumentFile documentFile = DocumentFile.fromFile(bitmapFile);
-                if(documentFile.exists()){
-                    documentFile.delete();
+            val out: OutputStream?
+            val name = bitmapFile.name
+            out = if (isDocument) {
+                val documentFile = DocumentFile.fromFile(bitmapFile)
+                if (documentFile.exists()) {
+                    documentFile.delete()
                 }
-                documentFile.createFile(type, name);
-                out = Application.context.getContentResolver().openOutputStream(documentFile.getUri());
-            }else {
-                out = new FileOutputStream(bitmapFile);
+                documentFile.createFile(type!!, name)
+                Application.context.contentResolver.openOutputStream(documentFile.uri)
+            } else {
+                FileOutputStream(bitmapFile)
             }
-
-
-            if(bitmap.compress(Bitmap.CompressFormat.JPEG, quality, out)) {
-                out.flush();
-                out.close();
-
-                if(isDocument){
+            if (bitmap.compress(Bitmap.CompressFormat.JPEG, quality, out!!)) {
+                out.flush()
+                out.close()
+                if (isDocument) {
                     //保存图片后发送广播通知更新数据库
-                    Application.context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(bitmapFile)));
+                    Application.context.sendBroadcast(
+                        Intent(
+                            Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                            Uri.fromFile(bitmapFile)
+                        )
+                    )
                 }
             }
-            return true;
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
-        /**
-         * bitmap保存图片
-         * @param bitmap bitmap参数
-         * @param quality 压缩率
-         * @param path 保存路径
-         */
-    public static boolean BitmapToImage(Bitmap bitmap,int quality,String path,boolean isDocument) {
-        return BitmapToImage(bitmap,quality,path,isDocument,"image/jpeg");
-    }
-
-
-
-
 
     /**
      * 读取Assets目录下的图片文件
      * @param context 上下文
      * @param fileName 路径
      */
-    public static Bitmap readAssetsImageFile(Context context, String fileName){
-        Bitmap bitmap = null;
-        AssetManager assetManager = context.getAssets();
+    fun readAssetsImageFile(context: Context, fileName: String?): Bitmap? {
+        var bitmap: Bitmap? = null
+        val assetManager = context.assets
         try {
-            InputStream inputStream = assetManager.open(fileName);
-            bitmap = BitmapFactory.decodeStream(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
+            val inputStream = assetManager.open(fileName!!)
+            bitmap = BitmapFactory.decodeStream(inputStream)
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
-        return bitmap;
+        return bitmap
     }
 
     /**
      * 清理音乐图片缓存
      */
-    public static void clearImageCache(){
-        File file = new File(Application.appCachePath +"/image");
-        if(file.exists() && file.isDirectory()){
-            File[] files = file.listFiles();
-            if(files != null){
-                for (File f : files) {
-                    f.delete();
+    @JvmStatic
+    fun clearImageCache() {
+        val file = File(Application.appCachePath + "/image")
+        if (file.exists() && file.isDirectory) {
+            val files = file.listFiles()
+            if (files != null) {
+                for (f in files) {
+                    f.delete()
                 }
-                file.delete();
+                file.delete()
             }
         }
-        clearLocalMusicImageCache();
+        clearLocalMusicImageCache()
     }
 
-    public static void clearLocalMusicImageCache(){
-        File file = new File(Application.appCachePath +"/music_image");
-        if(file.exists() && file.isDirectory()){
-            File[] files = file.listFiles();
-            for (File f : files) {
-                f.delete();
+    fun clearLocalMusicImageCache() {
+        val file = File(Application.appCachePath + "/music_image")
+        if (file.exists() && file.isDirectory) {
+            val files = file.listFiles()
+            for (f in files) {
+                f.delete()
             }
-            file.delete();
+            file.delete()
         }
     }
-
 
     /**
      * 清除音乐缓存
      */
-    public static void clearMusicCache(){
-        File file = new File(Application.appCachePath +"/music");
-        if(file.exists() && file.isDirectory()){
-            File[] files = file.listFiles();
-            for (File f : files) {
-                f.delete();
+    @JvmStatic
+    fun clearMusicCache() {
+        val file = File(Application.appCachePath + "/music")
+        if (file.exists() && file.isDirectory) {
+            val files = file.listFiles()
+            for (f in files) {
+                f.delete()
             }
-            file.delete();
+            file.delete()
         }
-        StorageTool.delete("matchMusicMap");
+        StorageUtils.delete("matchMusicMap")
     }
 
-    public static void removeDirectoryAllFile(File file){
-        if(file.exists()){
-            if(file.isDirectory()){
-                File[] files = file.listFiles();
-                for (File file_c : files) {
-                    if(file_c.isDirectory()){
-                        removeDirectoryAllFile(file_c);
-                    }else {
-                        file_c.delete();
+    fun removeDirectoryAllFile(file: File) {
+        if (file.exists()) {
+            if (file.isDirectory) {
+                val files = file.listFiles()
+                for (file_c in files) {
+                    if (file_c.isDirectory) {
+                        removeDirectoryAllFile(file_c)
+                    } else {
+                        file_c.delete()
                     }
                 }
             }
-            file.delete();
+            file.delete()
         }
     }
 
     /**
      * 清除视频缓存
      */
-    public static void clearLyricCache(){
-        File file = new File(Application.appCachePath +"/lyric");
-        if(file.exists() && file.isDirectory()){
-            File[] files = file.listFiles();
-            for (File f : files) {
-                f.delete();
+    @JvmStatic
+    fun clearLyricCache() {
+        val file = File(Application.appCachePath + "/lyric")
+        if (file.exists() && file.isDirectory) {
+            val files = file.listFiles()
+            for (f in files) {
+                f.delete()
             }
-            file.delete();
+            file.delete()
         }
     }
 
     /**
      * 清除视频缓存
      */
-    public static void clearVideoCache(){
-        File file = new File(Application.appCachePath +"/video");
-        if(file.exists() && file.isDirectory()){
-            File[] files = file.listFiles();
-            for (File f : files) {
-                f.delete();
+    @JvmStatic
+    fun clearVideoCache() {
+        val file = File(Application.appCachePath + "/video")
+        if (file.exists() && file.isDirectory) {
+            val files = file.listFiles()
+            for (f in files) {
+                f.delete()
             }
-            file.delete();
+            file.delete()
         }
     }
 
     /**
      * 获取目录大小(字节)
      */
-    public static long getDirectorySize(File file){
-       if(file.exists()){
-           if(file.isDirectory()){
-               countSize = 0;
-               sizeOfDirectory(file);
-               return countSize;
-           }else {
-               return file.length();
-           }
-       }else {
-           return 0;
-       }
+    @JvmStatic
+    fun getDirectorySize(file: File): Long {
+        return if (file.exists()) {
+            if (file.isDirectory) {
+                countSize = 0
+                sizeOfDirectory(file)
+                countSize
+            } else {
+                file.length()
+            }
+        } else {
+            0
+        }
     }
-    private static long countSize;
-    private static void sizeOfDirectory(File file){
-        File[] file_list = file.listFiles();
-        if(file_list != null && file_list.length != 0){
-            for (File list_file : file_list) {
-                if(list_file.isDirectory()){
-                    sizeOfDirectory(list_file);
-                }else {
-                    countSize += list_file.length();
+
+    private var countSize: Long = 0
+    private fun sizeOfDirectory(file: File) {
+        val file_list = file.listFiles()
+        if (file_list != null && file_list.size != 0) {
+            for (list_file in file_list) {
+                if (list_file.isDirectory) {
+                    sizeOfDirectory(list_file)
+                } else {
+                    countSize += list_file.length()
                 }
             }
         }
     }
 
+    @JvmStatic
     @SuppressLint("DefaultLocale")
-    public static String longToMBStr(long size){
-        return String.format("%.1f", size / 1024f / 1024) + "M";
+    fun longToMBStr(size: Long): String {
+        return String.format("%.1f", size / 1024f / 1024) + "M"
     }
 
-    public static String getFileNameWithoutSuffix(String fileName){
-        try {
-            return fileName.substring(0, fileName.lastIndexOf("."));
-        }catch (Exception e){
-            e.printStackTrace();
-            return fileName;
+    @JvmStatic
+    fun getFileNameWithoutSuffix(fileName: String): String {
+        return try {
+            fileName.substring(0, fileName.lastIndexOf("."))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            fileName
         }
     }
 
     //复制文件
-    public static void copyFileUsingStream(File source, File dest) throws IOException {
-        InputStream is = null;
-        OutputStream os = null;
+    @Throws(IOException::class)
+    fun copyFileUsingStream(source: File?, dest: File?) {
+        var `is`: InputStream? = null
+        var os: OutputStream? = null
         try {
-            is = new FileInputStream(source);
-            os = new FileOutputStream(dest);
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = is.read(buffer)) > 0) {
-                os.write(buffer, 0, length);
+            `is` = FileInputStream(source)
+            os = FileOutputStream(dest)
+            val buffer = ByteArray(1024)
+            var length: Int
+            while (`is`.read(buffer).also { length = it } > 0) {
+                os.write(buffer, 0, length)
             }
         } finally {
-            if (is != null) {
-                is.close();
-            }
-            if (os != null) {
-                os.close();
-            }
+            `is`?.close()
+            os?.close()
         }
     }
 
@@ -371,53 +299,162 @@ public class FileTool {
      * @param fromFile 准备复制的文件
      * @param toFile 复制路径
      */
-    public static void copyFile(File fromFile, File toFile){
-        if(fromFile.getPath().equals(toFile.getPath())){
-            return;
+    fun copyFile(fromFile: File, toFile: File) {
+        if (fromFile.path == toFile.path) {
+            return
         }
-        if(!fromFile.exists()){
-            return;
+        if (!fromFile.exists()) {
+            return
         }
-        if(!fromFile.isFile()){
-            return;
+        if (!fromFile.isFile) {
+            return
         }
-        if(!fromFile.canRead()){
-            return;
+        if (!fromFile.canRead()) {
+            return
         }
-        if(!toFile.getParentFile().exists()){
-            toFile.getParentFile().mkdirs();
+        if (!toFile.parentFile.exists()) {
+            toFile.parentFile.mkdirs()
         }
-        if(toFile.exists()){
-            toFile.delete();
+        if (toFile.exists()) {
+            toFile.delete()
         }
         try {
-            FileInputStream fosfrom = new FileInputStream(fromFile);
-            FileOutputStream fosto = new FileOutputStream(toFile);
-            byte[] bt = new byte[1024];
-            int c;
-            while((c=fosfrom.read(bt)) > 0){
-                fosto.write(bt,0,c);
+            val fosfrom = FileInputStream(fromFile)
+            val fosto = FileOutputStream(toFile)
+            val bt = ByteArray(1024)
+            var c: Int
+            while (fosfrom.read(bt).also { c = it } > 0) {
+                fosto.write(bt, 0, c)
             }
             //关闭输入、输出流
-            fosfrom.close();
-            fosto.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            fosfrom.close()
+            fosto.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     //File转Uri
-    public static Uri getUriForFile(Context context, File file) {
+    fun getUriForFile(context: Context?, file: File?): Uri {
         if (context == null || file == null) {
-            throw new NullPointerException();
+            throw NullPointerException()
         }
-        Uri uri;
-        if (Build.VERSION.SDK_INT >= 24) {
-            uri = FileProvider.getUriForFile(context.getApplicationContext(), "com.zhouyu.pet_science.fileprovider", file);
+        val uri: Uri
+        uri = if (Build.VERSION.SDK_INT >= 24) {
+            FileProvider.getUriForFile(
+                context.applicationContext,
+                "com.zhouyu.pet_science.fileprovider",
+                file
+            )
         } else {
-            uri = Uri.fromFile(file);
+            Uri.fromFile(file)
         }
-        return uri;
+        return uri
     }
 
+    /**
+     * 对象输入输出流
+     */
+    object ObjectStream {
+        fun writeObjectToFile(obj: Any?, path: String) {
+            val file = File(path)
+            try {
+                val directoryFile = File(path.substring(0, path.lastIndexOf("/")))
+                if (!directoryFile.exists()) {
+                    val mkdirs = directoryFile.mkdirs()
+                    if (!mkdirs) {
+                        return
+                    }
+                }
+                val outputStream = FileOutputStream(file)
+                val objOut = ObjectOutputStream(outputStream)
+                objOut.writeObject(obj)
+                objOut.flush()
+                objOut.close()
+            } catch (e: IOException) {
+                Log.e("main", "存储失败")
+                e.printStackTrace()
+            }
+        }
+
+        fun <T> readObjectFromFile(path: String?): T? {
+            var temp: T? = null
+            val file = File(path)
+            try {
+                val inputStream = FileInputStream(file)
+                val objIn = ObjectInputStream(inputStream)
+                temp = objIn.readObject() as T
+                objIn.close()
+            } catch (e: EOFException) {
+                val b = file.delete()
+                if (b) {
+                    return null
+                }
+            } catch (e: IOException) {
+                Log.e("main", "读取失败")
+                e.printStackTrace()
+            } catch (e: ClassNotFoundException) {
+                Log.e("main", "文件不存在")
+                e.printStackTrace()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return temp
+        }
+    }
+
+    /**
+     * 普通文件读写
+     */
+    object commonStream {
+        fun read(url: String?): String? {
+            val encoding = "UTF-8"
+            val file = File(url)
+            val file_length = file.length().toInt()
+            val file_content = ByteArray(file_length)
+            try {
+                val `in` = FileInputStream(file)
+                `in`.read(file_content)
+                `in`.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            return try {
+                String(file_content, charset(encoding))
+            } catch (e: UnsupportedEncodingException) {
+                System.err.println("The OS does not support $encoding")
+                e.printStackTrace()
+                null
+            }
+        }
+
+        fun write(content: String?, url: String) {
+            var outputStreamWriter: OutputStreamWriter? = null
+            var writer: BufferedWriter? = null
+            try {
+                val file = File(url.substring(0, url.lastIndexOf("/")))
+                if (!file.exists()) {
+                    val mkdirs = file.mkdirs()
+                    if (!mkdirs) {
+                        MyToast.show("文件创建失败", false)
+                        return
+                    }
+                }
+                outputStreamWriter =
+                    OutputStreamWriter(FileOutputStream(url), StandardCharsets.UTF_8)
+                writer = BufferedWriter(outputStreamWriter)
+                writer.write(content)
+                writer.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                try {
+                    outputStreamWriter?.close()
+                    writer?.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
 }

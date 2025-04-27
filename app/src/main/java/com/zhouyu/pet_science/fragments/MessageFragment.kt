@@ -15,8 +15,8 @@ import com.zhouyu.pet_science.databinding.FragmentMessageBinding
 import com.zhouyu.pet_science.model.User
 import com.zhouyu.pet_science.network.UserHttpUtils
 import com.zhouyu.pet_science.pojo.MessageListItem
-import com.zhouyu.pet_science.tools.StorageTool
-import com.zhouyu.pet_science.tools.TimeUtils
+import com.zhouyu.pet_science.utils.StorageUtils
+import com.zhouyu.pet_science.utils.TimeUtils
 
 class MessageFragment : BaseFragment() {
     private var binding: FragmentMessageBinding? = null
@@ -28,6 +28,7 @@ class MessageFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMessageBinding.inflate(inflater, container, false)
+        setTopBarView(binding!!.messageFragment, true)
         initViews()
         loadMessages()
         refreshList()
@@ -61,7 +62,7 @@ class MessageFragment : BaseFragment() {
             var aiChat: MessageListItem?
             var messageTime = ""
             try {
-                aiChat = StorageTool.get<MessageListItem>("ai_last_message")
+                aiChat = StorageUtils.get<MessageListItem>("ai_last_message")
                 messageTime = TimeUtils.getMessageTime(aiChat.lastTime.toLong())
             }catch (e: Exception){
                 aiChat = null
@@ -98,7 +99,7 @@ class MessageFragment : BaseFragment() {
         }
         isLoad = true
         executeThread {
-            val token = StorageTool.get<String>("token")
+            val token = StorageUtils.get<String>("token")
             val followList: List<User> = UserHttpUtils.getFollowList()
             for (user in followList) {
                 var isExist = false

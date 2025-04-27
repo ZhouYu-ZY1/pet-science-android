@@ -1,32 +1,22 @@
 package com.zhouyu.pet_science.application;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.WindowManager;
 
 
 //import com.getui.gs.sdk.GsManager;
 import com.orhanobut.hawk.Hawk;
-import com.zhouyu.pet_science.tools.utils.NightModeUtils;
-import com.zhouyu.pet_science.tools.utils.PhoneMessage;
+import com.zhouyu.pet_science.utils.NightModeUtils;
+import com.zhouyu.pet_science.utils.PhoneMessage;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import androidx.documentfile.provider.DocumentFile;
 
 import me.jessyan.autosize.AutoSize;
 import me.jessyan.autosize.AutoSizeConfig;
@@ -88,9 +78,6 @@ public class Application extends android.app.Application {
 
         //设备信息初始化
         PhoneMessage.initMessage(context);
-
-        //个推运营工具初始化
-//        GsManager.getInstance().init(context);
     }
 
 

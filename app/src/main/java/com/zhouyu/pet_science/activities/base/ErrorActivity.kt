@@ -10,9 +10,9 @@ import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.application.Application
 import com.zhouyu.pet_science.application.CatchException
 import com.zhouyu.pet_science.manager.ActivityManager.Companion.instance
-import com.zhouyu.pet_science.tools.MyToast
-import com.zhouyu.pet_science.tools.FileTool
-import com.zhouyu.pet_science.tools.utils.PhoneMessage
+import com.zhouyu.pet_science.utils.MyToast
+import com.zhouyu.pet_science.utils.FileUtils
+import com.zhouyu.pet_science.utils.PhoneMessage
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.Writer
@@ -78,7 +78,7 @@ class ErrorActivity : AppCompatActivity() {
                 $errMsg
                 ${collectDeviceInfo(true)}
                 """.trimIndent()
-            FileTool.commonStream.write(errMsg, path)
+            FileUtils.commonStream.write(errMsg, path)
 
 //            //上传云端
 //            boolean canUpdate = false;
@@ -133,8 +133,8 @@ class ErrorActivity : AppCompatActivity() {
                 "</br>"
             }
             val stringBuilder = StringBuilder()
-            stringBuilder.append("versionName: ").append(PhoneMessage.getAppVersionName()).append(c)
-            stringBuilder.append("versionCode: ").append(PhoneMessage.getAppVersionCode()).append(c)
+            stringBuilder.append("versionName: ").append(PhoneMessage.appVersionName).append(c)
+            stringBuilder.append("versionCode: ").append(PhoneMessage.appVersionCode).append(c)
             stringBuilder.append("Android版本: ").append(Build.VERSION.RELEASE).append(c)
             val fields = Build::class.java.declaredFields
             for (field in fields) {

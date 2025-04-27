@@ -20,5 +20,7 @@ data class User(
     var isFollowed : Boolean = false, // 是否已关注
     val followTime: Long, // 关注时间
     var followCount: Int, // 关注数
-    val fansCount: Int // 粉丝数
+    val fansCount: Int, // 粉丝数
+    val mutualCount: Int, // 互关数
+    var pets: List<Pet> // 宠物列表
 )
