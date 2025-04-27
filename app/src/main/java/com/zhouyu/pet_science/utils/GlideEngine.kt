@@ -1,43 +1,22 @@
-package com.zhouyu.pet_science.utils;
+package com.zhouyu.pet_science.utils
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.widget.ImageView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.huantansheng.easyphotos.engine.ImageEngine;
-import com.zhouyu.pet_science.application.Application;
-
-import androidx.annotation.NonNull;
-
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.huantansheng.easyphotos.engine.ImageEngine
+import com.zhouyu.pet_science.application.Application
 
 /**
  * Glide4.x的加载图片引擎实现,单例模式
  * Glide4.x的缓存机制更加智能，已经达到无需配置的境界。如果使用Glide3.x，需要考虑缓存机制。
  * Created by huan on 2018/1/15.
  */
-
-public class GlideEngine implements ImageEngine {
-    //单例
-    private static GlideEngine instance = null;
-    //单例模式，私有构造方法
-    private GlideEngine() {
-    }
-    //获取单例
-    public static GlideEngine getInstance() {
-        if (null == instance) {
-            synchronized (GlideEngine.class) {
-                if (null == instance) {
-                    instance = new GlideEngine();
-                }
-            }
-        }
-        return instance;
-    }
-
+class GlideEngine  //单例模式，私有构造方法
+private constructor() : ImageEngine {
     /**
      * 加载图片到ImageView
      *
@@ -46,9 +25,9 @@ public class GlideEngine implements ImageEngine {
      * @param imageView 加载到的ImageView
      */
     //安卓10推荐uri，并且path的方式不再可用
-    @Override
-    public void loadPhoto(@NonNull Context context, @NonNull Uri uri, @NonNull ImageView imageView) {
-        Glide.with(context).load(uri).transition(withCrossFade()).into(imageView);
+    override fun loadPhoto(context: Context, uri: Uri, imageView: ImageView) {
+        Glide.with(context).load(uri).transition(DrawableTransitionOptions.withCrossFade())
+            .into(imageView)
     }
 
     /**
@@ -57,13 +36,13 @@ public class GlideEngine implements ImageEngine {
      * @param context   上下文
      * @param gifUri   gif动图路径Uri
      * @param imageView 加载到的ImageView
-     *                  <p>
-     *                  备注：不支持动图显示的情况下可以不写
+     *
+     *
+     * 备注：不支持动图显示的情况下可以不写
      */
     //安卓10推荐uri，并且path的方式不再可用
-    @Override
-    public void loadGifAsBitmap(@NonNull Context context, @NonNull Uri gifUri, @NonNull ImageView imageView) {
-        Glide.with(context).asBitmap().load(gifUri).into(imageView);
+    override fun loadGifAsBitmap(context: Context, gifUri: Uri, imageView: ImageView) {
+        Glide.with(context).asBitmap().load(gifUri).into(imageView)
     }
 
     /**
@@ -72,15 +51,15 @@ public class GlideEngine implements ImageEngine {
      * @param context   上下文
      * @param gifUri   gif动图路径Uri
      * @param imageView 加载动图的ImageView
-     *                  <p>
-     *                  备注：不支持动图显示的情况下可以不写
+     *
+     *
+     * 备注：不支持动图显示的情况下可以不写
      */
     //安卓10推荐uri，并且path的方式不再可用
-    @Override
-    public void loadGif(@NonNull Context context, @NonNull Uri gifUri, @NonNull ImageView imageView) {
-        Glide.with(context).asGif().load(gifUri).transition(withCrossFade()).into(imageView);
+    override fun loadGif(context: Context, gifUri: Uri, imageView: ImageView) {
+        Glide.with(context).asGif().load(gifUri)
+            .transition(DrawableTransitionOptions.withCrossFade()).into(imageView)
     }
-
 
     /**
      * 获取图片加载框架中的缓存Bitmap
@@ -93,31 +72,47 @@ public class GlideEngine implements ImageEngine {
      * @throws Exception 异常直接抛出，EasyPhotos内部处理
      */
     //安卓10推荐uri，并且path的方式不再可用
-    @Override
-    public Bitmap getCacheBitmap(@NonNull Context context, @NonNull Uri uri, int width, int height) throws Exception {
-        return Glide.with(context).asBitmap().load(uri).submit(width, height).get();
+    @Throws(Exception::class)
+    override fun getCacheBitmap(context: Context, uri: Uri, width: Int, height: Int): Bitmap {
+        return Glide.with(context).asBitmap().load(uri).submit(width, height).get()
     }
 
-    public Bitmap getCacheBitmap(@NonNull Context context, @NonNull String url, int width, int height) throws Exception {
-        return getCacheBitmap(context,Uri.parse(url),width,height);
+    @Throws(Exception::class)
+    fun getCacheBitmap(context: Context, url: String, width: Int, height: Int): Bitmap {
+        return getCacheBitmap(context, Uri.parse(url), width, height)
     }
 
     /**
      * 使用 Glide 加载视频封面
      * @param videoPath 视频的路径或 URL
      */
-    public Bitmap getVideoBitmap( String videoPath) {
-        try {
-            return Glide.with(Application.context)
-                    .asBitmap()
-                    .load(videoPath)
-//                    .skipMemoryCache(true) // 禁用内存缓存
-                    .diskCacheStrategy(DiskCacheStrategy.NONE) // 禁用磁盘缓存
-                    .submit().get();
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
+    fun getVideoBitmap(videoPath: String?): Bitmap? {
+        return try {
+            Glide.with(Application.context)
+                .asBitmap()
+                .load(videoPath) //                    .skipMemoryCache(true) // 禁用内存缓存
+                .diskCacheStrategy(DiskCacheStrategy.NONE) // 禁用磁盘缓存
+                .submit().get()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 
+    companion object {
+        //单例
+        private var inst: GlideEngine? = null
+        val instance: GlideEngine
+            //获取单例
+            get() {
+                if (null == inst) {
+                    synchronized(GlideEngine::class.java) {
+                        if (null == inst) {
+                            inst = GlideEngine()
+                        }
+                    }
+                }
+                return inst!!
+            }
+    }
 }

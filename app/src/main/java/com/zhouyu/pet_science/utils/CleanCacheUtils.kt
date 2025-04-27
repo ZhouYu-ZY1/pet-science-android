@@ -46,13 +46,13 @@ class CleanCacheUtils {
                             when (index2) {
                                 0 -> {
                                     clearImageCache()
-                                    GlideCacheUtil.getInstance().clearImageAllCache(context)
+                                    GlideCacheUtil.instance.clearImageAllCache(context)
                                 }
 
                                 1 -> clearVideoCache()
                                 2 -> {
                                     clearImageCache()
-                                    GlideCacheUtil.getInstance().clearImageAllCache(context)
+                                    GlideCacheUtil.instance.clearImageAllCache(context)
                                     clearMusicCache()
                                     clearLyricCache()
                                     clearVideoCache()
@@ -94,7 +94,7 @@ class CleanCacheUtils {
                 img_size = 0.00f
                 imageSize = 0.00f
             }
-            img_size += GlideCacheUtil.getInstance().getCacheSize(context).toFloat()
+            img_size += GlideCacheUtil.instance.getCacheSize(context).toFloat()
             imageSize = String.format("%.2f", img_size / 1024 / 1024).toFloat()
             val musicFile = File(Application.appCachePath + "/music")
             musicSize = if (musicFile.exists()) {
