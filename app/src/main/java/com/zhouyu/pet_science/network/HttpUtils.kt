@@ -2,8 +2,10 @@ package com.zhouyu.pet_science.network
 
 import android.annotation.SuppressLint
 import com.zhouyu.pet_science.utils.StorageUtils
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.net.Proxy
 import java.security.KeyStore
@@ -52,6 +54,47 @@ object HttpUtils {
         .proxy(Proxy.NO_PROXY) //禁止使用代理
         .connectTimeout(5, TimeUnit.SECONDS)
         .readTimeout(6, TimeUnit.SECONDS).build()
+
+
+    fun get(url: String): String? {
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = this.client.newCall(request).execute()
+        return response.body?.string()
+    }
+
+    fun post(url: String,json: String): String? {
+        val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaType())
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+        val response = client.newCall(request).execute()
+        return response.body?.string()
+    }
+
+    fun put(url: String,json: String): String? {
+        val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaType())
+        val request = Request.Builder()
+            .url(url)
+            .put(requestBody)
+            .build()
+        val response = client.newCall(request).execute()
+        return response.body?.string()
+    }
+
+    fun delete(url: String): String? {
+        val request = Request.Builder()
+            .url(url)
+            .delete()
+            .build()
+
+        val response = this.client.newCall(request).execute()
+        return response.body?.string()
+    }
 
     /**
      * 测试url是否可用

@@ -14,17 +14,23 @@ import androidx.core.view.updatePadding
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.fragments.MessageFragment
+import com.zhouyu.pet_science.fragments.PersonalCenterFragment
+import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.pojo.MessageListItem
+import com.zhouyu.pet_science.utils.ConsoleUtils
+import com.zhouyu.pet_science.utils.PhoneMessage
 import com.zhouyu.pet_science.utils.StorageUtils
 import org.json.JSONArray
 import org.json.JSONObject
 
 class AIChatActivity : BaseActivity() {
     private lateinit var webView: WebView
+    private var userAvatarUrl: String = ""
+    
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ai_chat)
+        setContentView(R.layout.activity_web_page)
 
         // 从Intent中获取API Key和Base URL（如果有）
         intent.getStringExtra("API_KEY")?.let { apiKey = it }
@@ -34,15 +40,22 @@ class AIChatActivity : BaseActivity() {
         if (apiKey.isEmpty()) apiKey = ALIYUN_KEY
         if (baseUrl.isEmpty()) baseUrl = ALIYUN_BASE
 
+
+        // 获取用户头像URL
+        val avatarUrl = PersonalCenterFragment.userInfo?.avatarUrl
+        if (!avatarUrl.isNullOrEmpty()) {
+            userAvatarUrl = BASE_URL + avatarUrl
+        }
+
         initViews()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initViews() {
         val main = findViewById<View>(R.id.main)
-        setTopBarView(main,true)
+//        setTopBarView(main,true)
 
-        webView = findViewById(R.id.webview_ai_chat)
+        webView = findViewById(R.id.webView)
         webView.visibility = View.GONE
 
         // 配置WebView
@@ -57,6 +70,8 @@ class AIChatActivity : BaseActivity() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
+                // 执行js代码处理顶部状态栏
+                webView.loadUrl("javascript:setStatusBarHeight(${PhoneMessage.statusBarHeight + 25})")
                 // 页面加载完成后的操作
                 webView.visibility = View.VISIBLE
             }
@@ -68,7 +83,7 @@ class AIChatActivity : BaseActivity() {
         webView.addJavascriptInterface(WebAppInterface(), "Android")
 
         // 加载HTML文件
-        webView.loadUrl("file:///android_asset/ai_chat/ai-chat.html")
+        webView.loadUrl("file:///android_asset/html/ai-chat/ai-chat.html")
 
         // 处理系统UI和软键盘
         ViewCompat.setOnApplyWindowInsetsListener(main) { v, insets ->
@@ -234,6 +249,11 @@ class AIChatActivity : BaseActivity() {
         fun registerKeyboardListener() {
             // 这个方法被JavaScript调用，表示JS已准备好接收软键盘事件
             // 可以在这里添加额外的初始化逻辑
+        }
+
+        @JavascriptInterface
+        fun getUserAvatarUrl(): String {
+            return userAvatarUrl
         }
     }
 

@@ -1,5 +1,6 @@
 package com.zhouyu.pet_science.fragments.shop
 
+import Product
 import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
@@ -25,11 +26,11 @@ import com.zhouyu.pet_science.network.ProductHttpUtils
 import com.zhouyu.pet_science.utils.MyToast
 import com.zhouyu.pet_science.utils.PhoneMessage
 import com.zhouyu.pet_science.adapter.BannerTextAdapter
-import com.zhouyu.pet_science.model.ProductItem
 
 
 class ShopCategoryFragment() : BaseFragment() {
 
+    private lateinit var productAdapter: ProductAdapter
     private var category: Category = Category(0, "", "")
     private var recycledViewPool: RecyclerView.RecycledViewPool? = null
 
@@ -43,7 +44,7 @@ class ShopCategoryFragment() : BaseFragment() {
     private var currentPage = 1
     private val pageSize = 10
     private var isLoading = false
-    private val productItems: MutableList<ProductItem> = ArrayList()
+    private var productItems: MutableList<Product> = ArrayList()
 
     // 懒加载相关变量
     private var isViewCreated = false  // 视图是否已创建
@@ -91,7 +92,7 @@ class ShopCategoryFragment() : BaseFragment() {
         }
 
         // 初始化适配器
-        val productAdapter = ProductAdapter(productItems)
+        productAdapter = ProductAdapter(productItems)
         binding.productRecyclerView.adapter = productAdapter
 
         // 设置下拉刷新和加载更多
@@ -273,7 +274,7 @@ class ShopCategoryFragment() : BaseFragment() {
     private fun refreshData() {
         // 刷新，重置页码和状态
         currentPage = 1
-        productItems.clear()
+        productAdapter.products.clear()
         loadProductsByPage(currentPage, true)
     }
 
@@ -295,30 +296,17 @@ class ShopCategoryFragment() : BaseFragment() {
             val result = ProductHttpUtils.getProductList(page, pageSize, null, category.categoryCode)
             result?.let { pageResult ->
                 // 获取商品列表
-                val products = pageResult.list.toMutableList()
+                productItems = pageResult.list.toMutableList()
                 // 随机打乱
-                products.shuffle()
-                // 处理商品列表
-                products.forEach { product ->
-                    val imageUrl = ProductHttpUtils.getFirstImage(product.mainImage)
-                    // 处理每个商品
-                    productItems.add(
-                        ProductItem(
-                            imageUrl,
-                            product.productName,
-                            "¥" + product.price,
-                            "2.3万+人付款"
-                        )
-                    )
-                }
-
+                productItems.shuffle()
                 runUiThread{
                     if(isDetached || _binding == null) return@runUiThread
 
                     // 更新UI
-                    binding.productRecyclerView.adapter?.notifyDataSetChanged()
+                    productAdapter.products.addAll(productItems)
+                       productAdapter.notifyDataSetChanged()
                     isLoading = false
-                    val isEmpty = products.isEmpty()
+                    val isEmpty = productItems.isEmpty()
                     // 根据操作类型完成刷新或加载更多
                     if (isRefresh) {
                         binding.refreshLayout.finishRefresh(true)

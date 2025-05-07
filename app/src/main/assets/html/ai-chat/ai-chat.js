@@ -1,3 +1,17 @@
+// 设置状态栏高度
+function setStatusBarHeight(height) {
+    if (height && height > 0) {
+        const dpr = window.devicePixelRatio || 1; // 获取设备像素比
+        const cssHeight = height / dpr; // 将物理像素转换为CSS像素
+        // 获取 payment-header 元素
+        const paymentHeader = document.querySelector('.chat-header');
+        if (paymentHeader) {
+            // 设置 padding-top 为状态栏高度
+            paymentHeader.style.paddingTop = cssHeight + 'px';
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // 获取DOM元素
     const chatContent = document.getElementById('chat-content');
@@ -150,13 +164,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const isActive = index === currentModelIndex;
 
             // 根据模型类型确定图标图片路径
-            let iconSrc = '../images/deepseek.svh'; // 默认图标
+            let iconSrc = 'images/deepseek.svh'; // 默认图标
             if (config.type === 'aliyun') {
-                iconSrc = '../images/tongyi.png'; // 阿里云图标
+                iconSrc = 'images/tongyi.png'; // 阿里云图标
             } else if (config.type === 'deepseek') {
-                iconSrc = '../images/deepseek.svg'; // DeepSeek 图标
+                iconSrc = 'images/deepseek.svg'; // DeepSeek 图标
             } else if (config.type === 'hunyuan') {
-                iconSrc = '../images/yuanbao.png'; // 混元图标
+                iconSrc = 'images/yuanbao.png'; // 混元图标
             }
             // 可以根据需要添加更多模型的 else if 判断
 
@@ -374,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const messageHTML = `
             <div class="chat-message ai-message" id="${messageId}">
                 <div class="message-avatar">
-                    <img src="../images/ai_icon.svg" alt="AI头像">
+                    <img src="images/ai_icon.svg" alt="AI头像">
                 </div>
                 <div class="message-content">
                     <div class="message-bubble">
@@ -432,7 +446,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // 添加用户消息
     function addUserMessage(message) {
         const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
+        
+        // 获取用户头像URL，如果在Android环境中
+        let userAvatarUrl = 'images/default_avatar.jpg'; // 默认头像
+        if (window.Android && typeof window.Android.getUserAvatarUrl === 'function') {
+            const avatarUrl = window.Android.getUserAvatarUrl();
+            if (avatarUrl && avatarUrl.trim() !== '') {
+                userAvatarUrl = avatarUrl;
+            }
+        }
+        
         const messageHTML = `
             <div class="chat-message user-message">
                 <div class="message-content">
@@ -442,22 +465,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="message-time">${time}</div>
                 </div>
                 <div class="message-avatar">
-                    <img src="../images/default_avatar.jpg" alt="用户头像">
+                    <img src="${userAvatarUrl}" alt="用户头像">
                 </div>
             </div>
         `;
-
+        
         chatContent.insertAdjacentHTML('beforeend', messageHTML);
-
+        
         // 确保用户消息的头像在右侧显示
         const userMessages = document.querySelectorAll('.user-message');
         const lastUserMessage = userMessages[userMessages.length - 1];
-
+        
         // 添加内联样式确保正确显示
         lastUserMessage.style.display = 'flex';
         lastUserMessage.style.flexDirection = 'row';
         lastUserMessage.style.justifyContent = 'flex-end';
-
+        
         scrollToBottom();
     }
 
@@ -468,7 +491,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const messageHTML = `
             <div class="chat-message ai-message">
                 <div class="message-avatar">
-                    <img src="../images/ai_icon.svg" alt="AI头像">
+                    <img src="images/ai_icon.svg" alt="AI头像">
                 </div>
                 <div class="message-content">
                     <div class="message-bubble">

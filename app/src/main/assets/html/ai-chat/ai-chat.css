@@ -270,7 +270,7 @@
 
 .model-item.active {
     border-color: var(--primary-color);
-    background-color: rgba(255, 107, 129, 0.05);
+    background-color: #F0F9FF;
 }
 
 .model-icon {

@@ -1,24 +1,20 @@
 package com.zhouyu.pet_science.fragments
 
+import Product
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.zhouyu.pet_science.activities.SearchActivity
 import com.zhouyu.pet_science.adapter.ProductAdapter
-import com.zhouyu.pet_science.application.Application
 import com.zhouyu.pet_science.databinding.FragmentSearchResultBinding
-import com.zhouyu.pet_science.model.ProductItem
 import com.zhouyu.pet_science.network.ProductHttpUtils
 
 class SearchProductFragment : BaseFragment() {
     private var _binding: FragmentSearchResultBinding? = null
     private val binding get() = _binding!!
     private var isLoading = false
-    private var productItems: MutableList<ProductItem> = ArrayList()
+    private var productItems: MutableList<Product> = ArrayList()
     private var lastSearchKeyword: String = "" // 添加记录上次搜索关键词的变量
     
     override fun onCreateView(

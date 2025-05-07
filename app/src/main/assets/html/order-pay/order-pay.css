@@ -1,0 +1,540 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* 防止 body 滚动 */
+}
+
+.payment-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5;
+}
+
+/* 顶部导航 */
+.payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: white;
+    /* position: sticky;  如果需要顶部也粘性定位，可以取消注释 */
+    /* top: 0; */
+    z-index: 10;
+    flex-shrink: 0; /* 防止头部被压缩 */
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--dark-gray);
+    cursor: pointer;
+}
+
+.payment-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+
+/* 倒计时提示 */
+.countdown-bar {
+    background-color: #fff8e6;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: #ff9800;
+}
+
+.countdown-bar i {
+    margin-right: 8px;
+}
+
+#countdown-timer {
+    font-weight: 600;
+}
+
+/* 可滚动内容区域 */
+.payment-content {
+    flex-grow: 1; /* 占据剩余空间 */
+    overflow-y: auto; /* 内容超出时垂直滚动 */
+    padding-bottom: 10px; /* 避免内容被底部栏遮挡，根据底部栏高度调整 */
+}
+
+/* 订单信息 */
+.order-summary {
+    background-color: white;
+    padding: 20px 15px;
+    margin-bottom: 10px;
+    /* 从 .payment-content 内部移除 margin-top */
+}
+
+.amount-section {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.amount-label {
+    font-size: 14px;
+    color: var(--dark-gray);
+    margin-bottom: 5px;
+}
+
+.amount-value {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.order-detail-link {
+    text-align: center;
+    font-size: 12px;
+    color: var(--dark-gray);
+    cursor: pointer;
+}
+
+.order-detail-link i {
+    font-size: 10px;
+    transition: transform 0.3s;
+}
+
+/* 订单详情折叠面板 */
+.order-detail-panel {
+    background-color: white;
+    padding: 0 15px 15px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.product-info {
+    display: flex;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.product-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 4px;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.product-desc {
+    flex: 1;
+}
+
+.product-name {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-spec {
+    font-size: 12px;
+    color: var(--dark-gray);
+    margin-bottom: 10px;
+}
+
+.product-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-price {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.product-quantity {
+    font-size: 12px;
+    color: var(--dark-gray);
+}
+
+.price-detail {
+    padding-top: 15px;
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.price-item:last-child {
+    margin-bottom: 0;
+}
+
+.price-label {
+    font-size: 14px;
+    color: var(--dark-gray);
+}
+
+.price-value {
+    font-size: 14px;
+}
+
+.price-item.total {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid var(--light-gray);
+}
+
+.price-item.total .price-label,
+.price-item.total .price-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+/* 支付方式 */
+.payment-section {
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 10px; /* 最后一个元素的底部边距 */
+    /* flex: 1;  移除 flex: 1 */
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.payment-method-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--light-gray);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-method-item.active {
+    border-color: var(--primary-color);
+    background-color: #F0F9FF;
+}
+
+.method-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 24px;
+}
+
+.wechat-icon {
+    background-color: #07c160;
+    color: white;
+}
+
+.alipay-icon {
+    background-color: #1677ff;
+    color: white;
+}
+
+.unionpay-icon {
+    background-color: #e60012;
+    color: white;
+}
+
+.method-info {
+    flex: 1;
+}
+
+.method-name {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 3px;
+}
+
+.method-desc {
+    font-size: 12px;
+    color: var(--dark-gray);
+}
+
+.method-check {
+    color: var(--primary-color);
+    font-size: 18px;
+    opacity: 0;
+}
+
+.payment-method-item.active .method-check {
+    opacity: 1;
+}
+
+/* 底部支付按钮 */
+.payment-action {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    /* position: fixed;  改为 flex 布局的一部分 */
+    /* bottom: 0; */
+    /* left: 0; */
+    /* right: 0; */
+    z-index: 10; /* 确保在最上层 */
+    flex-shrink: 0; /* 防止底部栏被压缩 */
+}
+
+.payment-info {
+    flex: 1;
+}
+
+.payment-amount {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.payment-desc {
+    font-size: 12px;
+    color: var(--dark-gray);
+}
+
+.pay-now-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 25px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* 支付成功弹窗 */
+.payment-success-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 320px;
+    padding: 30px 20px;
+    text-align: center;
+    z-index: 1001;
+    display: none;
+}
+
+.success-icon {
+    font-size: 50px;
+    color: #4caf50;
+    margin-bottom: 15px;
+}
+
+.success-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.success-desc {
+    font-size: 14px;
+    color: var(--dark-gray);
+    margin-bottom: 20px;
+}
+
+.success-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.success-btn {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.outline-btn {
+    background-color: white;
+    color: var(--dark-gray);
+    border: 1px solid var(--medium-gray);
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+/* 支付遮罩层 */
+.payment-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: none;
+}
+
+
+/* 支付密码弹窗 */
+.payment-password-modal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    z-index: 1001;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.payment-password-modal.show {
+    transform: translateY(0);
+}
+
+.password-content {
+    padding: 20px;
+}
+
+.password-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.password-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.close-password-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--dark-gray);
+    cursor: pointer;
+    display: none;
+}
+
+.password-amount {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.password-input-area {
+    margin-bottom: 20px;
+}
+
+.password-dots {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    width: 80%;
+    max-width: 300px;
+}
+
+.password-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--medium-gray);
+    position: relative;
+}
+
+.password-dot.filled::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #333;
+}
+
+.password-error {
+    text-align: center;
+    color: #f44336;
+    font-size: 12px;
+    margin-top: 10px;
+    min-height: 16px;
+}
+
+.virtual-keyboard {
+    margin-bottom: 20px;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.keyboard-key {
+    width: 30%;
+    height: 50px;
+    border-radius: 8px;
+    border: 1px solid var(--light-gray);
+    background-color: white;
+    font-size: 20px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.keyboard-key:active {
+    background-color: var(--light-gray);
+}
+
+.number-key {
+    font-size: 22px;
+}
+
+.delete-key, .shuffle-key {
+    font-size: 18px;
+    color: var(--dark-gray);
+}
+
+.forgot-password {
+    text-align: center;
+}
+
+.forgot-password a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* 键盘按键按下效果 */
+.keyboard-key.pressed {
+    background-color: var(--light-gray);
+}

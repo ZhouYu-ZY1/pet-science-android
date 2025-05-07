@@ -1,0 +1,603 @@
+.address-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5;
+}
+
+/* 顶部导航 */
+.address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--dark-gray);
+    cursor: pointer;
+}
+
+.address-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+
+/* 地址列表 */
+.address-list {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.address-item {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.address-info {
+    flex: 1;
+}
+
+.address-user {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.user-name {
+    font-size: 16px;
+    font-weight: 500;
+    margin-right: 15px;
+}
+
+.user-phone {
+    font-size: 14px;
+    color: var(--dark-gray);
+}
+
+.address-tag-label {
+    display: inline-block;
+    color: var(--primary-color);
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+    border: 1px solid var(--primary-color);
+}
+
+.address-detail {
+    display: flex;
+    align-items: flex-start;
+}
+
+.default-tag {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 8px;
+    margin-top: 2px;
+    white-space: nowrap;
+}
+
+.address-detail p {
+    font-size: 14px;
+    color: var(--dark-gray);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.address-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 15px;
+}
+
+.edit-btn, .delete-btn {
+    background: none;
+    border: none;
+    color: var(--dark-gray);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* 添加地址按钮 */
+.add-address-btn-container {
+    padding: 15px;
+    position: sticky;
+    bottom: 0;
+    background-color: #f5f5f5;
+    z-index: 10; /* 确保按钮在最上层 */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05); /* 添加阴影效果 */
+}
+
+.add-address-btn {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.add-address-btn i {
+    margin-right: 8px;
+}
+
+/* 地址表单弹窗 */
+.address-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 1000;
+}
+
+.address-modal-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding: 20px;
+    max-height: 90%;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--dark-gray);
+    cursor: pointer;
+}
+
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: 10px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.form-group input[type="text"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--medium-gray);
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-group textarea {
+    height: 80px;
+    resize: none;
+}
+
+.region-select {
+    display: flex;
+    gap: 10px;
+}
+
+.region-select select {
+    flex: 1;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.checkbox-group label {
+    margin: 0;
+    cursor: pointer;
+}
+
+/* 地址标签样式 */
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.address-tag {
+    padding: 6px 15px;
+    border: 1px solid var(--medium-gray)!important;
+    border-radius: 16px;
+    font-size: 12px;
+    color: var(--dark-gray);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.address-tag.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.custom-tag {
+    min-width: 40px;
+}
+.custom-tag.active input {
+    color: white; /* 设置输入文字颜色 */
+}
+
+.custom-tag.active input::placeholder {
+    color: #e7e4e4; /* 设置提示文字颜色 */
+}
+
+.custom-tag input {
+    width: 70px!important;
+    border: none!important;
+    background: transparent;
+    text-align: center;
+    font-size: 12px!important;
+    outline: none;
+    padding: 0!important;
+}
+
+
+
+/* 开关样式 */
+.default-switch {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--medium-gray);
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--primary-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+.slider.round {
+    border-radius: 24px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.save-address-btn {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* 删除确认弹窗 */
+.confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.confirm-content {
+    width: 80%;
+    max-width: 300px;
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.confirm-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.confirm-content p {
+    font-size: 14px;
+    color: var(--dark-gray);
+    margin-bottom: 20px;
+}
+
+.confirm-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cancel-btn, .confirm-btn {
+    flex: 1;
+    padding: 10px 0;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background-color: var(--light-gray);
+    color: var(--dark-gray);
+    border: none;
+    margin-right: 10px;
+}
+
+.confirm-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+/* 空状态提示 */
+.empty-address {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-address i {
+    font-size: 48px;
+    color: var(--medium-gray);
+    margin-bottom: 15px;
+}
+
+.empty-address p {
+    font-size: 14px;
+    color: var(--dark-gray);
+    margin: 0;
+}
+
+/* 地区选择器触发按钮样式 */
+.region-picker-trigger {
+    width: 100%;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.region-picker-trigger input {
+    border: none;
+    background: transparent;
+    width: 90%;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+}
+
+/* 地区选择器弹窗 */
+.region-picker-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 1100;
+}
+
+.region-picker-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    max-height: 70%;
+    display: flex;
+    flex-direction: column;
+}
+
+.region-picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.region-picker-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.cancel-picker-btn, .confirm-picker-btn {
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.cancel-picker-btn {
+    color: var(--dark-gray);
+}
+
+.confirm-picker-btn {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.region-picker-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.region-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.region-tab {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 14px;
+    color: var(--dark-gray);
+    cursor: pointer;
+    position: relative;
+}
+
+.region-tab.active {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.region-tab.active:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 25%;
+    width: 50%;
+    height: 2px;
+    background-color: var(--primary-color);
+}
+
+.region-content {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+}
+
+.region-list {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    display: none;
+    padding: 10px 0;
+}
+
+.region-list.active {
+    display: block;
+}
+
+.region-item {
+    padding: 12px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.region-item.active {
+    color: var(--primary-color);
+}
+
+.region-item.active:after {
+    content: '\f00c';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-left: auto;
+    color: var(--primary-color);
+}

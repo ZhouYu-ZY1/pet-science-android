@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.WindowManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.ClassicsHeader
 import com.zhouyu.pet_science.R
@@ -39,6 +40,8 @@ class StartActivity : BaseActivity() {
         Glide.with(this)
             .load(R.mipmap.start_background)
             .centerCrop()
+            .skipMemoryCache(true) // 禁用内存缓存
+            .diskCacheStrategy(DiskCacheStrategy.NONE) // 禁用磁盘缓存
             .into(findViewById(R.id.back_image))
 
         executeThread{

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <!-- 基础颜色 -->
-    <color name="primary">#ff6b81</color>
-    <color name="secondary">#ff9eb5</color>
-    <color name="dark_gray">#666666</color>
-    <color name="medium_gray">#999999</color>
-    <color name="light_gray">#EEEEEE</color>
+<!--  &lt;!&ndash; 基础颜色 &ndash;&gt;-->
+<!--    <color name="primary">#ff6b81</color>-->
+<!--    <color name="secondary">#ff9eb5</color>-->
+<!--    <color name="dark_gray">#666666</color>-->
+<!--    <color name="medium_gray">#999999</color>-->
+<!--    <color name="light_gray">#EEEEEE</color>-->
     
     <!-- 社交媒体颜色 -->
     <color name="wechat">#07C160</color>
@@ -32,6 +32,7 @@
     <color name="Theme">#18A2FD</color>
     <!--    <color name="Theme">#e8989a</color>-->
     <color name="ThemeTinge">#66C1FB</color>
+    <color name="secondTinge">#F0F9FF</color>
     <color name="Theme2">#FF3C3C</color>
     <!--    <color name="Theme">#22D59D</color>-->
 

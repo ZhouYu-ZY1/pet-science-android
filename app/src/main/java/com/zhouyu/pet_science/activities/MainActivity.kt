@@ -167,8 +167,19 @@ class MainActivity : BaseActivity() {
                 content.translationX = -distance
             }
 
-            override fun onDrawerOpened(drawerView: View) {}
-            override fun onDrawerClosed(drawerView: View) {}
+            private var isChange = false
+            override fun onDrawerOpened(drawerView: View) {
+                isChange = false
+                if(!isStatusBarDark){
+                    setStatusBarTextColor(true, window)
+                    isChange = true
+                }
+            }
+            override fun onDrawerClosed(drawerView: View) {
+                if(isChange){
+                    setStatusBarTextColor(false, window)
+                }
+            }
             override fun onDrawerStateChanged(newState: Int) {}
         })
         StorageUtils.put("noFirstOpenAPP", true)
@@ -177,13 +188,23 @@ class MainActivity : BaseActivity() {
     @SuppressLint("RtlHardcoded", "SetTextI18n")
     private fun initLeftView() {
         cacheSize = findViewById(R.id.cache_size)
-
         //清除缓存
         findViewById<View>(R.id.clear_cache).setOnClickListener {
             calculateCacheSize()
             cleanCacheTool.showDialog(this, cacheSize)
         }
         calculateCacheSize()
+
+        //退出登录
+        findViewById<View>(R.id.quit_login).setOnClickListener{
+            StorageUtils.delete("token")
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
+
+        findViewById<View>(R.id.layoutAddress).setOnClickListener{
+            startActivity(Intent(this, AddressActivity::class.java))
+        }
     }
 
     private val cleanCacheTool = CleanCacheUtils.instance

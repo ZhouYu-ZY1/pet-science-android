@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.adapter.message.MessageAdapter.MessageViewHolder
+import com.zhouyu.pet_science.fragments.PersonalCenterFragment
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.pojo.ChatMessage
 import com.zhouyu.pet_science.utils.TimeUtils
+import kotlin.math.acos
 
 class MessageAdapter(private val messages: List<ChatMessage>, private val currentUserId: String) :
     RecyclerView.Adapter<MessageViewHolder>() {
@@ -52,8 +54,10 @@ class MessageAdapter(private val messages: List<ChatMessage>, private val curren
             holder.messageContentLayout.gravity = Gravity.END
             holder.messageContent.setBackgroundResource(R.drawable.message_bg_blue_me)
             holder.messageContent.setTextColor(holder.itemView.context.getColor(R.color.white))
-            //            String avatarUrl = InformationChangeActivity.loginInformation.getAvatarUrl();
-//            Glide.with(holder.itemView.getContext()).load(avatarUrl).into(holder.avatarImage);
+            val avatarUrl = PersonalCenterFragment.userInfo?.avatarUrl
+            if(!avatarUrl.isNullOrEmpty()){
+                Glide.with(holder.itemView.context).load(BASE_URL+ avatarUrl).into(holder.avatarImage)
+            }
         } else {
             // 其他用户发送的消息，显示在左边
             layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END)
@@ -61,10 +65,14 @@ class MessageAdapter(private val messages: List<ChatMessage>, private val curren
             holder.messageContentLayout.gravity = Gravity.START
             holder.messageContent.setBackgroundResource(R.drawable.message_bg_white_other)
             holder.messageContent.setTextColor(holder.itemView.context.getColor(R.color.black))
+
+            // 头像加载最后一条对方发送的消息
+            val lastOtherMessage = messages.reversed().find { it.senderId != currentUserId }
+            val otherAvatar = if(lastOtherMessage != null){ lastOtherMessage.senderAvatar }else{ "" }
             Glide.with(holder.itemView.context)
-                .load(BASE_URL + chatMessage.senderAvatar)
-                .placeholder(R.drawable.default_user_icon)
-                .error(R.drawable.default_user_icon)
+                .load(BASE_URL + otherAvatar)
+                .placeholder(R.drawable.default_avatar)
+                .error(R.drawable.default_avatar)
                 .into(holder.avatarImage)
         }
         holder.avatarImage.layoutParams = layoutParams

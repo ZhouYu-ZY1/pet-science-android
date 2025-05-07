@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单支付 - 萌宠世界</title>
+    <link rel="stylesheet" href="../resource/css/all.min.css">
+    <link rel="stylesheet" href="../resource/webfonts/fa-solid-900.woff2">
+    <link rel="stylesheet" href="../resource/webfonts/fa-brands-400.woff2">
+    <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../resource/css/style.css">
+    <link rel="stylesheet" href="order-pay.css">
+</head>
+<body>
+    <div class="payment-container">
+        <!-- 顶部导航 -->
+        <div class="payment-header">
+            <button class="back-btn" id="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>订单支付</h1>
+            <div style="width:0px;"></div> <!-- 保持标题居中 -->
+        </div>
+
+        <!-- 可滚动内容区域 -->
+        <div class="payment-content">
+            <!-- 倒计时提示 -->
+            <div class="countdown-bar">
+                <i class="fas fa-clock"></i>
+                <span>请在 <span id="countdown-timer">29:59</span> 内完成支付，超时订单将自动取消</span>
+            </div>
+
+            <!-- 订单信息 -->
+            <div class="order-summary">
+                <div class="amount-section">
+                    <div class="amount-label">支付金额</div>
+                    <div class="amount-value">¥<span id="payment-amount">45.00</span></div>
+                </div>
+                <div class="order-detail-link" id="show-detail-btn">
+                    订单详情 <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+
+            <!-- 订单详情折叠面板 -->
+            <div class="order-detail-panel" id="order-detail-panel">
+                <div class="product-info">
+                    <img src="" alt="商品图片" class="product-img">
+                    <div class="product-desc">
+                        <h3 class="product-name">宠物猫咪狗狗洗澡沐浴露香波</h3>
+                        <p class="product-spec">规格：500ml 草莓香型</p>
+                        <div class="product-price-row">
+                            <span class="product-price">¥45.00</span>
+                            <span class="product-quantity">x1</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="price-detail">
+                    <div class="price-item">
+                        <div class="price-label">商品金额</div>
+                        <div class="price-value">¥45.00</div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-label">运费</div>
+                        <div class="price-value">¥0.00</div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-label">优惠</div>
+                        <div class="price-value">-¥0.00</div>
+                    </div>
+                    <!-- 手动输入金额的容器会由JS动态插入这里 -->
+                    <div class="price-item total">
+                        <div class="price-label">实付款</div>
+                        <div class="price-value">¥45.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 支付方式 -->
+            <div class="payment-section">
+                <h2 class="section-title">支付方式</h2>
+                <div class="payment-methods">
+                    <div class="payment-method-item active" data-method="wx">
+                        <div class="method-icon wechat-icon">
+                            <i class="fab fa-weixin"></i>
+                        </div>
+                        <div class="method-info">
+                            <div class="method-name">微信支付</div>
+                            <div class="method-desc">微信安全支付</div>
+                        </div>
+                        <div class="method-check">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+
+                    <div class="payment-method-item" data-method="zfb">
+                        <div class="method-icon alipay-icon">
+                            <i class="fab fa-alipay"></i>
+                        </div>
+                        <div class="method-info">
+                            <div class="method-name">支付宝</div>
+                            <div class="method-desc">支付宝安全支付</div>
+                        </div>
+                        <div class="method-check">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+
+                    <div class="payment-method-item" data-method="card">
+                        <div class="method-icon unionpay-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="method-info">
+                            <div class="method-name">银联支付</div>
+                            <div class="method-desc">银联安全支付</div>
+                        </div>
+                        <div class="method-check">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- 结束可滚动内容区域 -->
+
+        <!-- 底部支付按钮 (固定) -->
+        <div class="payment-action">
+            <div class="payment-info">
+                <div class="payment-amount">¥<span id="bottom-payment-amount">45.00</span></div>
+                <div class="payment-desc">含运费¥0.00</div>
+            </div>
+            <button class="pay-now-btn" id="pay-now-btn">
+                立即支付
+            </button>
+        </div>
+
+        <!-- 支付成功弹窗 -->
+        <div class="payment-success-modal" id="payment-success-modal">
+            <div class="success-content">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="success-title">支付成功</h3>
+                <p class="success-desc">您的订单已支付成功，感谢您的购买！</p>
+                <div class="success-actions">
+                    <button class="success-btn outline-btn" id="view-order-btn">查看订单</button>
+                    <button class="success-btn primary-btn" id="continue-shopping-btn">继续购物</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 支付遮罩层 -->
+        <div class="payment-overlay" id="payment-overlay"></div>
+        
+        <!-- 支付密码弹窗 -->
+        <div class="payment-password-modal" id="payment-password-modal">
+            <div class="password-content">
+                <div class="password-header">
+                    <h3>请输入支付密码</h3>
+                    <button class="close-password-btn" id="close-password-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="password-amount">¥<span id="modal-payment-amount">45.00</span></div>
+                <div class="password-input-area">
+                    <div class="password-dots">
+                        <div class="password-dot"></div>
+                        <div class="password-dot"></div>
+                        <div class="password-dot"></div>
+                        <div class="password-dot"></div>
+                        <div class="password-dot"></div>
+                        <div class="password-dot"></div>
+                    </div>
+                    <div class="password-error" id="password-error"></div>
+                </div>
+                <div class="virtual-keyboard">
+                    <div class="keyboard-row">
+                        <button class="keyboard-key number-key" data-key="1">1</button>
+                        <button class="keyboard-key number-key" data-key="2">2</button>
+                        <button class="keyboard-key number-key" data-key="3">3</button>
+                    </div>
+                    <div class="keyboard-row">
+                        <button class="keyboard-key number-key" data-key="4">4</button>
+                        <button class="keyboard-key number-key" data-key="5">5</button>
+                        <button class="keyboard-key number-key" data-key="6">6</button>
+                    </div>
+                    <div class="keyboard-row">
+                        <button class="keyboard-key number-key" data-key="7">7</button>
+                        <button class="keyboard-key number-key" data-key="8">8</button>
+                        <button class="keyboard-key number-key" data-key="9">9</button>
+                    </div>
+                    <div class="keyboard-row">
+                        <button class="keyboard-key empty-key">
+                            <!-- 空白按钮 -->
+                        </button>
+                        <button class="keyboard-key number-key" data-key="0">0</button>
+                        <button class="keyboard-key delete-key" id="delete-key">
+                            <i class="fas fa-backspace"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="forgot-password">
+                    <a href="#">忘记密码？</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="order-pay.js"></script>
+</body>
+</html>

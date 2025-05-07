@@ -99,7 +99,9 @@ open class BaseActivity : AppCompatActivity() {
         /**
          * 设置状态栏文字颜色
          */
+        var isStatusBarDark = false
         fun setStatusBarTextColor(dark: Boolean, window: Window) {
+            isStatusBarDark = dark
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 // Android 11+ 推荐方式
                 window.insetsController?.setSystemBarsAppearance(
@@ -121,7 +123,6 @@ open class BaseActivity : AppCompatActivity() {
          */
         @JvmStatic
         fun setStatusBarFullTransparent(window: Window) {
-            //21表示5.0
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)

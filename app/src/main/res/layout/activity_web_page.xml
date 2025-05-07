@@ -9,7 +9,7 @@
     tools:context=".activities.AIChatActivity">
 
     <WebView
-        android:id="@+id/webview_ai_chat"
+        android:id="@+id/webView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scrollbars="none"

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- 商品信息 -->
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/product_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/view_radius" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="15dp">
+
+            <TextView
+                android:id="@+id/product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Theme"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="¥89.00" />
+
+            <TextView
+                android:id="@+id/selected_spec_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="#666666"
+                android:textSize="14sp"
+                android:text="已选：2.5L 白色" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 容量选择 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="容量"
+        android:textColor="#333333"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
+
+    <RadioGroup
+        android:id="@+id/capacity_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/capacity_2_5l"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2.5L"
+            android:checked="true"
+            android:background="@drawable/product_spec_radio_selector"
+            android:button="@null"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:layout_marginEnd="10dp"
+            android:textColor="@drawable/product_spec_radio_text_selector"
+            android:gravity="center" />
+
+        <RadioButton
+            android:id="@+id/capacity_4l"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4L"
+            android:background="@drawable/product_spec_radio_selector"
+            android:button="@null"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:textColor="@drawable/product_spec_radio_text_selector"
+            android:gravity="center" />
+    </RadioGroup>
+
+    <!-- 颜色选择 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="颜色"
+        android:textColor="#333333"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
+
+    <RadioGroup
+        android:id="@+id/color_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/color_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="白色"
+            android:checked="true"
+            android:background="@drawable/product_spec_radio_selector"
+            android:button="@null"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:layout_marginEnd="10dp"
+            android:textColor="@drawable/product_spec_radio_text_selector"
+            android:gravity="center" />
+
+        <RadioButton
+            android:id="@+id/color_pink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="粉色"
+            android:background="@drawable/product_spec_radio_selector"
+            android:button="@null"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:layout_marginEnd="10dp"
+            android:textColor="@drawable/product_spec_radio_text_selector"
+            android:gravity="center" />
+
+        <RadioButton
+            android:id="@+id/color_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="蓝色"
+            android:background="@drawable/product_spec_radio_selector"
+            android:button="@null"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:textColor="@drawable/product_spec_radio_text_selector"
+            android:gravity="center" />
+    </RadioGroup>
+
+    <!-- 数量选择 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="数量"
+            android:textColor="#333333"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/decrease_btn"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@drawable/view_radius"
+                android:backgroundTint="#F5F5F5"
+                android:padding="6dp"
+                android:src="@drawable/minus_icon" />
+
+            <TextView
+                android:id="@+id/quantity_text"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/increase_btn"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@drawable/view_radius"
+                android:backgroundTint="#F5F5F5"
+                android:padding="6dp"
+                android:src="@drawable/plus_icon" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 收货地址选择 -->
+    <LinearLayout
+        android:id="@+id/address_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="收货地址"
+            android:textColor="#333333"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp" />
+
+        <LinearLayout
+            android:id="@+id/address_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/view_radius"
+            android:backgroundTint="#F0F4F6"
+            android:padding="12dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_location"
+                app:tint="@color/Theme"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/address_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#333333"
+                    android:textSize="14sp"
+                    android:text="请选择收货地址" />
+
+                <TextView
+                    android:id="@+id/address_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#666666"
+                    android:textSize="12sp"
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/next_icon" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 确认按钮 -->
+    <TextView
+        android:id="@+id/confirm_btn"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/view_radius"
+        android:backgroundTint="@color/Theme"
+        android:gravity="center"
+        android:text="立即支付"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+</LinearLayout>
