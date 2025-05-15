@@ -23,22 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // 订单详情折叠面板
-    const showDetailBtn = document.getElementById('show-detail-btn');
-    const orderDetailPanel = document.getElementById('order-detail-panel');
-    let detailPanelVisible = false;
-    
-    showDetailBtn.addEventListener('click', function() {
-        detailPanelVisible = !detailPanelVisible;
-        
-        if (detailPanelVisible) {
-            orderDetailPanel.style.display = 'block';
-            showDetailBtn.querySelector('i').style.transform = 'rotate(180deg)';
-        } else {
-            orderDetailPanel.style.display = 'none';
-            showDetailBtn.querySelector('i').style.transform = 'rotate(0)';
-        }
-    });
     
     // 支付方式选择
     const paymentMethods = document.querySelectorAll('.payment-method-item');

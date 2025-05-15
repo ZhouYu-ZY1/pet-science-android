@@ -417,6 +417,25 @@ function initRegionSelects() {
             regionPickerModal.style.display = 'none';
         }
     });
+
+     // 添加自定义事件监听，用于编辑地址时更新选中状态
+     document.addEventListener('updateRegion', function() {
+        // 获取当前设置的省市区值
+        const provinceValue = document.getElementById('province').value;
+        const cityValue = document.getElementById('city').value;
+        const districtValue = document.getElementById('district').value;
+        
+        // 更新选中状态
+        selectedProvince = provinceValue;
+        selectedCity = cityValue;
+        selectedDistrict = districtValue;
+        
+        // 同时更新临时值，以便打开选择器时显示正确
+        tempProvince = provinceValue;
+        tempCity = cityValue;
+        tempDistrict = districtValue;
+    });
+
 }
 
 // 绑定事件
@@ -550,17 +569,22 @@ function editAddress(id) {
     }
 
     // 设置省市区
-    provinceSelect.value = address.province;
-    provinceSelect.dispatchEvent(new Event('change'));
+    document.getElementById('province').value = address.province;
+    document.getElementById('city').value = address.city;
+    document.getElementById('district').value = address.district;
     
-    setTimeout(() => {
-        citySelect.value = address.city;
-        citySelect.dispatchEvent(new Event('change'));
-        
-        setTimeout(() => {
-            districtSelect.value = address.district;
-        }, 100);
-    }, 100);
+    // 更新地区选择器的显示文本
+    const regionText = document.getElementById('region-text');
+    regionText.value = `${address.province} ${address.city} ${address.district}`;
+    
+    // 更新地区选择器的临时选择值和选中状态
+    // 在initRegionSelects函数中定义的变量，需要通过DOM获取
+    const regionPickerTrigger = document.getElementById('region-picker-trigger');
+    if (regionPickerTrigger) {
+        // 触发一次点击事件来更新选中状态
+        const event = new Event('updateRegion');
+        document.dispatchEvent(event);
+    }
 
     addressModal.style.display = 'block';
 }

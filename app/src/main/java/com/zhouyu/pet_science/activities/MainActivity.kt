@@ -202,6 +202,11 @@ class MainActivity : BaseActivity() {
             finish()
         }
 
+        findViewById<View>(R.id.layoutMyOrders).setOnClickListener{
+            startActivity(Intent(this, MyOrdersActivity::class.java))
+        }
+
+        //地址管理
         findViewById<View>(R.id.layoutAddress).setOnClickListener{
             startActivity(Intent(this, AddressActivity::class.java))
         }

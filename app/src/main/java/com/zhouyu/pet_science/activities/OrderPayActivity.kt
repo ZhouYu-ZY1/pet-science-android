@@ -14,6 +14,7 @@ import androidx.core.view.updatePadding
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.model.Order
+import com.zhouyu.pet_science.network.OrderHttpUtils
 import com.zhouyu.pet_science.network.ProductHttpUtils
 import com.zhouyu.pet_science.utils.ConsoleUtils
 import com.zhouyu.pet_science.utils.MyToast
@@ -52,7 +53,7 @@ class OrderPayActivity : BaseActivity() {
         // 使用协程获取订单详情
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                val result = ProductHttpUtils.getOrderDetail(orderId)
+                val result = OrderHttpUtils.getOrderDetail(orderId)
                 if (result?.code == 200 && result.data != null) {
                     // 获取订单成功
                     order = result.data
@@ -143,7 +144,7 @@ class OrderPayActivity : BaseActivity() {
             var expirationSeconds = 0L
             try {
                 // 同步调用获取订单过期时间
-                val result = ProductHttpUtils.getOrderExpiration(orderId)
+                val result = OrderHttpUtils.getOrderExpiration(orderId)
                 if (result?.code == 200 && result.data != null) {
                     expirationSeconds = result.data
                 }
@@ -165,7 +166,7 @@ class OrderPayActivity : BaseActivity() {
             }
             try {
                 // 调用支付接口
-                val result = ProductHttpUtils.payOrder(orderId, paymentMethod)
+                val result = OrderHttpUtils.payOrder(orderId, paymentMethod)
                 Thread.sleep(1000)
                 return if (result?.code == 200) {
                     """

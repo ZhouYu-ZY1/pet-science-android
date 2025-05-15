@@ -601,3 +601,10 @@ input:checked + .slider:before {
     margin-left: auto;
     color: var(--primary-color);
 }
+.address-select {
+    display: flex;
+    align-items: center;
+    color: var(--dark-gray);
+    font-size: 16px;
+    margin-left: 10px;
+}

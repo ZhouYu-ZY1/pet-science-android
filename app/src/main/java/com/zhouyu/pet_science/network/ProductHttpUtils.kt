@@ -148,6 +148,27 @@ object ProductHttpUtils {
         }
     }
 
+    /**
+     * 获取产品详情
+     * @param productId 产品ID
+     */
+    fun getProductDetail(productId: Int): Product? {
+        val url = "$BASE_URL/product/$productId"
+        return try {
+            val response = HttpUtils.get(url)
+            if (!response.isNullOrEmpty()) {
+                val jsonObject = JSONObject(response)
+                val dataObject = jsonObject.getJSONObject("data")
+                return formatProduct(dataObject)
+            } else {
+                return null
+            }
+        } catch (e: Exception) {
+            ConsoleUtils.logErr("获取产品详情失败: ${e.message}")
+            null
+        }
+    }
+
     private fun formatProduct(item: JSONObject): Product {
         val images = item.getString("mainImage")
         return Product(
@@ -183,124 +204,7 @@ object ProductHttpUtils {
             .filter { it.isNotEmpty() }
             .map { "$BASE_URL$it" }
     }
-
-    /**
-     * 创建订单
-     */
-    suspend fun createOrder(orderRequest: CreateOrderRequest): Result<OrderResponse>? {
-        return withContext(Dispatchers.IO) { // 使用协程在后台线程执行网络请求
-            try {
-                val gson = Gson()
-                val json = gson.toJson(orderRequest)
-                val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaType())
-
-                val request = Request.Builder()
-                    .url("$BASE_URL/order/create") // 确认后端接口路径
-                    .post(requestBody)
-                    .build()
-
-                val response = HttpUtils.client.newCall(request).execute()
-                val responseBody = response.body?.string()
-
-                if (responseBody != null) {
-                    // 使用 Gson 解析嵌套的 Result<OrderResponse>
-                    val type = object : TypeToken<Result<OrderResponse>>() {}.type
-                    gson.fromJson<Result<OrderResponse>>(responseBody, type)
-                } else {
-                    null
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-        }
-    }
-
-    /**
-     * 获取订单详情
-     * @param orderId 订单ID
-     */
-    suspend fun getOrderDetail(orderId: Int): Result<Order>? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val request = Request.Builder()
-                    .url("$BASE_URL/order/getOrderDetail?orderId=$orderId")
-                    .get()
-                    .build()
-
-                val response = HttpUtils.client.newCall(request).execute()
-                val responseBody = response.body?.string()
-
-                if (responseBody != null) {
-                    val gson = Gson()
-                    val type = object : TypeToken<Result<Order>>() {}.type
-                    gson.fromJson<Result<Order>>(responseBody, type)
-                } else {
-                    null
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-        }
-    }
-
-    /**
-     * 获取订单过期时间
-     */
-    fun getOrderExpiration(orderId: Int): Result<Long>? {
-        try {
-            val request = Request.Builder()
-                .url("$BASE_URL/order/expiration/$orderId")
-                .get()
-                .build()
     
-            val response = HttpUtils.client.newCall(request).execute()
-            val responseBody = response.body?.string()
-    
-            if (response.isSuccessful && responseBody != null) {
-                val gson = Gson()
-                val type = object : TypeToken<Result<Long>>() {}.type
-                return gson.fromJson(responseBody, type)
-            }
-            return null
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
-        }
-    }
-
-    /**
-     * 支付订单
-     */
-    fun payOrder(orderId: Int, paymentMethod: String): Result<String>? {
-        try {
-            val jsonObject = JSONObject()
-            jsonObject.put("orderId", orderId)
-            jsonObject.put("paymentMethod", paymentMethod)
-            
-            val requestBody = jsonObject.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
-            
-            val request = Request.Builder()
-                .url("$BASE_URL/order/pay")
-                .put(requestBody)
-                .build()
-    
-            val response = HttpUtils.client.newCall(request).execute()
-            val responseBody = response.body?.string()
-    
-            if (response.isSuccessful && responseBody != null) {
-                val gson = Gson()
-                val type = object : TypeToken<Result<String>>() {}.type
-                return gson.fromJson(responseBody, type)
-            }
-            return null
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
-        }
-    }
-
     /**
      * 获取用户的所有收货地址
      */

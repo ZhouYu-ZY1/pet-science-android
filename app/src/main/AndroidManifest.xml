@@ -46,6 +46,10 @@
         <activity android:name="com.zhouyu.pet_science.activities.base.ErrorActivity" />
         <!--Web浏览器-->
         <activity android:name="com.zhouyu.pet_science.activities.WebBrowserActivity" />
+        <!-- 订单列表 -->
+        <activity android:name=".activities.MyOrdersActivity"  />
+        <!-- 订单详情 -->
+        <activity android:name=".activities.OrderDetailActivity"  />
     </application>
 
 </manifest>

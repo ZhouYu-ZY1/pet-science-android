@@ -22,6 +22,7 @@ import com.zhouyu.pet_science.model.CreateOrderRequest
 import com.zhouyu.pet_science.model.OrderItemRequest
 import com.zhouyu.pet_science.model.ShippingRequest
 import com.zhouyu.pet_science.model.UserAddress
+import com.zhouyu.pet_science.network.OrderHttpUtils
 import com.zhouyu.pet_science.network.ProductHttpUtils
 import com.zhouyu.pet_science.utils.ConsoleUtils
 import com.zhouyu.pet_science.utils.MyToast
@@ -29,6 +30,7 @@ import com.zhouyu.pet_science.views.dialog.MyProgressDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ProductDetailActivity : BaseActivity() {
@@ -54,11 +56,36 @@ class ProductDetailActivity : BaseActivity() {
         product?.apply {
             // 设置商品信息
             setupProductInfo(this)
-            // 加载商品详情数据（实际应用中可能需要从网络获取）
-            binding.productDescription.text = this.description
+
+            // 从网络获取最新的产品详情
+            loadProductDetails(this.productId)
         }
+        
         // 设置点击事件
         setupClickListeners()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun loadProductDetails(productId: Int) {
+        // 使用协程在后台线程获取产品详情
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = ProductHttpUtils.getProductDetail(productId)
+            
+            if (result != null) {
+                // 在主线程中更新UI
+                withContext(Dispatchers.Main) {
+                    // 更新全局产品对象
+                    product = result
+                    // 更新UI
+                    setupProductInfo(result)
+                }
+            } else {
+                // 获取失败，可以在这里添加错误处理逻辑
+                withContext(Dispatchers.Main) {
+                    MyToast.show("获取产品详情失败")
+                }
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -67,11 +94,15 @@ class ProductDetailActivity : BaseActivity() {
         binding.currentPrice.text = "￥"+product.price
         binding.sales.text = "已售 ${product.sales}"
 
+        binding.productDescription.text = product.description
         loadBanner(product.images)
     }
 
     // 设置Banner广告
-    private fun loadBanner(images: String) {
+    private fun loadBanner(images: String?) {
+        if(images == null){
+            return
+        }
         val imageUrlList = ProductHttpUtils.getImageList(images)
 
         // 设置Banner适配器
@@ -315,7 +346,7 @@ class ProductDetailActivity : BaseActivity() {
             )
 
             // --- 发送创建订单请求 ---
-            val result = ProductHttpUtils.createOrder(createOrderRequest)
+            val result = OrderHttpUtils.createOrder(createOrderRequest)
 
             if (result?.code == 200 && result.data != null) {
                 // 订单创建成功

@@ -17,8 +17,8 @@
 body {
     background-color: #fff;
     color: var(--text-color);
-    width: 390px; /* iPhone 15 Pro 宽度 */
-    height: 844px; /* iPhone 15 Pro 高度 */
+    width: 100%; /* iPhone 15 Pro 宽度 */
+    height: 100%; /* iPhone 15 Pro 高度 */
     margin: 0 auto;
     position: relative;
     overflow: hidden;
