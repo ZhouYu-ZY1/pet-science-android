@@ -1,3 +1,10 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* 防止 body 滚动 */
+}
+
 .payment-container {
     height: 100%;
     display: flex;
@@ -98,16 +105,9 @@
 /* 订单详情折叠面板 */
 .order-detail-panel {
     background-color: white;
-    padding: 15px;
+    padding: 0 15px 15px;
     margin-bottom: 10px;
-    /* 移除 display: none; 默认显示 */
-}
-
-.detail-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    color: #333;
+    display: none;
 }
 
 .product-info {

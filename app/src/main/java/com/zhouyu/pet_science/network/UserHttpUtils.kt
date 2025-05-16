@@ -290,14 +290,12 @@ object UserHttpUtils {
     fun getUserInfo(): User? {
         getUserInfo(null).let {
             if(it != null){
-                val pets:MutableList<Pet> = ArrayList()
-                pets.add(Pet(1,"狗狗","cat","金毛狗",1,1,"/images/default/default_dog.jpg"))
-                pets.add(Pet(2,"猫猫","dog","布偶猫",1,1,"/images/default/default_cat.jpg"))
-                it.pets = pets
+                // 获取用户的宠物列表
+                val petList = PetHttpUtils.getUserPets()
+                it.pets = petList
                 return it
             }
         }
-
         return null
     }
 

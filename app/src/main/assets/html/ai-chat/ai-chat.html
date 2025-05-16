@@ -67,9 +67,12 @@
                 <button class="action-btn">
                     <i class="fas fa-microphone"></i>
                 </button>
+                <button class="action-btn" id="pet-selector-btn">
+                    <i class="fas fa-paw"></i>
+                </button>
             </div>
             <div class="input-box">
-                <textarea id="message-input" placeholder="输入问题..."></textarea>
+                <div id="message-input" class="editable-input" contenteditable="true" placeholder="输入问题..."></div>
                 <button id="send-btn" class="send-btn">
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -113,6 +116,24 @@
                             <p>专注于宠物行为和训练技巧的AI助手</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 宠物选择弹窗 -->
+        <div class="pet-modal" id="pet-modal">
+            <div class="pet-content">
+                <div class="pet-header">
+                    <h3>选择宠物信息</h3>
+                    <button class="close-pet-btn" id="close-pet-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="pet-list" id="pet-list">
+                    <!-- 宠物列表项会动态添加到这里 -->
+                </div>
+                <div class="pet-empty" id="pet-empty">
+                    <p>暂无宠物信息，请先在个人中心添加宠物</p>
                 </div>
             </div>
         </div>

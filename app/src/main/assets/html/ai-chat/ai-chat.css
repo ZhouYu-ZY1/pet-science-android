@@ -111,6 +111,8 @@
 
 .message-content {
     max-width: 70%;
+    display: flex;
+    flex-direction: column;
 }
 
 .message-bubble {
@@ -121,31 +123,91 @@
 }
 
 .ai-message .message-bubble {
+    display: block;
     background-color: white;
     border-top-left-radius: 4px;
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: normal;
+    column-count: 1 !important;
+    column-width: auto !important;
+    columns: auto !important;
+    flex-direction: column;
+    width: 100%;
+}
+
+.ai-message .message-bubble > * {
+    width: 100%;
+    display: block;
+    column-span: all;
+    break-inside: avoid;
+}
+
+.ai-message .message-bubble p,
+.ai-message .message-bubble li {
+    word-wrap: break-word;
+    white-space: normal;
+    display: block;
+    width: 100%;
+}
+
+.ai-message .message-bubble br {
+    display: block;
+    content: "";
 }
 
 .user-message .message-bubble {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     background-color: var(--primary-color);
     color: white;
     border-top-right-radius: 4px;
+}
+
+.message-bubble span,
+.message-bubble .pet-tag {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
 }
 
 .message-bubble p {
     margin: 0 0 10px 0;
 }
 
+.user-message .message-bubble p {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0 0 5px 0;
+}
+
+.user-message .message-bubble * {
+    vertical-align: middle;
+}
+
 .message-bubble p:last-child {
     margin-bottom: 0;
 }
 
-.message-bubble ul, .message-bubble ol {
-    margin: 5px 0;
-    padding-left: 20px;
+/* 特殊处理包含标签的段落 */
+.message-bubble p + .pet-tag,
+.pet-tag + p,
+.pet-tag + span {
+    margin-left: 4px;
 }
 
-.message-bubble li {
+.ai-message .message-bubble ul, 
+.ai-message .message-bubble ol {
+    padding-left: 20px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.ai-message .message-bubble li {
     margin-bottom: 5px;
+    display: list-item;
 }
 
 .message-time {
@@ -431,4 +493,204 @@
     background-color: #f8f8f8;
     border-radius: 4px;
     border-left: 3px solid #ccc;
+}
+
+
+/* 宠物选择弹窗 */
+.pet-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 1000;
+}
+
+.pet-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding: 20px;
+    max-height: 70%;
+    overflow-y: auto;
+}
+
+.pet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.pet-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.close-pet-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--dark-gray);
+    cursor: pointer;
+}
+
+.pet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.pet-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid var(--light-gray);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pet-item:hover {
+    border-color: var(--primary-color);
+    background-color: #F0F9FF;
+}
+
+.pet-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    overflow: hidden;
+}
+
+.pet-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pet-info {
+    flex: 1;
+}
+
+.pet-info h4 {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 5px 0;
+}
+
+.pet-info p {
+    font-size: 12px;
+    color: var(--dark-gray);
+    margin: 0;
+}
+
+.pet-empty {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--dark-gray);
+    display: none;
+}
+
+/* 宠物信息标签样式 */
+.pet-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f0f9ff;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 20px;
+    padding: 3px 10px 3px 3px;
+    margin: 0 3px;
+    font-size: 12px;
+    height: 24px;
+    position: relative;
+    white-space: nowrap;
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    vertical-align: middle;
+}
+
+.pet-tag-avatar {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin-right: 5px;
+    object-fit: cover;
+    vertical-align: middle;
+}
+
+.pet-tag-name {
+    font-weight: 500;
+    vertical-align: middle;
+}
+
+/* 输入框中的宠物标签样式 */
+.input-pet-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f0f9ff;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 20px;
+    padding: 2px 8px 2px 2px;
+    margin: 0 3px;
+    font-size: 12px;
+    height: 22px;
+    vertical-align: middle;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    cursor: default;
+    pointer-events: all; /* 启用点击事件 */
+}
+
+/* 确保宠物标签内部所有元素都无法被选中或编辑 */
+.input-pet-tag * {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none; /* 禁用子元素的点击事件，让事件冒泡到标签 */
+}
+
+/* 使contenteditable输入框支持多种元素 */
+.editable-input {
+    min-height: 40px;
+    max-height: 120px;
+    padding: 8px;
+    overflow-y: auto;
+    border: none;
+    background: none;
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.5;
+    outline: none;
+}
+
+.editable-input:empty:before {
+    content: attr(placeholder);
+    color: #888;
+    pointer-events: none;
+}
+
+/* 确保所有内联元素垂直居中对齐 */
+.message-bubble * {
+    vertical-align: middle;
 }

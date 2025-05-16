@@ -24,38 +24,38 @@ import com.zhouyu.pet_science.databinding.ActivityUserInfoEditBinding
 import com.zhouyu.pet_science.databinding.DialogAddPetBinding
 import com.zhouyu.pet_science.databinding.ItemPetInfoBinding
 import com.zhouyu.pet_science.fragments.PersonalCenterFragment
+import com.zhouyu.pet_science.model.Pet
 import com.zhouyu.pet_science.model.User
 import com.zhouyu.pet_science.network.HttpUtils
+import com.zhouyu.pet_science.network.PetHttpUtils
 import com.zhouyu.pet_science.network.UserHttpUtils
 import com.zhouyu.pet_science.pojo.CityJsonBean
+import com.zhouyu.pet_science.utils.ConsoleUtils
 import com.zhouyu.pet_science.utils.FileUtils
 import com.zhouyu.pet_science.utils.GetJsonDataUtil.getJson
 import com.zhouyu.pet_science.utils.GetJsonDataUtil.parseData
+import com.zhouyu.pet_science.utils.MyToast
+import com.zhouyu.pet_science.views.dialog.MyDialog
+import com.zhouyu.pet_science.views.dialog.MyProgressDialog
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class UserInfoEditActivity : BaseActivity() {
-    // 简单的 Pet 数据类
-    data class PetInfo(
-        val id: Long = System.currentTimeMillis(), // 临时 ID
-        var name: String,
-        var type: String, // "cat", "dog", "other"
-        var breed: String,
-        var ageYear: Int,
-        var ageMonth: Int
-    )
-
     private lateinit var binding: ActivityUserInfoEditBinding
     private var selectedAvatarUri: Uri? = null
     private var uploadUrl: String? = null
-    private val pets = mutableListOf<PetInfo>()
+    private var pets = mutableListOf<Pet>()
     private val calendar = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private var editType: String = ""
-    private var editPetId: Int = -1
+    private var editPetId: Long = -1L
 
+    // 临时存储选择的头像URI和上传后的URL
+    private var selectedPetAvatarUri: Uri? = null
+    private var uploadedPetAvatarUrl: String? = null
 
     // ActivityResultLauncher 用于选择图片
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -72,7 +72,37 @@ class UserInfoEditActivity : BaseActivity() {
             uploadAvatar(it)
         }
     }
+    
+    // ActivityResultLauncher 用于选择宠物图片
+    private val pickPetImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            selectedPetAvatarUri = it
+            val dialogBinding = getPetDialogBinding()
+            if(dialogBinding != null) {
+                Glide.with(this)
+                    .load(it)
+                    .apply(RequestOptions())
+                    .transform(CircleCrop())
+                    .placeholder(R.drawable.ic_paw) 
+                    .into(dialogBinding.ivPetAvatarPreview)
 
+                // 如果有正在编辑的宠物ID，则立即上传头像
+                if (editPetId > 0) {
+                    uploadPetAvatar(it, editPetId,false)
+                }
+            } else {
+                showToast("对话框未初始化")
+            }
+        }
+    }
+    
+    // 保存当前宠物对话框的绑定引用
+    private var currentPetDialogBinding: DialogAddPetBinding? = null
+    
+    // 获取当前的宠物对话框绑定
+    private fun getPetDialogBinding(): DialogAddPetBinding? {
+        return currentPetDialogBinding
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,8 +117,6 @@ class UserInfoEditActivity : BaseActivity() {
         setupClickListeners()
 
         getUserData()
-
-        updatePetListView() // 初始时更新宠物列表（显示空提示）
     }
 
     private fun setupViews() {
@@ -105,10 +133,12 @@ class UserInfoEditActivity : BaseActivity() {
                 binding.btnSkip.visibility = View.GONE
                 binding.layoutUserInfo.visibility = View.GONE
 
-                // 获取要编辑的宠物 ID
-                editPetId = intent.getIntExtra("petId",-1)
+                pets = PersonalCenterFragment.userInfo?.pets?.toMutableList() ?: mutableListOf()
+                updatePetListView() // 初始时更新宠物列表
 
-                if(editPetId == -1){
+                // 获取要编辑的宠物 ID
+                editPetId = intent.getLongExtra("petId",-1L)
+                if(editPetId == -1L){
                     showAddPetDialog()
                 }
             }
@@ -208,6 +238,58 @@ class UserInfoEditActivity : BaseActivity() {
         }
     }
 
+    // 上传宠物头像的方法
+    private fun uploadPetAvatar(uri: Uri, petId: Long, isAdd: Boolean) {
+        executeThread {
+            var tempFile: File? = null
+            try {
+                // 获取文件路径
+                tempFile = FileUtils.getRealPathFromURI(uri, this)
+                if(tempFile == null || !tempFile.exists()){
+                    showToast("宠物头像上传失败")
+                    return@executeThread
+                }
+                val result = PetHttpUtils.uploadPetAvatar(tempFile, petId)
+                runOnUiThread {
+                    if (result.first) {
+                        if(!isAdd){
+                            showToast("宠物头像上传成功")
+                        }
+                        // 更新头像 URL
+                        uploadedPetAvatarUrl = result.second
+                        PersonalCenterFragment.refreshInfo = true
+                        
+                        // 更新本地宠物对象
+                        val updatedPet = pets.find { it.id == petId }
+                        if (updatedPet != null && result.second != null) {
+                            updatedPet.avatarUrl = result.second!!
+                            // 刷新宠物列表
+                            updatePetListView()
+                        }
+                    } else {
+                        showToast("宠物头像上传失败: ${result.second}")
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                runOnUiThread {
+                    showToast("宠物头像上传失败: ${e.message}")
+                }
+            } finally {
+                // 删除临时缓存文件
+                try {
+                    tempFile?.let {
+                        if (it.exists() && it.absolutePath.startsWith(cacheDir.absolutePath)) {
+                            it.delete()
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
     private fun showDatePickerDialog() {
         val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
             calendar.set(Calendar.YEAR, year)
@@ -246,8 +328,6 @@ class UserInfoEditActivity : BaseActivity() {
                 .transform(CircleCrop())
                 .into(binding.ivAvatarPreview)
 
-            // 更新宠物列表
-//            updatePetList(userInfo.pets)
         }
     }
 
@@ -258,8 +338,21 @@ class UserInfoEditActivity : BaseActivity() {
         executeThread {
             try {
                 val userInfo = UserHttpUtils.getUserInfo()
+                // 获取用户的宠物列表
+                val petList = PetHttpUtils.getUserPets()
                 runOnUiThread {
                     loadUserData(userInfo)
+                    // 将后台获取的宠物数据转换为PetInfo对象
+                    pets = petList.toMutableList()
+                    updatePetListView()
+                    
+                    // 如果是编辑特定宠物，加载该宠物信息
+                    if (editType == "editPetInfo" && editPetId > 0) {
+                        val petToEdit = pets.find { it.id == editPetId }
+                        if (petToEdit != null) {
+                            showAddPetDialog(petToEdit)
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -270,8 +363,11 @@ class UserInfoEditActivity : BaseActivity() {
         }
     }
 
-    private fun showAddPetDialog(petToEdit: PetInfo? = null) {
+    private fun showAddPetDialog(petToEdit: Pet? = null) {
         val dialogBinding = DialogAddPetBinding.inflate(LayoutInflater.from(this))
+        // 保存对话框绑定的引用
+        currentPetDialogBinding = dialogBinding
+        
         val dialog = AlertDialog.Builder(this)
             .setView(dialogBinding.root)
             .create()
@@ -279,6 +375,18 @@ class UserInfoEditActivity : BaseActivity() {
         // 设置自定义标题文本 (如果需要动态设置)
         dialogBinding.tvTitle.text = if (petToEdit == null) "添加宠物" else "编辑宠物"
 
+        // 设置日期选择器
+        val petCalendar = Calendar.getInstance()
+        
+        // 重置头像上传状态
+        selectedPetAvatarUri = null
+        uploadedPetAvatarUrl = null
+        
+        // 如果是编辑现有宠物，更新编辑的宠物ID
+        if (petToEdit != null) {
+            editPetId = petToEdit.id
+        }
+        
         // 如果是编辑，填充现有数据
         if (petToEdit != null) {
             dialogBinding.etPetName.setText(petToEdit.name)
@@ -288,10 +396,54 @@ class UserInfoEditActivity : BaseActivity() {
                 "other" -> dialogBinding.rbPetTypeOther.isChecked = true
             }
             dialogBinding.etPetBreed.setText(petToEdit.breed)
-            dialogBinding.etPetAgeYear.setText(petToEdit.ageYear.toString())
-            dialogBinding.etPetAgeMonth.setText(petToEdit.ageMonth.toString())
+            petCalendar.time = petToEdit.birthday
+            dialogBinding.tvPetBirthday.text = dateFormat.format(petToEdit.birthday)
+            
+            // 加载现有宠物头像
+            if (petToEdit.avatarUrl.isNotEmpty()) {
+                Glide.with(this)
+                    .load(HttpUtils.BASE_URL + petToEdit.avatarUrl)
+                    .apply(RequestOptions())
+                    .transform(CircleCrop())
+                    .placeholder(R.drawable.ic_paw)
+                    .into(dialogBinding.ivPetAvatarPreview)
+            } else {
+                // 根据宠物类型设置默认图标
+                val iconRes = when (petToEdit.type) {
+                    "dog" -> R.mipmap.default_dog
+                    "other" -> R.drawable.ic_paw
+                    else -> R.mipmap.default_cat
+                }
+                dialogBinding.ivPetAvatarPreview.setImageResource(iconRes)
+            }
         } else {
-             dialogBinding.rbPetTypeCat.isChecked = true // 默认选中猫咪
+            dialogBinding.rbPetTypeCat.isChecked = true // 默认选中猫咪
+            dialogBinding.tvPetBirthday.text = "请选择宠物生日"
+            // 添加新宠物时重置编辑ID
+            editPetId = -1L
+        }
+        
+        // 设置头像点击事件
+        dialogBinding.ivPetAvatarPreview.setOnClickListener {
+            pickPetImageLauncher.launch("image/*")
+        }
+        dialogBinding.tvUploadPetAvatar.setOnClickListener {
+            pickPetImageLauncher.launch("image/*")
+        }
+        
+        // 设置生日选择点击事件
+        dialogBinding.tvPetBirthday.setOnClickListener {
+            val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                petCalendar.set(Calendar.YEAR, year)
+                petCalendar.set(Calendar.MONTH, monthOfYear)
+                petCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                dialogBinding.tvPetBirthday.text = dateFormat.format(petCalendar.time)
+            }
+
+            DatePickerDialog(this, dateSetListener,
+                petCalendar.get(Calendar.YEAR),
+                petCalendar.get(Calendar.MONTH),
+                petCalendar.get(Calendar.DAY_OF_MONTH)).show()
         }
 
         // 为自定义的确认按钮设置点击监听器
@@ -302,6 +454,11 @@ class UserInfoEditActivity : BaseActivity() {
                 return@setOnClickListener // 保持在对话框内
             }
 
+            if (dialogBinding.tvPetBirthday.text == "请选择宠物生日") {
+                showToast("请选择宠物生日")
+                return@setOnClickListener
+            }
+
             val typeId = dialogBinding.rgPetType.checkedRadioButtonId
             val type = when (typeId) {
                 R.id.rbPetTypeDog -> "dog"
@@ -309,39 +466,109 @@ class UserInfoEditActivity : BaseActivity() {
                 else -> "cat" // 默认是 cat
             }
             val breed = dialogBinding.etPetBreed.text.toString().trim()
-            val ageYear = dialogBinding.etPetAgeYear.text.toString().toIntOrNull() ?: 0
-            val ageMonth = dialogBinding.etPetAgeMonth.text.toString().toIntOrNull() ?: 0
 
-            if (petToEdit == null) {
-                // 添加新宠物
-                val newPet = PetInfo(
-                    name = name,
-                    type = type,
-                    breed = breed.ifEmpty { "未知品种" },
-                    ageYear = ageYear,
-                    ageMonth = ageMonth
-                )
-                pets.add(newPet)
-            } else {
-                // 更新现有宠物
-                petToEdit.name = name
-                petToEdit.type = type
-                petToEdit.breed = breed.ifEmpty { "未知品种" }
-                petToEdit.ageYear = ageYear
-                petToEdit.ageMonth = ageMonth
+            // 显示加载对话框
+            val progressDialog = MyProgressDialog(this).apply {
+                setTitleStr("加载中")
+                setHintStr("正在${if(petToEdit == null) "添加" else "编辑" }宠物信息...")
+                show()
             }
-
-            updatePetListView()
-            dialog.dismiss() // 关闭对话框
+            
+            executeThread {
+                try {
+                    if (petToEdit == null) {
+                        // 添加新宠物
+                        val newPet = Pet(
+                            id = 0, // 临时ID，后端会分配真实ID
+                            name = name,
+                            type = type,
+                            breed = breed.ifEmpty { "未知品种" },
+                            birthday = petCalendar.time,
+                            avatarUrl = "" // 先创建宠物，成功后再上传头像
+                        )
+                        
+                        val result = PetHttpUtils.addPet(newPet)
+                        runOnUiThread {
+                            if (result.first && result.second != null) {
+                                // 使用后端返回的宠物对象（包含真实ID）
+                                val createdPet = result.second!!
+                                
+                                // 如果选择了头像，在创建宠物成功后上传头像
+                                if (selectedPetAvatarUri != null) {
+                                    uploadPetAvatar(selectedPetAvatarUri!!, createdPet.id, true)
+                                }
+                                
+                                MyToast.show("宠物添加成功",true)
+                                pets.add(createdPet)
+                                updatePetListView()
+                                PersonalCenterFragment.refreshInfo = true
+                                progressDialog.dismiss()
+                                dialog.dismiss()
+                                // 清除对话框引用
+                                currentPetDialogBinding = null
+                            } else {
+                                progressDialog.dismiss()
+                                showToast("添加宠物失败")
+                            }
+                        }
+                    } else {
+                        // 更新现有宠物
+                        val updatedPet = Pet(
+                            id = petToEdit.id,
+                            name = name,
+                            type = type,
+                            breed = breed.ifEmpty { "未知品种" },
+                            birthday = petCalendar.time,
+                            avatarUrl = uploadedPetAvatarUrl ?: petToEdit.avatarUrl // 使用新上传的头像或保留原头像
+                        )
+                        
+                        val result = PetHttpUtils.updatePet(updatedPet)
+                        runOnUiThread {
+                            progressDialog.dismiss()
+                            if (result.first) {
+                                MyToast.show("宠物信息更新成功",true)
+                                // 更新本地宠物对象
+                                petToEdit.name = name
+                                petToEdit.type = type
+                                petToEdit.breed = breed.ifEmpty { "未知品种" }
+                                petToEdit.birthday = petCalendar.time
+                                if (uploadedPetAvatarUrl != null) {
+                                    petToEdit.avatarUrl = uploadedPetAvatarUrl!!
+                                }
+                                updatePetListView()
+                                PersonalCenterFragment.refreshInfo = true
+                                dialog.dismiss()
+                                // 清除对话框引用
+                                currentPetDialogBinding = null
+                            } else {
+                                showToast("更新宠物失败: ${result.second}")
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    runOnUiThread {
+                        progressDialog.dismiss()
+                        showToast("操作失败: ${e.message}")
+                    }
+                }
+            }
         }
 
         // 为自定义的取消按钮设置点击监听器
         dialogBinding.btnCancel.setOnClickListener {
             dialog.dismiss() // 关闭对话框
+            // 清除对话框引用
+            currentPetDialogBinding = null
         }
 
         // 在 dialog.show() 之前设置窗口背景
         dialog.window?.setBackgroundDrawableResource(R.drawable.view_radius) // 应用圆角背景
+        
+        // 设置对话框关闭监听器，确保对话框关闭时清除引用
+        dialog.setOnDismissListener {
+            currentPetDialogBinding = null
+        }
 
         dialog.show()
         // 设置对话框宽度为屏幕宽度的百分比
@@ -378,39 +605,78 @@ class UserInfoEditActivity : BaseActivity() {
 
     // 添加单个宠物信息的视图
     @SuppressLint("SetTextI18n")
-    private fun addPetItemView(pet: PetInfo) {
+    private fun addPetItemView(pet: Pet) {
         val itemBinding = ItemPetInfoBinding.inflate(LayoutInflater.from(this), binding.layoutPetList, false)
 
         itemBinding.tvPetName.text = pet.name
 
-        val ageText = buildString {
-            if (pet.ageYear > 0) append("${pet.ageYear}岁")
-            if (pet.ageMonth > 0) {
-                if (isNotEmpty()) append(" ")
-                append("${pet.ageMonth}个月")
-            }
-            if (isEmpty()) append("未满月")
-        }
+        // 计算宠物年龄
+        val ageText = calculatePetAgeText(pet.birthday)
         itemBinding.tvPetBreedAge.text = "${pet.breed} · $ageText"
 
-        val iconRes = when (pet.type) {
-            "dog" -> R.mipmap.default_dog // 需要准备 dog 图标
-            "other" -> R.drawable.ic_paw // 需要准备 paw 图标
-            else -> R.mipmap.default_cat // 需要准备 cat 图标
+        if (pet.avatarUrl.isNotEmpty()) {
+            Glide.with(this)
+                .load(HttpUtils.BASE_URL + pet.avatarUrl)
+                .apply(RequestOptions())
+                .transform(CircleCrop())
+                .into(itemBinding.ivPetIcon)
+        } else {
+            // 根据宠物类型设置默认图标
+            val iconRes = when (pet.type) {
+                "dog" -> R.mipmap.default_dog
+                "other" -> R.drawable.ic_paw
+                else -> R.mipmap.default_cat
+            }
+            itemBinding.ivPetIcon.setImageResource(iconRes)
         }
-        itemBinding.ivPetIcon.setImageResource(iconRes)
 
         // 删除按钮
         itemBinding.btnPetDelete.setOnClickListener {
-            pets.remove(pet)
-            updatePetListView()
+            // 确认删除对话框
+            MyDialog(this).apply {
+                setTitle("删除宠物")
+                setMessage("确定要删除宠物 ${pet.name} 吗？")
+                setThemeColor(getColor(R.color.Theme2))
+                setYesOnclickListener("确定") {
+                    dismiss()
+                    val progressDialog = MyProgressDialog(this@UserInfoEditActivity).apply {
+                        setTitleStr("加载中")
+                        setHintStr("正在删除宠物信息...")
+                        show()
+                    }
+                    executeThread {
+                        try {
+                            val result = PetHttpUtils.deletePet(pet.id)
+                            runOnUiThread {
+                                progressDialog.dismiss()
+                                if (result.first) {
+                                    MyToast.show("宠物删除成功",true)
+                                    pets.remove(pet)
+                                    updatePetListView()
+                                    PersonalCenterFragment.refreshInfo = true
+                                } else {
+                                    showToast("删除失败: ${result.second}")
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            runOnUiThread {
+                                progressDialog.dismiss()
+                                showToast("删除失败: ${e.message}")
+                            }
+                        }
+                    }
+                }
+
+                setNoOnclickListener("取消") { dismiss() }
+                show()
+            }
         }
 
         // 点击编辑
         itemBinding.root.setOnClickListener {
             showAddPetDialog(pet)
         }
-
 
         binding.layoutPetList.addView(itemBinding.root)
     }
@@ -586,5 +852,29 @@ class UserInfoEditActivity : BaseActivity() {
 
     companion object {
         var putUserInfo: User? = null
+    }
+}
+
+
+// 计算宠物年龄文本
+private fun calculatePetAgeText(birthday: Date): String {
+    val now = Calendar.getInstance()
+    val birthCal = Calendar.getInstance().apply { time = birthday }
+    
+    var years = now.get(Calendar.YEAR) - birthCal.get(Calendar.YEAR)
+    var months = now.get(Calendar.MONTH) - birthCal.get(Calendar.MONTH)
+    
+    if (months < 0) {
+        years--
+        months += 12
+    }
+    
+    return buildString {
+        if (years > 0) append("${years}岁")
+        if (months > 0) {
+            if (isNotEmpty()) append(" ")
+            append("${months}个月")
+        }
+        if (isEmpty()) append("未满月")
     }
 }

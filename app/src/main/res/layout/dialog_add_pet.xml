@@ -18,6 +18,34 @@
         android:gravity="center"
         android:layout_marginBottom="20dp"/>
 
+    <!-- 头像上传 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="20dp">
+
+        <ImageView
+            android:id="@+id/ivPetAvatarPreview"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_paw"
+            android:scaleType="centerCrop"
+            android:foreground="@drawable/circle_border_gray"
+            android:padding="2dp"
+            android:contentDescription="宠物头像预览"/>
+
+        <TextView
+            android:id="@+id/tvUploadPetAvatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="点击上传/更换头像"
+            android:textColor="@color/textTinge"
+            android:textSize="14sp"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+
     <TextView
         style="@style/UserInfoLabel"
         android:layout_marginBottom="8dp"
@@ -80,46 +108,16 @@
     <TextView
         style="@style/UserInfoLabel"
         android:layout_marginBottom="8dp"
-        android:text="年龄"/>
-    <LinearLayout
+        android:text="生日"/>
+    <TextView
+        android:id="@+id/tvPetBirthday"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:padding="12dp"
+        android:text="请选择宠物生日"
         android:background="@drawable/view_radius"
-        android:gravity="center_vertical">
-        <EditText
-            android:id="@+id/etPetAgeYear"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:maxLength="2"
-            android:hint="0"
-            android:gravity="center"
-            android:background="@drawable/view_radius"
-            android:backgroundTint="@color/themeColor"
-            style="@style/UserInfoEditText"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="年"
-            android:layout_marginHorizontal="10dp"/>
-        <EditText
-            android:id="@+id/etPetAgeMonth"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:maxLength="2"
-            android:hint="0"
-            android:background="@drawable/view_radius"
-            android:backgroundTint="@color/themeColor"
-            android:gravity="center"
-            style="@style/UserInfoEditText"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="月"
-            android:layout_marginStart="10dp"/>
-    </LinearLayout>
+        android:backgroundTint="@color/themeColor"
+        android:layout_marginBottom="16dp"/>
 
     <!-- 添加确认和取消按钮 -->
     <LinearLayout

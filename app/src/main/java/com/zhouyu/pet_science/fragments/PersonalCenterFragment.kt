@@ -22,7 +22,9 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zhouyu.pet_science.R
+import com.zhouyu.pet_science.activities.AddressActivity
 import com.zhouyu.pet_science.activities.MainActivity
+import com.zhouyu.pet_science.activities.MyOrdersActivity
 import com.zhouyu.pet_science.activities.UserInfoEditActivity
 import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.adapter.PetAdapter
@@ -31,6 +33,7 @@ import com.zhouyu.pet_science.model.Pet
 import com.zhouyu.pet_science.model.User
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.network.UserHttpUtils
+import com.zhouyu.pet_science.utils.ConsoleUtils
 import com.zhouyu.pet_science.utils.TimeUtils
 import com.zhouyu.pet_science.utils.PhoneMessage
 
@@ -117,6 +120,16 @@ class PersonalCenterFragment : BaseFragment() {
             intent.putExtra("type", "editPetInfo")
             intent.putExtra("petId", -1) // -1表示添加新宠物
             startActivity(intent)
+        }
+
+        //我的订单
+        binding.layoutMyOrders.setOnClickListener{
+            startActivity(Intent(requireActivity(), MyOrdersActivity::class.java))
+        }
+
+        //地址管理
+        binding.layoutAddress.setOnClickListener{
+            startActivity(Intent(requireActivity(), AddressActivity::class.java))
         }
         
         // 功能菜单点击事件
@@ -313,6 +326,11 @@ class PersonalCenterFragment : BaseFragment() {
         petList.clear()
         petList.addAll(pets)
         petAdapter.notifyDataSetChanged()
+        if(petList.isEmpty()){
+            binding.tvEmptyPetTip.visibility = View.VISIBLE
+        }else{
+            binding.tvEmptyPetTip.visibility = View.GONE
+        }
     }
     
     override fun onDestroyView() {

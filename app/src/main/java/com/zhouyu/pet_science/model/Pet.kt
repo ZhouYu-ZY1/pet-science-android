@@ -1,11 +1,12 @@
 package com.zhouyu.pet_science.model
 
+import java.util.Date
+
 data class Pet(
-    val id: Long,
-    val name: String,
-    val type: String, // "cat", "dog", "other"
-    val breed: String,
-    val ageYear: Int,
-    val ageMonth: Int,
-    val avatarUrl: String = ""
+    var id: Long,
+    var name: String,
+    var type: String, // "cat", "dog", "other"
+    var breed: String,
+    var birthday: Date,
+    var avatarUrl: String = ""
 )

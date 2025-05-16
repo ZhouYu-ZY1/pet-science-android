@@ -22,6 +22,8 @@ import com.zhouyu.pet_science.utils.PhoneMessage
 import com.zhouyu.pet_science.utils.StorageUtils
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AIChatActivity : BaseActivity() {
     private lateinit var webView: WebView
@@ -220,6 +222,37 @@ class AIChatActivity : BaseActivity() {
                 modelObj.put("apiKey", getApiKeyForModel(model.second.first))
                 modelObj.put("systemPrompt", getSystemPromptForModel(model.first, model.second.first))
                 jsonArray.put(modelObj)
+            }
+            
+            return jsonArray.toString()
+        }
+
+        @JavascriptInterface
+        fun getPetList(): String {
+            val jsonArray = JSONArray()
+            try {
+                // 从PersonalCenterFragment获取用户信息
+                val userInfo = PersonalCenterFragment.userInfo
+                
+                // 如果用户信息存在且有宠物数据
+                if (userInfo?.pets != null && userInfo.pets.isNotEmpty()) {
+                    userInfo.pets.forEach { pet ->
+                        val petObj = JSONObject()
+                        petObj.put("id", pet.id)
+                        petObj.put("name", pet.name)
+                        petObj.put("type", pet.type.toLowerCase(Locale.ROOT)) // 转为小写
+                        petObj.put("breed", pet.breed)
+                        petObj.put("avatarUrl", BASE_URL + pet.avatarUrl)
+                        
+                        // 格式化生日
+                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        petObj.put("birthday", dateFormat.format(pet.birthday))
+                        
+                        jsonArray.put(petObj)
+                    }
+                }
+            } catch (e: Exception) {
+                ConsoleUtils.logErr("获取宠物列表失败: ${e.message}")
             }
             
             return jsonArray.toString()
