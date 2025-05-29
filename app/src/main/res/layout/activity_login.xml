@@ -23,7 +23,7 @@
             android:id="@+id/logo_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="80dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -411,32 +411,24 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <ImageButton
+                    <ImageView
                         android:id="@+id/btn_wechat_login"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginHorizontal="15dp"
                         android:background="@drawable/view_semicircle"
-                        android:src="@android:drawable/ic_menu_share"
+                        android:src="@drawable/qq_group_icon"
                         app:tint="@color/Theme" />
 
-                    <ImageButton
+                    <ImageView
                         android:id="@+id/btn_qq_login"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginHorizontal="15dp"
                         android:background="@drawable/view_semicircle"
-                        android:src="@android:drawable/ic_menu_share"
+                        android:src="@drawable/wechat_official_icon"
                         app:tint="@color/Theme" />
 
-                    <ImageButton
-                        android:id="@+id/btn_weibo_login"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginHorizontal="15dp"
-                        android:background="@drawable/view_semicircle"
-                        android:src="@android:drawable/ic_menu_share"
-                        app:tint="@color/Theme" />
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>

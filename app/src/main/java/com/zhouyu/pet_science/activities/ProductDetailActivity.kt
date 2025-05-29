@@ -154,143 +154,145 @@ class ProductDetailActivity : BaseActivity() {
 //
 //    }
 
-    private lateinit var dialogBinding: DialogProductSpecBinding
+    private  var dialogBinding: DialogProductSpecBinding? = null
     @SuppressLint("SetTextI18n")
     private fun showSpecDialog(isAddToCart: Boolean = false, isBuyNow: Boolean = false) {
         // 创建底部对话框，应用自定义主题
         val dialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
         dialogBinding = DialogProductSpecBinding.inflate(LayoutInflater.from(this))
-        dialog.setContentView(dialogBinding.root)
+        dialogBinding?.apply {
+            dialog.setContentView(root)
 
-        // 设置圆角背景
-        dialog.window?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)?.apply {
-            setBackgroundResource(R.drawable.view_radius_top)
-        }
-
-        // 设置商品信息
-        product?.let { product ->
-            dialogBinding.productPrice.text = "￥%.2f".format(product.price)
-            dialogBinding.selectedSpecText.text = "已选：$selectedCapacity $selectedColor"
-
-            // 加载商品图片
-            val imageUrlList = ProductHttpUtils.getImageList(product.images)
-            if (imageUrlList.isNotEmpty()) {
-                Glide.with(this)
-                    .load(imageUrlList[0])
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(dialogBinding.productImage)
+            // 设置圆角背景
+            dialog.window?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)?.apply {
+                setBackgroundResource(R.drawable.view_radius_top)
             }
-        }
 
-        // 如果没有选择地址，则获取默认地址
-        if (selectedAddress == null) {
-            // 在协程中获取默认地址
-            CoroutineScope(Dispatchers.IO).launch {
-                val defaultAddressResult = ProductHttpUtils.getDefaultAddress()
-                if (defaultAddressResult?.code == 200 && defaultAddressResult.data != null) {
-                    // 在主线程中更新UI
-                    runOnUiThread {
-                        selectedAddress = defaultAddressResult.data
-                        updateAddressUI(dialogBinding)
+            // 设置商品信息
+            product?.let { product ->
+                productPrice.text = "￥%.2f".format(product.price)
+                selectedSpecText.text = "已选：$selectedCapacity $selectedColor"
+
+                // 加载商品图片
+                val imageUrlList = ProductHttpUtils.getImageList(product.images)
+                if (imageUrlList.isNotEmpty()) {
+                    Glide.with(this@ProductDetailActivity)
+                        .load(imageUrlList[0])
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .into(productImage)
+                }
+            }
+
+            // 如果没有选择地址，则获取默认地址
+            if (selectedAddress == null) {
+                // 在协程中获取默认地址
+                CoroutineScope(Dispatchers.IO).launch {
+                    val defaultAddressResult = ProductHttpUtils.getDefaultAddress()
+                    if (defaultAddressResult?.code == 200 && defaultAddressResult.data != null) {
+                        // 在主线程中更新UI
+                        runOnUiThread {
+                            selectedAddress = defaultAddressResult.data
+                            updateAddressUI(this@apply)
+                        }
+                    }
+                }
+            }
+
+            // 设置地址选择点击事件
+            addressContainer.setOnClickListener {
+                // 跳转到地址选择页面
+                val intent = Intent(this@ProductDetailActivity, AddressActivity::class.java)
+                intent.putExtra("isSelect", true)
+                startActivity(intent)
+            }
+
+            // 更新地址显示
+            updateAddressUI(this@apply)
+
+            // 设置确认按钮文本
+            if (isAddToCart) {
+                confirmBtn.text = "加入购物车"
+            } else if (isBuyNow) {
+                confirmBtn.text = "立即支付"
+            }
+
+            // 设置容量选择
+            capacityGroup.setOnCheckedChangeListener { group, checkedId ->
+                val radioButton = group.findViewById<RadioButton>(checkedId)
+                selectedCapacity = radioButton.text.toString()
+                updateSelectedSpec(this@apply)
+            }
+
+            // 设置颜色选择
+            colorGroup.setOnCheckedChangeListener { group, checkedId ->
+                val radioButton = group.findViewById<RadioButton>(checkedId)
+                selectedColor = radioButton.text.toString()
+                updateSelectedSpec(this@apply)
+            }
+
+            // 预设选中状态
+            when (selectedCapacity) {
+                "2.5L" -> capacity25l.isChecked = true
+                "4L" -> capacity4l.isChecked = true
+            }
+
+            when (selectedColor) {
+                "白色" -> colorWhite.isChecked = true
+                "粉色" -> colorPink.isChecked = true
+                "蓝色" -> colorBlue.isChecked = true
+            }
+
+            // 设置数量选择
+            quantityText.text = quantity.toString()
+
+            decreaseBtn.setOnClickListener {
+                if (quantity > 1) {
+                    quantity--
+                    quantityText.text = quantity.toString()
+                    productPrice.text = "￥%.2f".format(product?.price!! * quantity)
+                }
+            }
+
+            increaseBtn.setOnClickListener {
+                quantity++
+                quantityText.text = quantity.toString()
+                productPrice.text = "￥%.2f".format(product?.price!! * quantity)
+            }
+
+            // 设置确认按钮点击事件
+            confirmBtn.setOnClickListener {
+                // 如果是立即购买，检查是否选择了地址
+                if (isBuyNow && selectedAddress == null) {
+                    MyToast.show("请选择收货地址")
+                    return@setOnClickListener
+                }
+
+                dialog.dismiss() // 先关闭对话框
+
+                when {
+                    isAddToCart -> {
+                        val message = "已加入购物车：$selectedCapacity $selectedColor，数量：$quantity"
+                        Toast.makeText(this@ProductDetailActivity, message, Toast.LENGTH_SHORT).show()
+                        // 这里添加实际的加入购物车逻辑
+                    }
+                    isBuyNow -> {
+                        product?.let { currentProduct ->
+                            createOrder(currentProduct)
+                        }
+                    }
+                    else -> {
+                        // 只是选择规格，更新UI或变量
+                        val message = "已选择：$selectedCapacity $selectedColor，数量：$quantity"
+                        Toast.makeText(this@ProductDetailActivity, message, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
-
-        // 设置地址选择点击事件
-        dialogBinding.addressContainer.setOnClickListener {
-            // 跳转到地址选择页面
-            val intent = Intent(this, AddressActivity::class.java)
-            intent.putExtra("isSelect", true)
-            startActivity(intent)
-        }
-
-        // 更新地址显示
-        updateAddressUI(dialogBinding)
-
-        // 设置确认按钮文本
-        if (isAddToCart) {
-            dialogBinding.confirmBtn.text = "加入购物车"
-        } else if (isBuyNow) {
-            dialogBinding.confirmBtn.text = "立即支付"
-        }
-
-        // 设置容量选择
-        dialogBinding.capacityGroup.setOnCheckedChangeListener { group, checkedId ->
-            val radioButton = group.findViewById<RadioButton>(checkedId)
-            selectedCapacity = radioButton.text.toString()
-            updateSelectedSpec(dialogBinding)
-        }
-
-        // 设置颜色选择
-        dialogBinding.colorGroup.setOnCheckedChangeListener { group, checkedId ->
-            val radioButton = group.findViewById<RadioButton>(checkedId)
-            selectedColor = radioButton.text.toString()
-            updateSelectedSpec(dialogBinding)
-        }
-
-        // 预设选中状态
-        when (selectedCapacity) {
-            "2.5L" -> dialogBinding.capacity25l.isChecked = true
-            "4L" -> dialogBinding.capacity4l.isChecked = true
-        }
-
-        when (selectedColor) {
-            "白色" -> dialogBinding.colorWhite.isChecked = true
-            "粉色" -> dialogBinding.colorPink.isChecked = true
-            "蓝色" -> dialogBinding.colorBlue.isChecked = true
-        }
-
-        // 设置数量选择
-        dialogBinding.quantityText.text = quantity.toString()
-
-        dialogBinding.decreaseBtn.setOnClickListener {
-            if (quantity > 1) {
-                quantity--
-                dialogBinding.quantityText.text = quantity.toString()
-                dialogBinding.productPrice.text = "￥%.2f".format(product?.price!! * quantity)
-            }
-        }
-
-        dialogBinding.increaseBtn.setOnClickListener {
-            quantity++
-            dialogBinding.quantityText.text = quantity.toString()
-            dialogBinding.productPrice.text = "￥%.2f".format(product?.price!! * quantity)
-        }
-
-        // 设置确认按钮点击事件
-        dialogBinding.confirmBtn.setOnClickListener {
-            // 如果是立即购买，检查是否选择了地址
-            if (isBuyNow && selectedAddress == null) {
-                MyToast.show("请选择收货地址")
-                return@setOnClickListener
-            }
-            
-            dialog.dismiss() // 先关闭对话框
-
-            when {
-                isAddToCart -> {
-                    val message = "已加入购物车：$selectedCapacity $selectedColor，数量：$quantity"
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                    // 这里添加实际的加入购物车逻辑
-                }
-                isBuyNow -> {
-                    product?.let { currentProduct ->
-                        createOrder(currentProduct)
-                    }
-                }
-                else -> {
-                    // 只是选择规格，更新UI或变量
-                    val message = "已选择：$selectedCapacity $selectedColor，数量：$quantity"
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
         dialog.show()
     }
 
     // 更新地址UI显示
+    @SuppressLint("SetTextI18n")
     private fun updateAddressUI(dialogBinding: DialogProductSpecBinding) {
         selectedAddress?.let { address ->
             // 显示已选择的地址
@@ -373,8 +375,8 @@ class ProductDetailActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         // 如果从地址选择页面返回，可能需要刷新UI
-        if (selectedAddress != null) {
-            updateAddressUI(dialogBinding)
+        if (selectedAddress != null && dialogBinding != null) {
+            updateAddressUI(dialogBinding!!)
         }
     }
 

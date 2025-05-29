@@ -1,5 +1,6 @@
 package com.zhouyu.pet_science.adapter.message
 
+import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +12,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zhouyu.pet_science.R
+import com.zhouyu.pet_science.activities.UserProfileActivity
 import com.zhouyu.pet_science.adapter.message.MessageAdapter.MessageViewHolder
 import com.zhouyu.pet_science.fragments.PersonalCenterFragment
+import com.zhouyu.pet_science.model.Content
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.pojo.ChatMessage
 import com.zhouyu.pet_science.utils.TimeUtils
 import kotlin.math.acos
 
-class MessageAdapter(private val messages: List<ChatMessage>, private val currentUserId: String) :
+class MessageAdapter(private val context: Context,private val messages: List<ChatMessage>, private val currentUserId: String) :
     RecyclerView.Adapter<MessageViewHolder>() {
     class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var avatarImage: ImageView
@@ -43,6 +46,10 @@ class MessageAdapter(private val messages: List<ChatMessage>, private val curren
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         val chatMessage = messages[position]
+        holder.avatarImage.setOnClickListener {
+            context.startActivity(UserProfileActivity.createIntent(context,Integer.parseInt(chatMessage.senderId)))
+        }
+
         holder.messageContent.text = chatMessage.content
         holder.nickname.text = chatMessage.senderName
         holder.sendTime.text = TimeUtils.getMessageTime(chatMessage.timestamp)

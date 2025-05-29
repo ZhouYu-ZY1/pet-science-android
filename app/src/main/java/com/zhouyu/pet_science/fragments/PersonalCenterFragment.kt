@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.GravityCompat
@@ -26,6 +27,7 @@ import com.zhouyu.pet_science.activities.AddressActivity
 import com.zhouyu.pet_science.activities.MainActivity
 import com.zhouyu.pet_science.activities.MyOrdersActivity
 import com.zhouyu.pet_science.activities.UserInfoEditActivity
+import com.zhouyu.pet_science.activities.UserProfileActivity
 import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.adapter.PetAdapter
 import com.zhouyu.pet_science.databinding.FragmentPersonalCenterBinding
@@ -44,9 +46,23 @@ class PersonalCenterFragment : BaseFragment() {
     private lateinit var petAdapter: PetAdapter
     private val petList = mutableListOf<Pet>()
     
+    // 是否查看自己的个人中心
+    private var isSelfProfile = true
+    // 要查看的用户ID
+    private var userId: Int = -1
+    
     companion object {
         var refreshInfo = false
         var userInfo: User? = null
+        var otherUserInfo: User? = null
+        
+        fun newInstance(userId: Int = -1): PersonalCenterFragment {
+            val fragment = PersonalCenterFragment()
+            val bundle = Bundle()
+            bundle.putInt("userId", userId)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
     override fun onCreateView(
@@ -61,6 +77,10 @@ class PersonalCenterFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
+        // 获取传入的userId参数
+        userId = arguments?.getInt("userId", -1) ?: -1
+        isSelfProfile = userId == -1
+        
         setupViews()
         setupListeners()
         loadUserData()
@@ -68,17 +88,33 @@ class PersonalCenterFragment : BaseFragment() {
     
     override fun onResume() {
         super.onResume()
-        if (refreshInfo) {
+        if (refreshInfo && isSelfProfile) {
             loadUserData()
             refreshInfo = false
         }
     }
 
     private fun setupViews() {
-        binding.moreBtn.setOnClickListener{
-            (activity as MainActivity).drawerLayout!!.openDrawer(GravityCompat.END)
+        setTopBarView(binding.topBar,true)
+        
+        // 如果不是查看自己的个人中心，添加返回按钮
+        if (!isSelfProfile) {
+            binding.moreBtn.visibility = View.GONE
+            binding.backBtn.visibility = View.VISIBLE
+            // 返回按钮逻辑，可以根据实际情况调整
+            binding.backBtn.setOnClickListener {
+                requireActivity().finish()
+            }
+            // 显示关注按钮
+            binding.btnFollow.visibility = View.VISIBLE
+
+            // 隐藏查看别人主页不需要的视图
+            binding.functionsContainer.visibility = View.GONE
+            binding.btnEditProfile.visibility = View.GONE
+            binding.tvAddPet.visibility = View.GONE
+            binding.mutual.visibility = View.GONE
         }
-        setTopBarView(binding.topBar,  true)
+        binding.tvPetTitle.text = if (isSelfProfile) "我的宠物" else "TA的宠物"
 
         // 设置宠物列表
         petAdapter = PetAdapter(requireContext(), petList)
@@ -88,10 +124,10 @@ class PersonalCenterFragment : BaseFragment() {
         }
         
         // 设置ViewPager和TabLayout
-        val tabTitles = listOf("我的发布", "我的点赞")
+        val tabTitles = listOf("发布", "点赞")
         val fragments = listOf(
-            ContentGridFragment.newInstance(ContentGridFragment.TYPE_POSTS),
-            ContentGridFragment.newInstance(ContentGridFragment.TYPE_LIKES)
+            ContentGridFragment.newInstance(ContentGridFragment.TYPE_POSTS, userId),
+            ContentGridFragment.newInstance(ContentGridFragment.TYPE_LIKES, userId)
         )
         
         binding.viewPager.adapter = object : FragmentStateAdapter(this) {
@@ -106,34 +142,46 @@ class PersonalCenterFragment : BaseFragment() {
     
     @SuppressLint("ResourceType")
     private fun setupListeners() {
-        // 编辑资料按钮
-        binding.btnEditProfile.setOnClickListener {
-            val intent = Intent(requireContext(), UserInfoEditActivity::class.java)
-            intent.putExtra("type", "editUserInfo")
-            UserInfoEditActivity.putUserInfo = userInfo
-            startActivity(intent)
-        }
-        
-        // 添加宠物按钮
-        binding.tvAddPet.setOnClickListener {
-            val intent = Intent(requireContext(), UserInfoEditActivity::class.java)
-            intent.putExtra("type", "editPetInfo")
-            intent.putExtra("petId", -1) // -1表示添加新宠物
-            startActivity(intent)
+        if(isSelfProfile){  // 查看自己的个人中心
+            binding.moreBtn.setOnClickListener{
+                (activity as MainActivity).drawerLayout!!.openDrawer(GravityCompat.END)
+            }
+
+            // 编辑资料按钮
+            binding.btnEditProfile.setOnClickListener {
+                val intent = Intent(requireContext(), UserInfoEditActivity::class.java)
+                intent.putExtra("type", "editUserInfo")
+                UserInfoEditActivity.putUserInfo = userInfo
+                startActivity(intent)
+            }
+
+            // 添加宠物按钮
+            binding.tvAddPet.setOnClickListener {
+                val intent = Intent(requireContext(), UserInfoEditActivity::class.java)
+                intent.putExtra("type", "editPetInfo")
+                intent.putExtra("petId", -1) // -1表示添加新宠物
+                startActivity(intent)
+            }
+
+            //我的订单
+            binding.layoutMyOrders.setOnClickListener{
+                startActivity(Intent(requireActivity(), MyOrdersActivity::class.java))
+            }
+
+            //地址管理
+            binding.layoutAddress.setOnClickListener{
+                startActivity(Intent(requireActivity(), AddressActivity::class.java))
+            }
+        }else{
+            // 关注按钮点击事件
+            binding.btnFollow.setOnClickListener {
+                if (isSelfProfile) return@setOnClickListener
+
+                toggleFollowUser()
+            }
+
         }
 
-        //我的订单
-        binding.layoutMyOrders.setOnClickListener{
-            startActivity(Intent(requireActivity(), MyOrdersActivity::class.java))
-        }
-
-        //地址管理
-        binding.layoutAddress.setOnClickListener{
-            startActivity(Intent(requireActivity(), AddressActivity::class.java))
-        }
-        
-        // 功能菜单点击事件
-//        setupFunctionMenuListeners()
 
         binding.nestedScrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             val threshold = binding.ivCover.height - binding.topBar.height
@@ -147,6 +195,7 @@ class PersonalCenterFragment : BaseFragment() {
             val color = Color.argb(topBarAlpha, Color.red(viewColor), Color.green(viewColor), Color.blue(viewColor))
             binding.topBar.setBackgroundColor(color)
 
+            val topAnimView = if (isSelfProfile) binding.moreBtn else binding.backBtn
             // 处理顶部用户信息的显示和隐藏
             if (scrollY > threshold) {
                 if(topUserInfoHide){
@@ -164,15 +213,15 @@ class PersonalCenterFragment : BaseFragment() {
                             }) //动画持续时间 毫秒单位
                     }
 
-                    // 设置更多按钮动画
-                    binding.moreBtn.animate()
+                    topAnimView.animate()
                         .setDuration(300)
                         .alpha(1f)
                         .withStartAction {
-                            binding.moreBtn.setBackgroundResource(android.R.color.transparent)
-                            binding.moreBtn.imageTintList = ColorStateList.valueOf(Color.BLACK)
+                            topAnimView.setBackgroundResource(android.R.color.transparent)
+                            topAnimView.imageTintList = ColorStateList.valueOf(Color.BLACK)
                         }
                         .start()
+
 
                     BaseActivity.setStatusBarTextColor(true,requireActivity().window)
                     topUserInfoHide = false
@@ -188,13 +237,14 @@ class PersonalCenterFragment : BaseFragment() {
                                 }
                             })
                     }
-                    binding.moreBtn.animate()
+
+                    topAnimView.animate()
                         .setDuration(300)
                         .alpha(1f)
                         .withStartAction {
-                            binding.moreBtn.setBackgroundResource(R.drawable.view_semicircle)
-                            binding.moreBtn.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#73000000"))
-                            binding.moreBtn.imageTintList = ColorStateList.valueOf(requireContext().getColor(R.color.viewColor))
+                            topAnimView.setBackgroundResource(R.drawable.view_semicircle)
+                            topAnimView.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#73000000"))
+                            topAnimView.imageTintList = ColorStateList.valueOf(requireContext().getColor(R.color.viewColor))
                         }
                         .start()
 
@@ -204,49 +254,55 @@ class PersonalCenterFragment : BaseFragment() {
             }
         }
     }
+    
     private var topUserInfoHide: Boolean = true
     
-//    private fun setupFunctionMenuListeners() {
-//        // 我的收藏
-//        binding.layoutMyCollection.setOnClickListener {
-//            Toast.makeText(requireContext(), "即将进入我的收藏页面", Toast.LENGTH_SHORT).show()
-//        }
-//
-//        // 我的订单
-//        binding.layoutMyOrders.setOnClickListener {
-//            Toast.makeText(requireContext(), "即将进入我的订单页面", Toast.LENGTH_SHORT).show()
-//        }
-//
-//        // 收货地址
-//        binding.layoutAddress.setOnClickListener {
-//            Toast.makeText(requireContext(), "即将进入收货地址页面", Toast.LENGTH_SHORT).show()
-//        }
-//
-//
-//        // 帮助中心
-//        binding.layoutHelp.setOnClickListener {
-//            Toast.makeText(requireContext(), "即将进入帮助中心页面", Toast.LENGTH_SHORT).show()
-//        }
-//
-//        // 设置
-//        binding.layoutSettings.setOnClickListener {
-//            Toast.makeText(requireContext(), "即将进入设置页面", Toast.LENGTH_SHORT).show()
-//        }
-//    }
+    private fun toggleFollowUser() {
+        executeThread {
+            try {
+                val isFollowed = otherUserInfo?.isFollowed ?: false
+                if (isFollowed) {
+                    // 取消关注
+                    UserHttpUtils.unfollowUser(userId)
+                } else {
+                    // 关注用户
+                    UserHttpUtils.followUser(userId)
+                }
+                
+                // 重新加载用户信息以更新关注状态
+                loadUserData()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                activity?.runOnUiThread {
+                    Toast.makeText(requireContext(), "操作失败，请重试", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
     
     @SuppressLint("SetTextI18n")
     private fun loadUserData() {
         executeThread {
             try {
-                userInfo = UserHttpUtils.getUserInfo()
+                val user = if (isSelfProfile) {
+                    userInfo = UserHttpUtils.getUserInfo()
+                    userInfo
+                } else {
+                    otherUserInfo = UserHttpUtils.getUserInfoById(userId)
+                    otherUserInfo
+                }
+                
                 activity?.runOnUiThread {
-                    userInfo?.apply {
-                        val mainActivity = activity as MainActivity
-
+                    user?.apply {
                         // 更新用户信息
                         binding.tvNickname.text = nickname
                         binding.topTitle.text = nickname
-                        mainActivity.findViewById<TextView>(R.id.left_view_username).text = nickname
+                        
+                        // 只在查看自己的个人中心时更新抽屉菜单的信息
+                        if (isSelfProfile && activity is MainActivity) {
+                            val mainActivity = activity as MainActivity
+                            mainActivity.findViewById<TextView>(R.id.left_view_username).text = nickname
+                        }
 
                         binding.tvBio.text = bio.ifEmpty { "这个人很懒，什么都没留下" }
 
@@ -286,8 +342,11 @@ class PersonalCenterFragment : BaseFragment() {
                         binding.mutualCount.text = mutualCount.toString()
                         binding.tvFollowingCount.text = followCount.toString()
                         binding.tvFollowersCount.text = fansCount.toString()
-//                        binding.tvPostsCount.text = postCount.toString()
 
+                        // 更新关注按钮状态（仅在查看他人个人中心时）
+                        if (!isSelfProfile) {
+                            updateFollowButton(isFollowed)
+                        }
 
                         val loadUrl = BASE_URL + avatarUrl
                         // 加载头像
@@ -301,12 +360,16 @@ class PersonalCenterFragment : BaseFragment() {
                             .apply(RequestOptions())
                             .transform(CircleCrop())
                             .into(binding.topAvatar)
-                        // 加载抽屉头像
-                        Glide.with(this@PersonalCenterFragment)
-                            .load(loadUrl)
-                            .apply(RequestOptions())
-                            .transform(CircleCrop())
-                            .into(mainActivity.findViewById(R.id.left_view_user_avatar))
+                            
+                        // 只在查看自己的个人中心时更新抽屉菜单的头像
+                        if (isSelfProfile && activity is MainActivity) {
+                            val mainActivity = activity as MainActivity
+                            Glide.with(this@PersonalCenterFragment)
+                                .load(loadUrl)
+                                .apply(RequestOptions())
+                                .transform(CircleCrop())
+                                .into(mainActivity.findViewById(R.id.left_view_user_avatar))
+                        }
 
                         // 更新宠物列表
                         updatePetList(pets)
@@ -321,6 +384,18 @@ class PersonalCenterFragment : BaseFragment() {
         }
     }
     
+    private fun updateFollowButton(isFollowed: Boolean) {
+        binding.btnFollow.apply {
+            if (isFollowed) {
+                text = "取消关注"
+                backgroundTintList = ColorStateList.valueOf(Color.LTGRAY)
+            } else {
+                text = "关注"
+                backgroundTintList = ColorStateList.valueOf(requireContext().getColor(R.color.Theme))
+            }
+        }
+    }
+    
     @SuppressLint("NotifyDataSetChanged")
     private fun updatePetList(pets: List<Pet>) {
         petList.clear()
@@ -328,6 +403,8 @@ class PersonalCenterFragment : BaseFragment() {
         petAdapter.notifyDataSetChanged()
         if(petList.isEmpty()){
             binding.tvEmptyPetTip.visibility = View.VISIBLE
+            // 如果是自己的个人中心，显示添加宠物的提示，否则显示用户没有宠物的提示
+            binding.tvEmptyPetTip.text = if (isSelfProfile) "还没有您宠物信息，快去添加吧～" else "该用户还没有添加宠物～"
         }else{
             binding.tvEmptyPetTip.visibility = View.GONE
         }

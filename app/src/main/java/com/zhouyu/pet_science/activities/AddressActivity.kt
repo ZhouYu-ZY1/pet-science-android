@@ -1,6 +1,7 @@
 package com.zhouyu.pet_science.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.webkit.JavascriptInterface
@@ -32,6 +33,9 @@ class AddressActivity : BaseActivity() {
     private lateinit var webView: WebView
     private lateinit var progressDialog: MyProgressDialog
     private var isSelectMode = false // 是否是选择地址模式
+    
+    // 地图选择位置的请求码
+    private val REQUEST_MAP_LOCATION = 1001
     
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -236,11 +240,36 @@ class AddressActivity : BaseActivity() {
         }
 
         @JavascriptInterface
+        fun openMapForLocation() {
+            runOnUiThread {
+                val intent = Intent(this@AddressActivity, MapActivity::class.java)
+                startActivityForResult(intent, REQUEST_MAP_LOCATION)
+            }
+        }
+
+        @JavascriptInterface
         fun isSelectMode(): Boolean {
             return isSelectMode
         }
     }
-
+    
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_MAP_LOCATION && resultCode == RESULT_OK && data != null) {
+            val address = data.getStringExtra("address") ?: ""
+            val province = data.getStringExtra("province") ?: ""
+            val city = data.getStringExtra("city") ?: ""
+            val district = data.getStringExtra("district") ?: ""
+            
+            // 将地图选择的地址信息传递给WebView
+            webView.post {
+                webView.evaluateJavascript(
+                    "javascript:setLocationFromMap('$province', '$city', '$district', '$address')",
+                    null
+                )
+            }
+        }
+    }
     override fun onBackPressed() {
         if (webView.canGoBack()) {
             webView.goBack()

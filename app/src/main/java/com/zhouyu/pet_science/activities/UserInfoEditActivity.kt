@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +31,6 @@ import com.zhouyu.pet_science.network.HttpUtils
 import com.zhouyu.pet_science.network.PetHttpUtils
 import com.zhouyu.pet_science.network.UserHttpUtils
 import com.zhouyu.pet_science.pojo.CityJsonBean
-import com.zhouyu.pet_science.utils.ConsoleUtils
 import com.zhouyu.pet_science.utils.FileUtils
 import com.zhouyu.pet_science.utils.GetJsonDataUtil.getJson
 import com.zhouyu.pet_science.utils.GetJsonDataUtil.parseData
@@ -310,7 +310,8 @@ class UserInfoEditActivity : BaseActivity() {
             // 更新用户信息
             binding.etNickname.setText(userInfo.nickname)
             binding.etBio.setText(userInfo.bio.ifEmpty { "" })
-            binding.tvLocation.text = userInfo.location
+            binding.tvLocation.text =  if(userInfo.location.isEmpty() || userInfo.location == "null"){ "请选择所在地"
+            }else{ userInfo.location }
             if (userInfo.birthday.time != 0L) {
                 binding.tvBirthday.text = dateFormat.format(userInfo.birthday)
                 calendar.time = userInfo.birthday
@@ -321,13 +322,14 @@ class UserInfoEditActivity : BaseActivity() {
                 else -> R.id.rbGenderOther
             })
 
-            // 加载头像
-            Glide.with(this)
-                .load(HttpUtils.BASE_URL + userInfo.avatarUrl)
-                .apply(RequestOptions())
-                .transform(CircleCrop())
-                .into(binding.ivAvatarPreview)
-
+            if(!isFinishing && !isDestroyed){
+                // 加载头像
+                Glide.with(this)
+                    .load(HttpUtils.BASE_URL + userInfo.avatarUrl)
+                    .apply(RequestOptions())
+                    .transform(CircleCrop())
+                    .into(binding.ivAvatarPreview)
+            }
         }
     }
 
@@ -339,7 +341,7 @@ class UserInfoEditActivity : BaseActivity() {
             try {
                 val userInfo = UserHttpUtils.getUserInfo()
                 // 获取用户的宠物列表
-                val petList = PetHttpUtils.getUserPets()
+                val petList = PetHttpUtils.getUserPets(0)
                 runOnUiThread {
                     loadUserData(userInfo)
                     // 将后台获取的宠物数据转换为PetInfo对象

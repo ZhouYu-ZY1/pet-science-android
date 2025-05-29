@@ -21,14 +21,14 @@ android {
     buildFeatures {
         viewBinding true
     }
-//    signingConfigs {
-//        release {
-//            keyAlias 'com.zhouyu.android_create'
-//            keyPassword 'zy200592'
-//            storeFile file('D:/Project/Android/musicProject/music/key/video_watermark.jks')
-//            storePassword 'zy200592'
-//        }
-//    }
+    signingConfigs {
+        release {
+            keyAlias 'com.zhouyu.pet_science'
+            keyPassword 'zy200592'
+            storeFile file('C:/Users/zhouyu/Desktop/Project/pet-science-android/app/key/pet_science.jks')
+            storePassword 'zy200592'
+        }
+    }
 
     buildTypes {
         release {
@@ -44,7 +44,7 @@ android {
 //            debuggable = true
         }
         debug {
-//            signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
 //
 ////            //混淆
 ////            minifyEnabled true
@@ -185,4 +185,10 @@ dependencies {
 
     // Banner图片轮播库
     implementation 'io.github.youth5201314:banner:2.2.3'
+
+    // 高德地图SDK
+//    implementation 'com.amap.api:3dmap:9.3.0'  // 3D地图SDK
+//    implementation 'com.amap.api:location:6.2.0' // 定位SDK
+//    implementation 'com.amap.api:search:9.3.0' // 搜索SDK
+    implementation 'com.amap.api:3dmap-location-search:latest.integration' // 3D地图+定位+搜索SDK
 }

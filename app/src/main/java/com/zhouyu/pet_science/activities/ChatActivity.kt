@@ -91,7 +91,7 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun loadHistoryMessages() {
-        messageAdapter = MessageAdapter(chatMessages!!, currentUserId!!)
+        messageAdapter = MessageAdapter(this,chatMessages!!, currentUserId!!)
         val layoutManager = LinearLayoutManager(this)
         recyclerViewChat?.setLayoutManager(layoutManager)
         recyclerViewChat?.setAdapter(messageAdapter)

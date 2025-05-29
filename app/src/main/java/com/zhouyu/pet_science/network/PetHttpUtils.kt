@@ -6,7 +6,6 @@ import com.zhouyu.pet_science.network.HttpUtils.client
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -23,10 +22,10 @@ object PetHttpUtils {
     /**
      * 获取用户的所有宠物
      */
-    fun getUserPets(): List<Pet> {
+    fun getUserPets(userId: Int): List<Pet> {
         return try {
             val request = Request.Builder()
-                .url("$BASE_URL/pet/list")
+                .url("$BASE_URL/pet/list?userId=$userId")
                 .get()
                 .build()
                 

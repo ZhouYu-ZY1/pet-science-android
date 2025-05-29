@@ -56,6 +56,7 @@ const deleteConfirmModal = document.getElementById('delete-confirm-modal');
 const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
 const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
 const backBtn = document.getElementById('back-btn');
+const mapLocationBtn = document.getElementById('map-location-btn');
 
 // 省市区选择器
 const provinceSelect = document.getElementById('province');
@@ -445,6 +446,12 @@ function bindEvents() {
         openAddressModal();
     });
 
+    // 地图定位按钮
+    mapLocationBtn.addEventListener('click', () => {
+        if (window.Android) {
+            window.Android.openMapForLocation();
+        }
+    });
 
     // 表单提交
     addressForm.addEventListener('submit', function(e) {
@@ -723,9 +730,40 @@ function setDefaultAddress(id) {
     }
 }
 
-// 格式化手机号码，中间4位显示为星号
+// 从地图选择位置
+function setLocationFromMap(province, city, district, address) {
+    // 更新表单中的省市区和详细地址
+    selectedProvince = province;
+    selectedCity = city;
+    selectedDistrict = district;
+    document.getElementById('province').value = province;
+    document.getElementById('city').value = city;
+    document.getElementById('district').value = district;
+    document.getElementById('detail-address').value = address;
+    
+    // 更新地区显示文本
+    const regionText = document.getElementById('region-text');
+    if (regionText) {
+        regionText.value = `${province} ${city} ${district}`;
+    }
+    
+    // 更新选中的省市区变量（如果在地区选择器中有使用）
+    if (typeof selectedProvince !== 'undefined') {
+        selectedProvince = province;
+        selectedCity = city;
+        selectedDistrict = district;
+    }
+    
+    // 如果地址选择弹窗没有显示，则显示它
+    if (addressModal && !addressModal.classList.contains('active')) {
+        showAddressModal();
+    }
+}
+
+// 格式化手机号码，中间部分用星号代替
 function formatPhone(phone) {
-    if (!phone || phone.length !== 11) return phone;
+    if (!phone) return '';
+    if (phone.length !== 11) return phone;
     return phone.substring(0, 3) + '****' + phone.substring(7);
 }
 

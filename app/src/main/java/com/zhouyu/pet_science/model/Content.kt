@@ -5,6 +5,7 @@ data class Content(
     val title: String,
     val coverUrl: String,
     val likeCount: Int,
+    val contentType: String,
     val commentCount: Int,
     val isLiked: Boolean = false
 )

@@ -18,16 +18,19 @@ class ContentGridFragment : Fragment() {
     private lateinit var contentAdapter: ContentAdapter
     private val contentList = mutableListOf<Content>()
     private var contentType: Int = TYPE_POSTS
+    private var userId: Int = -1  // -1表示查看自己的内容
 
     companion object {
         const val TYPE_POSTS = 0
         const val TYPE_LIKES = 1
         private const val ARG_TYPE = "arg_type"
+        private const val ARG_USER_ID = "arg_user_id"
 
-        fun newInstance(type: Int): ContentGridFragment {
+        fun newInstance(type: Int, userId: Int = -1): ContentGridFragment {
             val fragment = ContentGridFragment()
             val args = Bundle()
             args.putInt(ARG_TYPE, type)
+            args.putInt(ARG_USER_ID, userId)
             fragment.arguments = args
             return fragment
         }
@@ -37,6 +40,7 @@ class ContentGridFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             contentType = it.getInt(ARG_TYPE, TYPE_POSTS)
+            userId = it.getInt(ARG_USER_ID, -1)
         }
     }
 
@@ -68,10 +72,20 @@ class ContentGridFragment : Fragment() {
         // 在实际应用中，这里应该从网络加载数据
         Thread {
             try {
-                val contents = if (contentType == TYPE_POSTS) {
-                    ContentHttpUtils.getUserPosts()
+                val contents = if (userId == -1) {
+                    // 查看自己的内容
+                    if (contentType == TYPE_POSTS) {
+                        ContentHttpUtils.getUserPosts()
+                    } else {
+                        ContentHttpUtils.getUserLikes()
+                    }
                 } else {
-                    ContentHttpUtils.getUserLikes()
+                    // 查看其他用户的内容
+                    if (contentType == TYPE_POSTS) {
+                        ContentHttpUtils.getUserPostsById(userId)
+                    } else {
+                        ContentHttpUtils.getUserLikesById(userId)
+                    }
                 }
                 
                 activity?.runOnUiThread {
@@ -79,6 +93,16 @@ class ContentGridFragment : Fragment() {
                         contentList.clear()
                         contentList.addAll(contents)
                         contentAdapter.notifyDataSetChanged()
+                        
+                        // 显示空内容提示
+                        val emptyView = view?.findViewById<View>(R.id.emptyView)
+                        if (emptyView != null) {
+                            if (contentList.isEmpty()) {
+                                emptyView.visibility = View.VISIBLE
+                            } else {
+                                emptyView.visibility = View.GONE
+                            }
+                        }
                     }
                 }
             } catch (e: Exception) {

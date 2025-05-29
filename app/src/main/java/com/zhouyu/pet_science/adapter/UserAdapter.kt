@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.zhouyu.pet_science.R
+import com.zhouyu.pet_science.activities.UserProfileActivity
 import com.zhouyu.pet_science.databinding.ItemUserBinding
 import com.zhouyu.pet_science.fragments.MessageFragment
 import com.zhouyu.pet_science.fragments.PersonalCenterFragment
@@ -32,6 +33,11 @@ class UserAdapter(private val context: Context, private var users: List<User>) :
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val user = users[position]
         val binding = holder.binding
+
+        holder.itemView.setOnClickListener{
+            // 点击用户跳转到个人中心
+            context.startActivity(UserProfileActivity.createIntent(context,user.userId))
+        }
         
         binding.nickname.text = user.nickname
         val intro: String = user.bio

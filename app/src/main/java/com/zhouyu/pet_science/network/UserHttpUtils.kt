@@ -1,6 +1,5 @@
 package com.zhouyu.pet_science.network
 
-import com.zhouyu.pet_science.model.Pet
 import com.zhouyu.pet_science.model.User
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.network.HttpUtils.client
@@ -85,22 +84,7 @@ object UserHttpUtils {
                 put("birthday", birthday)
                 put("location", location)
                 put("bio", bio)
-//                if(pets != null){
-//                    // 将宠物信息转换为JSON数组
-//                    val petsArray = JSONArray()
-//
-//                    pets.forEach { pet ->
-//                        val petObj = JSONObject().apply {
-//                            put("name", pet.name)
-//                            put("type", pet.type)
-//                            put("breed", pet.breed)
-//                            put("ageYear", pet.ageYear)
-//                            put("ageMonth", pet.ageMonth)
-//                        }
-//                        petsArray.put(petObj)
-//                    }
-//                    put("pets", petsArray)
-//                }
+
                 // 如果有头像URI，也加入请求
                 if(!avatarUrl.isNullOrEmpty()) {
                     put("avatarUrl", avatarUrl)
@@ -287,16 +271,52 @@ object UserHttpUtils {
         }
         return null
     }
+
+    /**
+     * 获取当前登录用户信息
+     */
     fun getUserInfo(): User? {
         getUserInfo(null).let {
             if(it != null){
                 // 获取用户的宠物列表
-                val petList = PetHttpUtils.getUserPets()
+                val petList = PetHttpUtils.getUserPets(0)
                 it.pets = petList
                 return it
             }
         }
         return null
+    }
+
+    /**
+     * 获取其他用户信息
+     * @param userId 用户ID
+     */
+    fun getUserInfoById(userId: Int): User? {
+        getUserInfo(userId).let {
+            if(it != null){
+                // 获取用户的宠物列表
+                val petList = PetHttpUtils.getUserPets(userId)
+                it.pets = petList
+                return it
+            }
+        }
+        return null
+    }
+
+    /**
+     * 关注用户
+     * @param userId 要关注的用户ID
+     */
+    fun followUser(userId: Int): Boolean {
+        return followUser(userId, true)
+    }
+
+    /**
+     * 取消关注用户
+     * @param userId 要取消关注的用户ID
+     */
+    fun unfollowUser(userId: Int): Boolean {
+        return followUser(userId, false)
     }
 
     private fun formatUser(userObj: JSONObject) : User{

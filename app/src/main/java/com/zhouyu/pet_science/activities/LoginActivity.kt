@@ -142,10 +142,7 @@ class LoginActivity : BaseActivity() {
         binding.btnQqLogin.setOnClickListener {
             showToast("QQ登录功能开发中")
         }
-        
-        binding.btnWeiboLogin.setOnClickListener {
-            showToast("微博登录功能开发中")
-        }
+
         
         binding.passwordEye.setOnClickListener {
             val isPasswordVisible = binding.etPassword.inputType == android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD

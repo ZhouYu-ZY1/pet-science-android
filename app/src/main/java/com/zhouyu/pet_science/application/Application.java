@@ -9,6 +9,7 @@ import android.os.Looper;
 
 
 //import com.getui.gs.sdk.GsManager;
+import com.amap.api.maps.MapsInitializer;
 import com.orhanobut.hawk.Hawk;
 import com.zhouyu.pet_science.utils.NightModeUtils;
 import com.zhouyu.pet_science.utils.PhoneMessage;
@@ -78,6 +79,10 @@ public class Application extends android.app.Application {
 
         //设备信息初始化
         PhoneMessage.initMessage(context);
+
+        // 高德地图隐私协议
+        MapsInitializer.updatePrivacyShow(context,true,true);
+        MapsInitializer.updatePrivacyAgree(context,true);
     }
 
 

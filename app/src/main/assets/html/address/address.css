@@ -608,3 +608,44 @@ input:checked + .slider:before {
     font-size: 16px;
     margin-left: 10px;
 }
+
+/* 详细地址容器样式 */
+.detail-address-container {
+    position: relative;
+    width: 100%;
+}
+
+/* 详细地址文本框样式 */
+#detail-address {
+    width: 100%;
+    padding-right: 40px; /* 为地图按钮留出空间 */
+}
+
+/* 地图选择按钮样式 */
+.map-location-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.map-location-btn i {
+    font-size: 18px;
+    color: var(--primary-color);
+}
+
+/* .map-location-btn:hover {
+    background-color: #e0e0e0;
+} */
+/* 修改为触摸按下时的效果 */
+.map-location-btn:active {
+    background-color: #e0e0e0;
+}
