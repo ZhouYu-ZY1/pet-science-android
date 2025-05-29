@@ -161,8 +161,10 @@ dependencies {
     implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.6'
 
     //视频播放器
-    implementation 'org.salient.artvideoplayer:artplayer-core:1.1.0'
-    implementation "org.salient.artvideoplayer:artplayer-exo:1.1.0"
+    // implementation 'org.salient.artvideoplayer:artplayer-core:1.1.0'
+    // implementation "org.salient.artvideoplayer:artplayer-exo:1.1.0"
+     // ExoPlayer依赖
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.7'
 
 //    //弹幕
 //    implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'

@@ -19,6 +19,13 @@
 <!--        tools:ignore="HardcodedText,MenuTitle" />-->
 
     <item
+        android:id="@+id/item4"
+        android:title="推荐"
+        android:icon="@drawable/hot_icon"
+        tools:ignore="HardcodedText,MenuTitle" />
+
+
+    <item
         android:id="@+id/item2"
         android:title="商城"
         android:icon="@drawable/shop_icon"
@@ -30,8 +37,9 @@
         android:icon="@drawable/message"
         tools:ignore="HardcodedText,MenuTitle" />
 
+
     <item
-        android:id="@+id/item4"
+        android:id="@+id/item5"
         android:title="我的"
         android:icon="@drawable/person"
         tools:ignore="HardcodedText,MenuTitle" />

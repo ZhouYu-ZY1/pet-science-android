@@ -27,6 +27,7 @@ import com.zhouyu.pet_science.application.WebSocketManager
 import com.zhouyu.pet_science.databinding.ActivityMainBinding
 import com.zhouyu.pet_science.fragments.MessageFragment
 import com.zhouyu.pet_science.fragments.PersonalCenterFragment
+import com.zhouyu.pet_science.fragments.VideoPlayFragment
 import com.zhouyu.pet_science.fragments.shop.ShopFragment
 import com.zhouyu.pet_science.manager.ActivityManager
 import com.zhouyu.pet_science.utils.CleanCacheUtils
@@ -94,6 +95,7 @@ class MainActivity : BaseActivity() {
         fragmentList = ArrayList()
         fragmentList!!.let {
 //            it.add(ShopFragment())
+            it.add(VideoPlayFragment())
             it.add(ShopFragment())
             it.add(MessageFragment())
             it.add(PersonalCenterFragment())
