@@ -154,7 +154,7 @@ class RightLetterSort : View {
         return true
     }
 
-    var listener: onTouchCharacterListener? = null
+    private var listener: onTouchCharacterListener? = null
 
     interface onTouchCharacterListener {
         fun touchCharacterListener(s: String?)
