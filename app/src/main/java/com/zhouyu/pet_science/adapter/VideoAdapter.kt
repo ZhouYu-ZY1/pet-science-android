@@ -42,6 +42,7 @@ import com.zhouyu.pet_science.pojo.Video
 import com.zhouyu.pet_science.utils.ConsoleUtils
 import com.zhouyu.pet_science.utils.EventUtils
 import com.zhouyu.pet_science.utils.MyToast
+import com.zhouyu.pet_science.utils.PhoneMessage
 import com.zhouyu.pet_science.views.LoveView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -227,24 +228,36 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
 
         val indicators = mutableListOf<View>()
 
-        for (i in 0 until imageCount) {
-            val indicator = View(context).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    (16 * context.resources.displayMetrics.density).toInt(),
-                    (4 * context.resources.displayMetrics.density).toInt()
-                ).apply {
-                    if (i > 0) leftMargin = (8 * context.resources.displayMetrics.density).toInt()
-                }
-                setBackgroundResource(R.drawable.banner_indicator_normal)
-            }
-            indicators.add(indicator)
-            holder.imageIndicatorLayout.addView(indicator)
-        }
+        holder.imageIndicatorLayout.apply { post {
+            // 总宽度
+            val totalWidth = holder.imageIndicatorLayout.width
+            // 计算指示器间距（每个间距4dp）
+            val indicatorMargin = PhoneMessage.dpToPx(4f)
+            // 计算总间距（指示器数量-1个间距）
+            val totalMargin = if (imageCount > 1) (imageCount - 1) * indicatorMargin else 0
+            // 计算每个指示器的宽度
+            val indicatorWidth = (totalWidth - totalMargin) / imageCount
 
-        // 设置第一个为选中状态
-        if (indicators.isNotEmpty()) {
-            indicators[0].setBackgroundResource(R.drawable.banner_indicator_selected)
-        }
+            for (i in 0 until imageCount) {
+                val indicator = View(context).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        indicatorWidth,
+                        (4 * context.resources.displayMetrics.density).toInt()
+                    ).apply {
+                        // 除了第一个指示器，其他都添加左边距
+                        if (i > 0) leftMargin = indicatorMargin
+                    }
+                    setBackgroundResource(R.drawable.banner_indicator_normal)
+                }
+                indicators.add(indicator)
+                holder.imageIndicatorLayout.addView(indicator)
+            }
+
+            // 设置第一个为选中状态
+            if (indicators.isNotEmpty()) {
+                indicators[0].setBackgroundResource(R.drawable.banner_indicator_selected)
+            }
+        }}
 
         // 监听Banner页面切换
         holder.imageBanner.addOnPageChangeListener(object : com.youth.banner.listener.OnPageChangeListener {
