@@ -5,6 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/video_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <!--视频组件-->
     <com.google.android.exoplayer2.ui.StyledPlayerView
         android:id="@+id/videoView"
@@ -12,6 +16,36 @@
         android:layout_height="match_parent"
         app:use_controller="false"
         app:resize_mode="zoom" />
+
+    <!--图文轮播组件-->
+    <com.youth.banner.Banner
+        android:id="@+id/imageBanner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <!--透明触摸覆盖层，用于接收Banner的触摸事件-->
+    <View
+        android:id="@+id/bannerTouchOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <!--自定义图文指示器-->
+    <LinearLayout
+        android:id="@+id/imageIndicatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!--双击红心-->
     <com.zhouyu.pet_science.views.LoveView
@@ -32,14 +66,15 @@
         android:visibility="gone"/>
 
     <LinearLayout
+        android:id="@+id/author_info_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="vertical"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="100dp"
-        android:layout_marginBottom="30dp">
+        android:layout_marginEnd="70dp"
+        android:layout_marginBottom="20dp">
         <TextView
             android:id="@+id/author_nickname"
             android:layout_width="wrap_content"
@@ -48,6 +83,10 @@
             android:textColor="@color/viewColor"
             android:textStyle="bold"
             android:textSize="17sp"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="4"
             tools:ignore="HardcodedText" />
         <TextView
             android:id="@+id/video_title"
@@ -58,6 +97,10 @@
             android:textSize="14sp"
             android:maxLines="3"
             android:ellipsize="end"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="4"
             android:text="标题xxxxxxx"/>
     </LinearLayout>
 
@@ -66,7 +109,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="100dp"
+        android:layout_marginEnd="10dp"
         android:orientation="vertical"
         android:gravity="center_horizontal">
         <com.zhouyu.pet_science.views.CircleImageView
@@ -78,50 +122,103 @@
         <ImageView
             android:id="@+id/like_btn"
             android:layout_marginTop="@dimen/video_right_btn_space"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:src="@drawable/like_icon_y"
             app:tint="@color/viewColor" />
         <TextView
+            android:id="@+id/tv_like_count"
             android:layout_marginTop="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/viewColor"
             android:text="999"
-            android:textSize="13sp"
+            android:textSize="12sp"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="4"
             tools:ignore="HardcodedText" />
 
         <ImageView
             android:id="@+id/comment_btn"
             android:layout_marginTop="@dimen/video_right_btn_space"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:src="@drawable/comment_icon"/>
         <TextView
+            android:id="@+id/tv_comment_count"
             android:layout_marginTop="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/viewColor"
             android:text="999"
-            android:textSize="13sp"
+            android:textSize="12sp"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="4"
+            tools:ignore="HardcodedText" />
+
+
+        <ImageView
+            android:id="@+id/share_btn"
+            android:layout_marginTop="@dimen/video_right_btn_space"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/share_content_icon"
+            app:tint="@color/viewColor"/>
+        <TextView
+            android:id="@+id/tv_share_count"
+            android:layout_marginTop="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/viewColor"
+            android:text="999"
+            android:textSize="12sp"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="4"
             tools:ignore="HardcodedText" />
     </LinearLayout>
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="300dp"-->
+<!--        android:background="@drawable/cover_gradient_overlay"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/video_background_image"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
 
     <LinearLayout
         android:id="@+id/seekBar_parent"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:gravity="bottom"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:clipChildren="false">
+        android:clipChildren="false"
+        android:orientation="vertical">
+        
+        <!-- 添加时间显示文本 -->
+        <TextView
+            android:id="@+id/time_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone"
+            android:text="00:00 / 00:00" />
+            
         <SeekBar
             android:id="@+id/video_seekBar"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            style="@style/SeekBarStyle"
-            />
+            style="@style/SeekBarStyle" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

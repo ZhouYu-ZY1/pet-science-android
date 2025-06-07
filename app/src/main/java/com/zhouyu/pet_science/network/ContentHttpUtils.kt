@@ -7,7 +7,6 @@ import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.network.HttpUtils.client
 import com.zhouyu.pet_science.pojo.Like
 import com.zhouyu.pet_science.pojo.Video
-import com.zhouyu.pet_science.utils.ConsoleUtils
 import okhttp3.FormBody
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -50,15 +49,12 @@ object ContentHttpUtils {
         } else {
             "/content/dislike"
         }
-        val token = Hawk.get<String>("loginToken")
         val requestBody = RequestBody.create("application/json".toMediaTypeOrNull(), json)
         val request: Request = Request.Builder().url(url)
-            .addHeader("token", token)
             .post(requestBody)
             .build()
         try {
             val result = client.newCall(request).execute().body!!.string()
-            ConsoleUtils.logErr(result)
             val jsonObject = JSONObject(result)
             val code = jsonObject.getInt("code")
             return code == 200
@@ -69,8 +65,13 @@ object ContentHttpUtils {
     }
 
     //获取用户视频列表
-    fun getUserVideoList(): Video? {
-        val request: Request = Request.Builder().url("$BASE_URL/content/getUserVideoList")
+    fun getUserVideoList(userId: Int): Video? {
+        val url = if (userId == -1) {
+            "$BASE_URL/content/getUserVideoList?userId=0"
+        } else {
+            "$BASE_URL/content/getUserVideoList?userId=$userId"
+        }
+        val request: Request = Request.Builder().url(url)
             .get()
             .build()
         try {
@@ -82,6 +83,7 @@ object ContentHttpUtils {
             for (data in dataList) {
                 data.videoSrc = BASE_URL + data.videoSrc
                 data.coverSrc = BASE_URL + data.coverSrc
+                data.authorAvatar = BASE_URL + data.authorAvatar
             }
             return video
         } catch (e: java.lang.Exception) {
@@ -91,12 +93,14 @@ object ContentHttpUtils {
     }
 
     //获取点赞视频列表
-    fun getLikeList(): Video? {
-        val token = Hawk.get<String>("loginToken")
-        val formBody = FormBody.Builder()
-        formBody.add("userId", token)
-        val request: Request = Request.Builder().url("$BASE_URL/content/getLikeList")
-            .post(formBody.build())
+    fun getLikeList(userId: Int): Video? {
+        val url = if (userId == -1) {
+            "$BASE_URL/content/getLikeList?userId=0"
+        } else {
+            "$BASE_URL/content/getLikeList?userId=$userId"
+        }
+        val request: Request = Request.Builder().url(url)
+            .get()
             .build()
         try {
             val result = client.newCall(request).execute().body!!.string()

@@ -89,7 +89,6 @@ class LoginActivity : BaseActivity() {
                             if(data.getBoolean("isRegister")){  // 判断是否为注册
                                 // 注册成功后跳转到个人信息填写页面
                                 showToast("注册成功")
-                                // 跳转到 UserInfoEidtActivity
                                 startActivity(Intent(this, UserInfoEditActivity::class.java))
                                 finish()
                             }else {

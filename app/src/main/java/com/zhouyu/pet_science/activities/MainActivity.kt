@@ -31,19 +31,17 @@ import com.zhouyu.pet_science.fragments.VideoPlayFragment
 import com.zhouyu.pet_science.fragments.shop.ShopFragment
 import com.zhouyu.pet_science.manager.ActivityManager
 import com.zhouyu.pet_science.utils.CleanCacheUtils
-import com.zhouyu.pet_science.utils.NotificationHelper
-import com.zhouyu.pet_science.utils.StorageUtils
 import com.zhouyu.pet_science.utils.ConsoleUtils
+import com.zhouyu.pet_science.utils.NotificationHelper
 import com.zhouyu.pet_science.utils.PhoneMessage
+import com.zhouyu.pet_science.utils.StorageUtils
 import com.zhouyu.pet_science.views.CustomViewPager
 import com.zhouyu.pet_science.views.dialog.MyDialog
 import me.ibrahimsn.lib.OnItemSelectedListener
-import me.ibrahimsn.lib.SmoothBottomBar
 
 class MainActivity : BaseActivity() {
     private var fragmentList: ArrayList<Fragment>? = null
     private var viewPager: CustomViewPager? = null
-    private var smoothBottomBar: SmoothBottomBar? = null
     var drawerLayout: DrawerLayout? = null
     private lateinit var binding: ActivityMainBinding
 
@@ -94,9 +92,8 @@ class MainActivity : BaseActivity() {
         viewPager = binding.mainViewPager
         fragmentList = ArrayList()
         fragmentList!!.let {
-//            it.add(ShopFragment())
-            it.add(VideoPlayFragment())
             it.add(ShopFragment())
+            it.add(VideoPlayFragment())
             it.add(MessageFragment())
             it.add(PersonalCenterFragment())
         }
@@ -113,6 +110,11 @@ class MainActivity : BaseActivity() {
                 return fragmentList!!.size
             }
         })
+        val cutOffLineView: View = findViewById(R.id.cutOffLineView)
+        if(fragmentList!![0] is VideoPlayFragment){
+            binding.mainBottomBar.barBackgroundColor = getColor(R.color.black)
+            cutOffLineView.setBackgroundColor(getColor(R.color.black))
+        }
         viewPager!!.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrolled(
                 position: Int,
@@ -122,20 +124,29 @@ class MainActivity : BaseActivity() {
             }
 
             override fun onPageSelected(position: Int) {
-                if (smoothBottomBar != null) {
-                    smoothBottomBar!!.itemActiveIndex = position
-                }
+                binding.mainBottomBar.itemActiveIndex = position
 
                 // 设置状态栏文字颜色
                 val fragment = fragmentList!![position]
                 when (fragment) {
                     is ShopFragment -> {
+                        binding.mainBottomBar.barBackgroundColor = getColor(R.color.white)
+                        cutOffLineView.setBackgroundColor(getColor(R.color.cutOffLine))
                         setStatusBarTextColor(true, window)
                     }
                     is MessageFragment -> {
+                        binding.mainBottomBar.barBackgroundColor = getColor(R.color.white)
+                        cutOffLineView.setBackgroundColor(getColor(R.color.cutOffLine))
                         setStatusBarTextColor(true, window)
                     }
                     is PersonalCenterFragment -> {
+                        binding.mainBottomBar.barBackgroundColor = getColor(R.color.white)
+                        cutOffLineView.setBackgroundColor(getColor(R.color.cutOffLine))
+                        setStatusBarTextColor(false, window)
+                    }
+                    is VideoPlayFragment -> {
+                        binding.mainBottomBar.barBackgroundColor = getColor(R.color.black)
+                        cutOffLineView.setBackgroundColor(getColor(R.color.black))
                         setStatusBarTextColor(false, window)
                     }
                 }
@@ -143,9 +154,8 @@ class MainActivity : BaseActivity() {
 
             override fun onPageScrollStateChanged(state: Int) {}
         })
-
-        smoothBottomBar = binding.mainBottomBar
-        smoothBottomBar!!.onItemSelectedListener = object : OnItemSelectedListener {
+        
+        binding.mainBottomBar.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelect(pos: Int): Boolean {
                 viewPager!!.setCurrentItem(pos)
                 return false

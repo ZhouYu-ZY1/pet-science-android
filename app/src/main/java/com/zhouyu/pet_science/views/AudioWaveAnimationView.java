@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.zhouyu.pet_science.utils.ConsoleUtils;
 import com.zhouyu.pet_science.utils.PhoneMessage;
 
 import java.util.Arrays;
@@ -56,7 +55,6 @@ public class AudioWaveAnimationView extends View {
                             // 回到底部，准备切换到下一条线
                             if(isPositive){
                                 currentIndex = currentIndex + 1;
-                                ConsoleUtils.logErr(currentIndex);
                                 if(currentIndex == waveHeights.length - 1){
                                     isPositive = false;
                                 }

@@ -6,11 +6,12 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.GravityCompat
@@ -21,13 +22,16 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
+import com.devil.library.media.MediaSelectorManager
+import com.devil.library.media.config.DVCameraConfig
+import com.devil.library.media.enumtype.DVCameraType
+import com.devil.library.media.enumtype.DVMediaType
 import com.google.android.material.tabs.TabLayoutMediator
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import com.zhouyu.pet_science.R
-import com.zhouyu.pet_science.activities.AddressActivity
 import com.zhouyu.pet_science.activities.MainActivity
-import com.zhouyu.pet_science.activities.MyOrdersActivity
 import com.zhouyu.pet_science.activities.UserInfoEditActivity
-import com.zhouyu.pet_science.activities.UserProfileActivity
 import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.adapter.PetAdapter
 import com.zhouyu.pet_science.databinding.FragmentPersonalCenterBinding
@@ -35,9 +39,11 @@ import com.zhouyu.pet_science.model.Pet
 import com.zhouyu.pet_science.model.User
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.network.UserHttpUtils
-import com.zhouyu.pet_science.utils.ConsoleUtils
-import com.zhouyu.pet_science.utils.TimeUtils
+import com.zhouyu.pet_science.utils.MyToast
 import com.zhouyu.pet_science.utils.PhoneMessage
+import com.zhouyu.pet_science.utils.TimeUtils
+import com.zhouyu.pet_science.views.dialog.MyDialog
+import com.zhouyu.pet_science.views.dialog.MyProgressDialog
 
 class PersonalCenterFragment : BaseFragment() {
     private var _binding: FragmentPersonalCenterBinding? = null
@@ -109,10 +115,11 @@ class PersonalCenterFragment : BaseFragment() {
             binding.btnFollow.visibility = View.VISIBLE
 
             // 隐藏查看别人主页不需要的视图
-            binding.functionsContainer.visibility = View.GONE
+//            binding.functionsContainer.visibility = View.GONE
             binding.btnEditProfile.visibility = View.GONE
             binding.tvAddPet.visibility = View.GONE
             binding.mutual.visibility = View.GONE
+            binding.filmBtn.visibility = View.GONE
         }
         binding.tvPetTitle.text = if (isSelfProfile) "我的宠物" else "TA的宠物"
 
@@ -125,9 +132,15 @@ class PersonalCenterFragment : BaseFragment() {
         
         // 设置ViewPager和TabLayout
         val tabTitles = listOf("发布", "点赞")
+        //    var fragments = ArrayList<Fragment>()
+        //    fragments.add(WorksFragment())
+        //    fragments.add(LikesFragment())
+        //    fragments.add(FavoritesFragment())
         val fragments = listOf(
-            ContentGridFragment.newInstance(ContentGridFragment.TYPE_POSTS, userId),
-            ContentGridFragment.newInstance(ContentGridFragment.TYPE_LIKES, userId)
+            ContentListFragment(this).apply { arguments = Bundle().apply { putString("pageType", "works"); putInt("userId",userId) } },
+            ContentListFragment(this).apply { arguments = Bundle().apply { putString("pageType", "likes"); putInt("userId",userId) } }
+//            ContentGridFragment.newInstance(ContentGridFragment.TYPE_POSTS, userId),
+//            ContentGridFragment.newInstance(ContentGridFragment.TYPE_LIKES, userId)
         )
         
         binding.viewPager.adapter = object : FragmentStateAdapter(this) {
@@ -163,15 +176,37 @@ class PersonalCenterFragment : BaseFragment() {
                 startActivity(intent)
             }
 
-            //我的订单
-            binding.layoutMyOrders.setOnClickListener{
-                startActivity(Intent(requireActivity(), MyOrdersActivity::class.java))
+            binding.filmBtn.setOnClickListener {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
+                    val myDialog2 = MyDialog(requireContext())
+                    myDialog2.setTitle("所有文件访问权限")
+                    myDialog2.setMessage("由于Android 11以上系统限制，访问相册需要所有文件访问权限")
+                    myDialog2.setYesOnclickListener("去开启") {
+                        myDialog2.dismiss()
+                        XXPermissions.with(this) // 适配 Android 11 需要这样写，这里无需再写 Permission.Group.STORAGE
+                            .permission(Permission.MANAGE_EXTERNAL_STORAGE)
+                            .request { _: List<String?>?, all: Boolean ->
+                                if (all) {
+                                    skipCamera()
+                                }
+                            }
+                    }
+                    myDialog2.setNoOnclickListener("取消", myDialog2::dismiss)
+                    myDialog2.show()
+                } else {
+                    skipCamera()
+                }
             }
 
-            //地址管理
-            binding.layoutAddress.setOnClickListener{
-                startActivity(Intent(requireActivity(), AddressActivity::class.java))
-            }
+//            //我的订单
+//            binding.layoutMyOrders.setOnClickListener{
+//                startActivity(Intent(requireActivity(), MyOrdersActivity::class.java))
+//            }
+//
+//            //地址管理
+//            binding.layoutAddress.setOnClickListener{
+//                startActivity(Intent(requireActivity(), AddressActivity::class.java))
+//            }
         }else{
             // 关注按钮点击事件
             binding.btnFollow.setOnClickListener {
@@ -182,6 +217,10 @@ class PersonalCenterFragment : BaseFragment() {
 
         }
 
+        binding.viewPager.post {
+            binding.viewPager.layoutParams.height = (binding.personalCenterLayout.height
+                    - binding.tabLayout.height - binding.topBar.height)
+        }
 
         binding.nestedScrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             val threshold = binding.ivCover.height - binding.topBar.height
@@ -383,7 +422,12 @@ class PersonalCenterFragment : BaseFragment() {
             }
         }
     }
-    
+
+    fun setUserVideoListSize(size: Int) {
+        runUiThread{
+            binding.tvPostsCount.text = size.toString()
+        }
+    }
     private fun updateFollowButton(isFollowed: Boolean) {
         binding.btnFollow.apply {
             if (isFollowed) {
@@ -409,7 +453,55 @@ class PersonalCenterFragment : BaseFragment() {
             binding.tvEmptyPetTip.visibility = View.GONE
         }
     }
-    
+
+
+    private fun skipCamera() {
+        val config: DVCameraConfig =
+            MediaSelectorManager.getDefaultCameraConfigBuilder() //相机的类型(系统照相机、普通照相机、美颜相机)默认普通照相机
+                .cameraType(DVCameraType.BEAUTY) //是否需要裁剪
+                .needCrop(true) //裁剪大小
+                .cropSize(1, 1, 200, 200)
+                .mediaType(DVMediaType.ALL) //设置录制时长
+                .maxDuration(10)
+                .flashLightEnable(true)
+                .build()
+        MediaSelectorManager.openCameraWithConfig(requireActivity(), config) { liPath ->
+            try {
+                val myDialog = MyDialog(requireActivity())
+                myDialog.setTitle("上传视频")
+                myDialog.isInputDialog(true)
+                myDialog.setDialogInputHint("请输入视频标题")
+                myDialog.setYesOnclickListener("确认上传") {
+                    myDialog.dismiss()
+                    val text = myDialog.dialogInputText
+                    val path: String = liPath[0]
+                    val myProgressDialog = MyProgressDialog(requireActivity())
+                    myProgressDialog.setTitleStr("上传视频")
+                    myProgressDialog.setHintStr("正在上传视频，请稍等...")
+                    myProgressDialog.setCanceledOnTouchOutside(false)
+                    myProgressDialog.show()
+                    Thread {
+                        val b: Boolean = UserHttpUtils.uploadVideo(path, text)
+                        requireActivity().runOnUiThread {
+                            if (b) {
+                                MyToast.show("视频上传成功", Toast.LENGTH_LONG, true)
+                                ContentListFragment.refreshWorksList = true
+                            } else {
+                                MyToast.show("视频上传失败，请重试", Toast.LENGTH_LONG, false)
+                            }
+                            myProgressDialog.dismiss()
+                        }
+                    }.start()
+                }
+                myDialog.setNoOnclickListener("取消上传", myDialog::dismiss)
+                myDialog.show()
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

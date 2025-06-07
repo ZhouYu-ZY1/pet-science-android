@@ -34,11 +34,9 @@ class WebSocketManager private constructor() {
         fun onDisconnected()
         fun onError(error: String?)
     }
-
     fun setMessageCallback(callback: MessageCallback) {
         messageCallbacks.add(callback)
     }
-
     fun removeMessageCallback(callback: MessageCallback) {
         messageCallbacks.remove(callback)
     }

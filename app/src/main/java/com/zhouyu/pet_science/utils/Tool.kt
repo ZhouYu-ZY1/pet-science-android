@@ -381,7 +381,6 @@ object Tool {
                     val mMoveY = event.y.toInt()
                     val absMx = abs((mMoveX - mDownX).toDouble()).toInt()
                     val absMy = abs((mMoveY - mDownY).toDouble()).toInt()
-                    ConsoleUtils.logErr(absMx)
                     if (absMx > MIN_DISTANCE || absMy > MIN_DISTANCE) {
                         mBaseHandler.removeCallbacks(mLongPressTask)
                         mBaseHandler.removeCallbacks(mSingleClickTask)

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/personalCenterLayout"
     tools:ignore="HardcodedText">
 
     <androidx.core.widget.NestedScrollView
@@ -12,7 +13,8 @@
         android:layout_height="match_parent"
         android:background="@color/viewColor"
         android:overScrollMode="never"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        android:fillViewport="true">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -356,6 +358,7 @@
 
             <!-- 我的宠物 -->
             <LinearLayout
+                android:id="@+id/petsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -414,180 +417,182 @@
                     tools:ignore="HardcodedText,UseCompatTextViewDrawableXml" />
             </LinearLayout>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                app:cardCornerRadius="15dp"
-                app:cardBackgroundColor="#F7FAFF"
-                app:cardElevation="1dp">
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_marginStart="10dp"-->
+<!--                android:layout_marginEnd="10dp"-->
+<!--                app:cardCornerRadius="15dp"-->
+<!--                app:cardBackgroundColor="#F7FAFF"-->
+<!--                app:cardElevation="1dp">-->
 
-                <LinearLayout
-                    android:id="@+id/functionsContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/functionsContainer"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical">-->
 
-                    <LinearLayout
-                        android:id="@+id/layoutMyOrders"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:padding="16dp">
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/layoutMyOrders"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:background="?attr/selectableItemBackground"-->
+<!--                        android:gravity="center_vertical"-->
+<!--                        android:orientation="horizontal"-->
+<!--                        android:padding="16dp">-->
 
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/shop_icon"
-                            app:tint="@color/Theme" />
+<!--                        <ImageView-->
+<!--                            android:layout_width="20dp"-->
+<!--                            android:layout_height="20dp"-->
+<!--                            android:src="@drawable/shop_icon"-->
+<!--                            app:tint="@color/Theme" />-->
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
-                            android:layout_weight="1"
-                            android:text="我的订单"
-                            android:textColor="@color/textGeneral"
-                            android:textSize="14sp" />
+<!--                        <TextView-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="14dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:text="我的订单"-->
+<!--                            android:textColor="@color/textGeneral"-->
+<!--                            android:textSize="14sp" />-->
 
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/next_icon"
-                            app:tint="@color/textTinge" />
-                    </LinearLayout>
+<!--                        <ImageView-->
+<!--                            android:layout_width="16dp"-->
+<!--                            android:layout_height="16dp"-->
+<!--                            android:src="@drawable/next_icon"-->
+<!--                            app:tint="@color/textTinge" />-->
+<!--                    </LinearLayout>-->
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/cutOffLine" />
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:background="@color/cutOffLine" />-->
 
-                    <LinearLayout
-                        android:id="@+id/layoutAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:padding="16dp">
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/layoutAddress"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:background="?attr/selectableItemBackground"-->
+<!--                        android:gravity="center_vertical"-->
+<!--                        android:orientation="horizontal"-->
+<!--                        android:padding="16dp">-->
 
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_location"
-                            app:tint="@color/Theme" />
+<!--                        <ImageView-->
+<!--                            android:layout_width="22dp"-->
+<!--                            android:layout_height="22dp"-->
+<!--                            android:src="@drawable/ic_location"-->
+<!--                            app:tint="@color/Theme" />-->
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="13dp"
-                            android:layout_weight="1"
-                            android:text="收货地址"
-                            android:textColor="@color/textGeneral"
-                            android:textSize="14sp" />
+<!--                        <TextView-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="13dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:text="收货地址"-->
+<!--                            android:textColor="@color/textGeneral"-->
+<!--                            android:textSize="14sp" />-->
 
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/next_icon"
-                            app:tint="@color/textTinge" />
-                    </LinearLayout>
+<!--                        <ImageView-->
+<!--                            android:layout_width="16dp"-->
+<!--                            android:layout_height="16dp"-->
+<!--                            android:src="@drawable/next_icon"-->
+<!--                            app:tint="@color/textTinge" />-->
+<!--                    </LinearLayout>-->
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/cutOffLine" />
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:background="@color/cutOffLine" />-->
 
 
-                    <LinearLayout
-                        android:id="@+id/layoutHelp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:padding="16dp">
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/layoutHelp"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:background="?attr/selectableItemBackground"-->
+<!--                        android:gravity="center_vertical"-->
+<!--                        android:orientation="horizontal"-->
+<!--                        android:padding="16dp">-->
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/help_icon"
-                            app:tint="@color/Theme" />
+<!--                        <ImageView-->
+<!--                            android:layout_width="24dp"-->
+<!--                            android:layout_height="24dp"-->
+<!--                            android:src="@drawable/help_icon"-->
+<!--                            app:tint="@color/Theme" />-->
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_weight="1"
-                            android:text="帮助中心"
-                            android:textColor="@color/textGeneral"
-                            android:textSize="14sp" />
+<!--                        <TextView-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="12dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:text="帮助中心"-->
+<!--                            android:textColor="@color/textGeneral"-->
+<!--                            android:textSize="14sp" />-->
 
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/next_icon"
-                            app:tint="@color/textTinge" />
-                    </LinearLayout>
+<!--                        <ImageView-->
+<!--                            android:layout_width="16dp"-->
+<!--                            android:layout_height="16dp"-->
+<!--                            android:src="@drawable/next_icon"-->
+<!--                            app:tint="@color/textTinge" />-->
+<!--                    </LinearLayout>-->
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/cutOffLine" />
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:background="@color/cutOffLine" />-->
 
-                    <LinearLayout
-                        android:id="@+id/layoutSettings"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:padding="16dp">
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/layoutSettings"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:background="?attr/selectableItemBackground"-->
+<!--                        android:gravity="center_vertical"-->
+<!--                        android:orientation="horizontal"-->
+<!--                        android:padding="16dp">-->
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/setting_icon"
-                            app:tint="@color/Theme" />
+<!--                        <ImageView-->
+<!--                            android:layout_width="24dp"-->
+<!--                            android:layout_height="24dp"-->
+<!--                            android:src="@drawable/setting_icon"-->
+<!--                            app:tint="@color/Theme" />-->
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_weight="1"
-                            android:text="设置"
-                            android:textColor="@color/textGeneral"
-                            android:textSize="14sp" />
+<!--                        <TextView-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="12dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:text="设置"-->
+<!--                            android:textColor="@color/textGeneral"-->
+<!--                            android:textSize="14sp" />-->
 
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/next_icon"
-                            app:tint="@color/textTinge" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+<!--                        <ImageView-->
+<!--                            android:layout_width="16dp"-->
+<!--                            android:layout_height="16dp"-->
+<!--                            android:src="@drawable/next_icon"-->
+<!--                            app:tint="@color/textTinge" />-->
+<!--                    </LinearLayout>-->
+<!--                </LinearLayout>-->
+<!--            </androidx.cardview.widget.CardView>-->
 
 
             <!-- 内容标签页 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:orientation="vertical">
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:background="@color/white"
                     app:tabGravity="fill"
                     app:tabIndicatorColor="@color/Theme"
                     app:tabIndicatorHeight="2dp"
+                    app:tabIndicatorFullWidth="false"
+                    android:paddingBottom="10dp"
+                    app:tabRippleColor="@android:color/transparent"
                     app:tabMode="fixed"
                     app:tabSelectedTextColor="@color/Theme"
                     app:tabTextColor="@color/textTinge">
@@ -606,8 +611,7 @@
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="200dp" />
+                    android:layout_height="700dp" />
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -679,4 +683,14 @@
            app:tint="@color/viewColor" />
 
    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.zhouyu.pet_science.views.CircleImageView
+        android:id="@+id/film_btn"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/film_icon"/>
 </RelativeLayout>

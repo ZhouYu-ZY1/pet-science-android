@@ -126,8 +126,11 @@ dependencies {
     //音乐视频缓存库
 //    implementation 'com.danikula:videocache:2.7.1'
 
-    //歌词View模块
-    implementation 'com.github.Lauzy:LyricView:1.0.4'
+    // 视频拍摄
+    // <activity
+    //            android:name="com.miyouquan.library.DVPermissionUtils$RequestPermissionsActivity"
+    //            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+    implementation 'com.github.Devil-Chen:DVMediaSelector:2.0.3'
 
     //图片裁剪
     implementation 'com.edmodo:cropper:1.0.1'

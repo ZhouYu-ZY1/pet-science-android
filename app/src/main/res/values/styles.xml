@@ -29,11 +29,19 @@
 
 
     <!--自定义seekBarStyle-->
+<!--    <style name="SeekBarStyle" >-->
+<!--        <item name="android:indeterminateOnly">false</item>-->
+<!--        <item name="android:indeterminateDrawable">@color/colorAccent</item>-->
+<!--        <item name="android:progressDrawable">@xml/seekbar_progress_drawable</item>-->
+<!--        <item name="android:thumb">@drawable/thumb_up</item>-->
+<!--    </style>-->
+    <!--自定义seekBarStyle-->
     <style name="SeekBarStyle" >
         <item name="android:indeterminateOnly">false</item>
-        <item name="android:indeterminateDrawable">@color/colorAccent</item>
+        <item name="android:indeterminateDrawable">@color/viewColor</item>
         <item name="android:progressDrawable">@xml/seekbar_progress_drawable</item>
-        <item name="android:thumb">@drawable/thumb_up</item>
+        <!--        <item name="android:thumb">@drawable/thumb_up</item>-->
+        <item name="android:thumb">@null</item>
     </style>
 
     <declare-styleable name="CircleImageView">

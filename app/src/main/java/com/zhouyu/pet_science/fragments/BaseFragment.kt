@@ -45,4 +45,11 @@ open class BaseFragment : Fragment() {
             }
         }
     }
+
+    /**
+     * 检查Fragment是否可见
+     */
+    fun isFragmentVisible(): Boolean {
+        return isAdded && isVisible && userVisibleHint
+    }
 }

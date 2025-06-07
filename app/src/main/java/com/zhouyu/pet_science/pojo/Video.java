@@ -43,6 +43,34 @@ public class Video {
         private String type;
         private boolean like;
 
+        private Integer commentCount; // 评论数
+        private Integer diggCount; // 点赞数
+        private Integer shareCount; // 分享数
+
+        public Integer getCommentCount() {
+            return commentCount;
+        }
+
+        public void setCommentCount(Integer commentCount) {
+            this.commentCount = commentCount;
+        }
+
+        public Integer getDiggCount() {
+            return diggCount;
+        }
+
+        public void setDiggCount(Integer diggCount) {
+            this.diggCount = diggCount;
+        }
+
+        public Integer getShareCount() {
+            return shareCount;
+        }
+
+        public void setShareCount(Integer shareCount) {
+            this.shareCount = shareCount;
+        }
+
         public String getAuthorAvatar() {
             return authorAvatar;
         }

@@ -8,13 +8,15 @@
     <!--通知-->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-    <!--定位-->
+    <!--定位 用于地图-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!--读写文件-->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />  <!--文件访问权限 -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
+
     <!--网络状态-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -60,11 +62,18 @@
         <activity android:name=".activities.UserProfileActivity" android:exported="false" />
         <!-- 地图选择位置 -->
         <activity android:name=".activities.MapActivity" android:exported="false" />
+        <!-- 视频播放页面 -->
+        <activity android:name=".activities.VideoPlayActivity"/>
 
         <!-- 高德Key配置 -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="b9c50d9f7614818214536ff70fcd6400" />
+
+        <!--拍照-->
+        <activity
+            android:name="com.miyouquan.library.DVPermissionUtils$RequestPermissionsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>

@@ -1,17 +1,22 @@
 package com.zhouyu.pet_science.network
 
+import com.orhanobut.hawk.Hawk
 import com.zhouyu.pet_science.model.User
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.network.HttpUtils.client
 import com.zhouyu.pet_science.utils.ConsoleUtils
 import okhttp3.FormBody
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.File
 import java.util.Date
+import java.util.Objects
 
 object UserHttpUtils {
     /**
@@ -354,5 +359,34 @@ object UserHttpUtils {
             password = "",
             pets = emptyList()
         )
+    }
+
+    /**
+     * 上传视频
+     * @param path 视频路径
+     */
+    fun uploadVideo(path: String, desc: String): Boolean {
+        val videoFile = File(path)
+        if (!videoFile.exists()) { //视频不存在
+            return false
+        }
+        val mediaType: MediaType? = "video/mp4".toMediaTypeOrNull()
+        val requestBody: RequestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("file", videoFile.name, RequestBody.create(mediaType, videoFile))
+            .build()
+        val request: Request = Request.Builder()
+            .url("$BASE_URL/upload/video/userWorks?desc=$desc")
+            .post(requestBody)
+            .build()
+        try {
+            val result = client.newCall(request).execute().body?.string()
+            val jsonObject = JSONObject(result!!)
+            val code = jsonObject.getInt("code")
+            return code == 200
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+        return false
     }
 }
