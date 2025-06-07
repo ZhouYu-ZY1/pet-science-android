@@ -1,37 +1,30 @@
-package com.zhouyu.pet_science.views;
+package com.zhouyu.pet_science.views
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.AttributeSet;
-import android.widget.TextView;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.AttributeSet
+import android.widget.TextView
 
 /**
  * 自动滚动文字
  */
 @SuppressLint("AppCompatCustomView")
-public class RollTextView extends TextView {
-    public RollTextView (Context context) {
-        super(context);
-    }
-    public RollTextView (Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-    public RollTextView (Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+class RollTextView : TextView {
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    )
+
+    override fun isFocused(): Boolean {
+        return isOpen
     }
 
-    @Override
-    public boolean isFocused() {
-        return isOpen;
-    }
-
-    private boolean isOpen = true;
-
-    public boolean isOpen() {
-        return isOpen;
-    }
-
-    public void setOpen(boolean open) {
-        isOpen = open;
+    private var isOpen: Boolean = true
+    fun setOpen(isOpen: Boolean) {
+        this.isOpen = isOpen
+        requestLayout()
     }
 }

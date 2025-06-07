@@ -1,168 +1,183 @@
-package com.zhouyu.pet_science.views;
+package com.zhouyu.pet_science.views
 
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Typeface;
-import android.os.Looper;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.Typeface
+import android.os.Looper
+import android.util.AttributeSet
+import android.view.MotionEvent
+import android.view.View
+import com.zhouyu.pet_science.R
+import com.zhouyu.pet_science.utils.PhoneMessage.dpToPx
+import com.zhouyu.pet_science.utils.PhoneMessage.dpToPxFloat
+import kotlin.math.abs
 
-import com.zhouyu.pet_science.R;
-import com.zhouyu.pet_science.utils.PhoneMessage;
+class RightLetterSort : View {
+    private val textPaint = Paint()
+    private val textPaint2 = Paint()
+    private val textPaint3 = Paint()
+    private val bubblePaint = Paint()
 
-public class RightLetterSort extends View {
-    private final Paint textPaint = new Paint();
-    private final Paint textPaint2 = new Paint();
-    private final Paint textPaint3 = new Paint();
-    private final Paint bubblePaint = new Paint();
-    public static final String[] letter = new String[]{
-            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
-            "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
-            "W", "X", "Y", "Z"};
     //鼠标点击、滑动时选择的字母
-    private int choose = -1;
-    private String now = "";
-    private int bubbleRadius = 25;
-    private Path path;
+    private var choose = -1
+    private var now = ""
+    private var bubbleRadius = 25
+    private var path: Path? = null
 
-    public RightLetterSort(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initPaint();
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+        initPaint()
     }
-    public RightLetterSort(Context context) {
-        super(context);
-        initPaint();
+
+    constructor(context: Context?) : super(context) {
+        initPaint()
     }
-    public RightLetterSort(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initPaint();
+
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
+        initPaint()
     }
-    private void initPaint() {
-        Context context = getContext();
-        textPaint.setTextSize(PhoneMessage.dpToPx(11));
-        textPaint.setAntiAlias(true);
-        textPaint.setColor(Color.parseColor("#818792"));
 
-        textPaint2.setTextSize(PhoneMessage.dpToPx(27));
-        textPaint2.setAntiAlias(true);
-        textPaint2.setTypeface(Typeface.DEFAULT_BOLD);
-        textPaint2.setColor(Color.WHITE);
+    private fun initPaint() {
+        val context = context
+        textPaint.textSize = dpToPx(11f).toFloat()
+        textPaint.isAntiAlias = true
+        textPaint.color = Color.parseColor("#818792")
 
-        textPaint3.setTextSize(PhoneMessage.dpToPx(12));
-        textPaint3.setAntiAlias(true);
-        textPaint3.setTypeface(Typeface.DEFAULT_BOLD);
-        textPaint3.setColor(context.getColor(R.color.Theme));
+        textPaint2.textSize = dpToPx(27f).toFloat()
+        textPaint2.isAntiAlias = true
+        textPaint2.setTypeface(Typeface.DEFAULT_BOLD)
+        textPaint2.color = Color.WHITE
 
-        bubblePaint.setColor(0xffcccccc);
-        bubblePaint.setStyle(Paint.Style.FILL);
-        bubblePaint.setStrokeWidth(5);
-        bubblePaint.setAntiAlias(true);
+        textPaint3.textSize = dpToPx(12f).toFloat()
+        textPaint3.isAntiAlias = true
+        textPaint3.setTypeface(Typeface.DEFAULT_BOLD)
+        textPaint3.color = context.getColor(R.color.Theme)
+
+        bubblePaint.color = -0x333334
+        bubblePaint.style = Paint.Style.FILL
+        bubblePaint.strokeWidth = 5f
+        bubblePaint.isAntiAlias = true
 
 
-        bubbleRadius = PhoneMessage.dpToPx(bubbleRadius);
-        path = new Path();
+        bubbleRadius = dpToPx(bubbleRadius.toFloat())
+        path = Path()
     }
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
         //画字母
-        drawText(canvas);
-        drawBuble(canvas);
+        drawText(canvas)
+        drawBuble(canvas)
     }
 
 
-    private void drawBuble(Canvas canvas){
-        if(choose >= 0){
-            float x = (-getWidth() * 3f) / 2f - PhoneMessage.dpToPxFloat(15);
-            float singleHeight = (float) getHeight() / letter.length;
-            float y= singleHeight/2f + (singleHeight*choose);
-            canvas.drawCircle(x, y, bubbleRadius, bubblePaint);
+    private fun drawBuble(canvas: Canvas) {
+        if (choose >= 0) {
+            val x = (-width * 3f) / 2f - dpToPxFloat(15f)
+            val singleHeight = height.toFloat() / letter.size
+            val y = singleHeight / 2f + (singleHeight * choose)
+            canvas.drawCircle(x, y, bubbleRadius.toFloat(), bubblePaint)
 
 
-            path.reset();
-            path.moveTo(x,y-bubbleRadius);
-            path.lineTo(x,y+bubbleRadius);
-            path.lineTo(x + bubbleRadius/ 4f * 6,y);
-            path.close();
-            canvas.drawPath(path,bubblePaint);
-            float baseLineY = y+ (Math.abs(textPaint2.ascent() + textPaint2.descent()) / 2);
-            canvas.drawText(now, x-textPaint2.measureText(now)/2,baseLineY, textPaint2);
+            path!!.reset()
+            path!!.moveTo(x, y - bubbleRadius)
+            path!!.lineTo(x, y + bubbleRadius)
+            path!!.lineTo(x + bubbleRadius / 4f * 6, y)
+            path!!.close()
+            canvas.drawPath(path!!, bubblePaint)
+            val baseLineY =
+                (y + (abs((textPaint2.ascent() + textPaint2.descent()).toDouble()) / 2)).toFloat()
+            canvas.drawText(now, x - textPaint2.measureText(now) / 2, baseLineY, textPaint2)
         }
     }
-
 
 
     /**
      * 画字母
      */
-    private void drawText(Canvas canvas) {
-        int width = getWidth();
-        int height = getHeight();
+    private fun drawText(canvas: Canvas) {
+        val width = width
+        val height = height
         //获取每个字母的高度
-        int singleHeight = height / letter.length;
+        val singleHeight = height / letter.size
         //画字母
-        for (int i = 0; i < letter.length; i++) {
-            if(i == choose){
-                float x =(width- textPaint3.measureText(letter[i]))/2;
-                float baseLineY =i*singleHeight+ (singleHeight / 2f) + (Math.abs(textPaint3.ascent() + textPaint3.descent()) / 2);
-                canvas.drawText(letter[i], x, baseLineY, textPaint3);
-            }else {
-                float x =(width- textPaint.measureText(letter[i]))/2;
-                float baseLineY =i*singleHeight+ (singleHeight / 2f) + (Math.abs(textPaint.ascent() + textPaint.descent()) / 2);
-                canvas.drawText(letter[i], x, baseLineY, textPaint);
+        for (i in letter.indices) {
+            if (i == choose) {
+                val x = (width - textPaint3.measureText(letter[i])) / 2
+                val baseLineY = (i * singleHeight + (singleHeight / 2f) + (abs(
+                    (textPaint3.ascent() + textPaint3.descent()).toDouble()
+                ) / 2)).toFloat()
+                canvas.drawText(letter[i], x, baseLineY, textPaint3)
+            } else {
+                val x = (width - textPaint.measureText(letter[i])) / 2
+                val baseLineY = (i * singleHeight + (singleHeight / 2f) + (abs(
+                    (textPaint.ascent() + textPaint.descent()).toDouble()
+                ) / 2)).toFloat()
+                canvas.drawText(letter[i], x, baseLineY, textPaint)
             }
         }
-
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         //计算选中字母
-        int index = (int) (event.getY() / getHeight() * letter.length);
+        var index = (event.y / height * letter.size).toInt()
         //防止脚标越界
-        if (index >= letter.length) {
-            index = letter.length - 1;
+        if (index >= letter.size) {
+            index = letter.size - 1
         } else if (index < 0) {
-            index = 0;
+            index = 0
         }
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                if(choose == index){
-                    return true;
+        when (event.action) {
+            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                if (choose == index) {
+                    return true
                 }
-                choose = index;
-                now= letter[choose];
-                invalidate();
+                choose = index
+                now = letter[choose]
+                invalidate()
                 if (listener != null) {
-                    listener.touchCharacterListener(now);
+                    listener!!.touchCharacterListener(now)
                 }
-                break;
-            default:
-                choose = -1;
-                invalidate();
-                break;
+            }
+
+            else -> {
+                choose = -1
+                invalidate()
+            }
         }
-        return true;
-    }
-    public onTouchCharacterListener listener;
-    public interface onTouchCharacterListener {
-        void touchCharacterListener(String s);
-    }
-    public void setListener(onTouchCharacterListener listener) {
-        this.listener = listener;
+        return true
     }
 
-    public void invalidateView() {
-        if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
-            invalidate();
+    var listener: onTouchCharacterListener? = null
+
+    interface onTouchCharacterListener {
+        fun touchCharacterListener(s: String?)
+    }
+
+    fun setListener(listener: onTouchCharacterListener?) {
+        this.listener = listener
+    }
+
+    fun invalidateView() {
+        if (Looper.getMainLooper().thread === Thread.currentThread()) {
+            invalidate()
         } else {
-            postInvalidate();
+            postInvalidate()
         }
+    }
+
+    companion object {
+        val letter: Array<String> = arrayOf(
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
+            "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
+            "W", "X", "Y", "Z"
+        )
     }
 }
 

@@ -50,7 +50,7 @@ public class WarpLinearLayout extends ViewGroup {
             case MeasureSpec.AT_MOST:
                 for (int i = 0; i < childCount; i++) {
                     if (i != 0) {
-                        with += mType.horizontal_Space;
+                        with += (int) mType.horizontal_Space;
                     }
                     with += getChildAt(i).getMeasuredWidth();
                 }
@@ -60,7 +60,7 @@ public class WarpLinearLayout extends ViewGroup {
             case MeasureSpec.UNSPECIFIED:
                 for (int i = 0; i < childCount; i++) {
                     if (i != 0) {
-                        with += mType.horizontal_Space;
+                        with += (int) mType.horizontal_Space;
                     }
                     with += getChildAt(i).getMeasuredWidth();
                 }
@@ -92,14 +92,14 @@ public class WarpLinearLayout extends ViewGroup {
             }
         }
         //添加最后一行
-        if (warpLine.lineView.size() > 0 && !mWarpLineGroup.contains(warpLine)) {
+        if (!warpLine.lineView.isEmpty() && !mWarpLineGroup.contains(warpLine)) {
             mWarpLineGroup.add(warpLine);
         }
         //计算宽度
         height = getPaddingTop() + getPaddingBottom();
         for (int i = 0; i < mWarpLineGroup.size(); i++) {
             if (i != 0) {
-                height += mType.vertical_Space;
+                height += (int) mType.vertical_Space;
             }
             height += mWarpLineGroup.get(i).height;
         }
@@ -127,7 +127,7 @@ public class WarpLinearLayout extends ViewGroup {
                 View view = warpLine.lineView.get(j);
                 if (isFull()) {//需要充满当前行时
                     view.layout(left, t, left + view.getMeasuredWidth() + lastWidth / warpLine.lineView.size(), t + view.getMeasuredHeight());
-                    left += view.getMeasuredWidth() + mType.horizontal_Space + lastWidth / warpLine.lineView.size();
+                    left += (int) (view.getMeasuredWidth() + mType.horizontal_Space + (float) lastWidth / warpLine.lineView.size());
                 } else {
                     switch (getGrivate()) {
                         case 0://右对齐
@@ -140,10 +140,10 @@ public class WarpLinearLayout extends ViewGroup {
                             view.layout(left, t, left + view.getMeasuredWidth(), t + view.getMeasuredHeight());
                             break;
                     }
-                    left += view.getMeasuredWidth() + mType.horizontal_Space;
+                    left += (int) (view.getMeasuredWidth() + mType.horizontal_Space);
                 }
             }
-            t += warpLine.height + mType.vertical_Space;
+            t += (int) (warpLine.height + mType.vertical_Space);
         }
     }
 
@@ -162,8 +162,8 @@ public class WarpLinearLayout extends ViewGroup {
         private int height = 0;
 
         private void addView(View view) {
-            if (lineView.size() != 0) {
-                lineWidth += mType.horizontal_Space;
+            if (!lineView.isEmpty()) {
+                lineWidth += (int) mType.horizontal_Space;
             }
             height = Math.max(height, view.getMeasuredHeight());
             lineWidth += view.getMeasuredWidth();

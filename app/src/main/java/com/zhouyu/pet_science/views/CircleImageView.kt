@@ -1,447 +1,419 @@
-package com.zhouyu.pet_science.views;
+package com.zhouyu.pet_science.views
 
-/*
- * Copyright 2014 - 2017 Henning Dodenhof
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.util.AttributeSet;
-import android.widget.ImageView;
-
-import com.zhouyu.pet_science.R;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.ColorRes;
-import androidx.annotation.DrawableRes;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapShader
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.Shader
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.util.AttributeSet
+import android.widget.ImageView
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import com.zhouyu.pet_science.R
+import kotlin.math.min
+import androidx.core.content.withStyledAttributes
+import androidx.core.graphics.createBitmap
 
 /**
  * 圆形图片
  */
 @SuppressLint("AppCompatCustomView")
-public class CircleImageView extends ImageView {
+class CircleImageView : ImageView {
+    private val mDrawableRect = RectF()
+    private val mBorderRect = RectF()
 
-    private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;
+    private val mShaderMatrix = Matrix()
+    private val mBitmapPaint = Paint()
+    private val mBorderPaint = Paint()
+    private val mFillPaint = Paint()
 
-    private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
-    private static final int COLORDRAWABLE_DIMENSION = 2;
+    private var mBorderColor = DEFAULT_BORDER_COLOR
+    private var mBorderWidth = DEFAULT_BORDER_WIDTH
+    private var mFillColor = DEFAULT_FILL_COLOR
 
-    private static final int DEFAULT_BORDER_WIDTH = 0;
-    private static final int DEFAULT_BORDER_COLOR = Color.BLACK;
-    private static final int DEFAULT_FILL_COLOR = Color.TRANSPARENT;
-    private static final boolean DEFAULT_BORDER_OVERLAY = false;
+    private var mBitmap: Bitmap? = null
+    private var mBitmapShader: BitmapShader? = null
+    private var mBitmapWidth = 0
+    private var mBitmapHeight = 0
 
-    private final RectF mDrawableRect = new RectF();
-    private final RectF mBorderRect = new RectF();
+    private var mDrawableRadius = 0f
+    private var mBorderRadius = 0f
 
-    private final Matrix mShaderMatrix = new Matrix();
-    private final Paint mBitmapPaint = new Paint();
-    private final Paint mBorderPaint = new Paint();
-    private final Paint mFillPaint = new Paint();
+    private var mColorFilter: ColorFilter? = null
 
-    private int mBorderColor = DEFAULT_BORDER_COLOR;
-    private int mBorderWidth = DEFAULT_BORDER_WIDTH;
-    private int mFillColor = DEFAULT_FILL_COLOR;
+    private var mReady = false
+    private var mSetupPending = false
+    private var mBorderOverlay = false
+    private var mDisableCircularTransformation = false
 
-    private Bitmap mBitmap;
-    private BitmapShader mBitmapShader;
-    private int mBitmapWidth;
-    private int mBitmapHeight;
-
-    private float mDrawableRadius;
-    private float mBorderRadius;
-
-    private ColorFilter mColorFilter;
-
-    private boolean mReady;
-    private boolean mSetupPending;
-    private boolean mBorderOverlay;
-    private boolean mDisableCircularTransformation;
-
-    public CircleImageView(Context context) {
-        super(context);
-
-        init();
+    constructor(context: Context?) : super(context) {
+        init()
     }
 
-    public CircleImageView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    @JvmOverloads
+    constructor(context: Context, attrs: AttributeSet?, defStyle: Int = 0) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
+        context.withStyledAttributes(attrs, R.styleable.CircleImageView, defStyle, 0) {
+
+            mBorderWidth = getDimensionPixelSize(
+                R.styleable.CircleImageView_civ_border_width,
+                DEFAULT_BORDER_WIDTH
+            )
+            mBorderColor =
+                getColor(R.styleable.CircleImageView_civ_border_color, DEFAULT_BORDER_COLOR)
+            mBorderOverlay =
+                getBoolean(R.styleable.CircleImageView_civ_border_overlay, DEFAULT_BORDER_OVERLAY)
+            mFillColor = getColor(R.styleable.CircleImageView_civ_fill_color, DEFAULT_FILL_COLOR)
+
+        }
+
+        init()
     }
 
-    public CircleImageView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleImageView, defStyle, 0);
-
-        mBorderWidth = a.getDimensionPixelSize(R.styleable.CircleImageView_civ_border_width, DEFAULT_BORDER_WIDTH);
-        mBorderColor = a.getColor(R.styleable.CircleImageView_civ_border_color, DEFAULT_BORDER_COLOR);
-        mBorderOverlay = a.getBoolean(R.styleable.CircleImageView_civ_border_overlay, DEFAULT_BORDER_OVERLAY);
-        mFillColor = a.getColor(R.styleable.CircleImageView_civ_fill_color, DEFAULT_FILL_COLOR);
-
-        a.recycle();
-
-        init();
-    }
-
-    private void init() {
-        super.setScaleType(SCALE_TYPE);
-        mReady = true;
+    private fun init() {
+        super.setScaleType(SCALE_TYPE)
+        mReady = true
 
         if (mSetupPending) {
-            setup();
-            mSetupPending = false;
+            setup()
+            mSetupPending = false
         }
     }
 
-    @Override
-    public ScaleType getScaleType() {
-        return SCALE_TYPE;
+    override fun getScaleType(): ScaleType {
+        return SCALE_TYPE
     }
 
-    @Override
-    public void setScaleType(ScaleType scaleType) {
-        if (scaleType != SCALE_TYPE) {
-            throw new IllegalArgumentException(String.format("ScaleType %s not supported.", scaleType));
-        }
+    override fun setScaleType(scaleType: ScaleType) {
+        require(scaleType == SCALE_TYPE) { String.format("ScaleType %s not supported.", scaleType) }
     }
 
-    @Override
-    public void setAdjustViewBounds(boolean adjustViewBounds) {
-        if (adjustViewBounds) {
-            throw new IllegalArgumentException("adjustViewBounds not supported.");
-        }
+    override fun setAdjustViewBounds(adjustViewBounds: Boolean) {
+        require(!adjustViewBounds) { "adjustViewBounds not supported." }
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
+    override fun onDraw(canvas: Canvas) {
         if (mDisableCircularTransformation) {
-            super.onDraw(canvas);
-            return;
+            super.onDraw(canvas)
+            return
         }
 
         if (mBitmap == null) {
-            return;
+            return
         }
 
         if (mFillColor != Color.TRANSPARENT) {
-            canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mFillPaint);
+            canvas.drawCircle(
+                mDrawableRect.centerX(),
+                mDrawableRect.centerY(),
+                mDrawableRadius,
+                mFillPaint
+            )
         }
-        canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mBitmapPaint);
+        canvas.drawCircle(
+            mDrawableRect.centerX(),
+            mDrawableRect.centerY(),
+            mDrawableRadius,
+            mBitmapPaint
+        )
         if (mBorderWidth > 0) {
-            canvas.drawCircle(mBorderRect.centerX(), mBorderRect.centerY(), mBorderRadius, mBorderPaint);
+            canvas.drawCircle(
+                mBorderRect.centerX(),
+                mBorderRect.centerY(),
+                mBorderRadius,
+                mBorderPaint
+            )
         }
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        setup();
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        setup()
     }
 
-    @Override
-    public void setPadding(int left, int top, int right, int bottom) {
-        super.setPadding(left, top, right, bottom);
-        setup();
+    override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
+        super.setPadding(left, top, right, bottom)
+        setup()
     }
 
-    @Override
-    public void setPaddingRelative(int start, int top, int end, int bottom) {
-        super.setPaddingRelative(start, top, end, bottom);
-        setup();
+    override fun setPaddingRelative(start: Int, top: Int, end: Int, bottom: Int) {
+        super.setPaddingRelative(start, top, end, bottom)
+        setup()
     }
 
-    public int getBorderColor() {
-        return mBorderColor;
-    }
+    var borderColor: Int
+        get() = mBorderColor
+        set(borderColor) {
+            if (borderColor == mBorderColor) {
+                return
+            }
 
-    public void setBorderColor(@ColorInt int borderColor) {
-        if (borderColor == mBorderColor) {
-            return;
+            mBorderColor = borderColor
+            mBorderPaint.color = mBorderColor
+            invalidate()
         }
 
-        mBorderColor = borderColor;
-        mBorderPaint.setColor(mBorderColor);
-        invalidate();
+    @Deprecated("Use {@link #setBorderColor(int)} instead")
+    fun setBorderColorResource(@ColorRes borderColorRes: Int) {
+        borderColor = context.getColor(borderColorRes)
     }
 
-    /**
-     * @deprecated Use {@link #setBorderColor(int)} instead
-     */
-    @Deprecated
-    public void setBorderColorResource(@ColorRes int borderColorRes) {
-        setBorderColor(getContext().getColor(borderColorRes));
-    }
+    @get:Deprecated("Fill color support is going to be removed in the future")
+    @set:Deprecated("Fill color support is going to be removed in the future")
+    var fillColor: Int
+        /**
+         * Return the color drawn behind the circle-shaped drawable.
+         *
+         * @return The color drawn behind the drawable
+         *
+         */
+        get() = mFillColor
+        /**
+         * Set a color to be drawn behind the circle-shaped drawable. Note that
+         * this has no effect if the drawable is opaque or no drawable is set.
+         *
+         * @param fillColor The color to be drawn behind the drawable
+         *
+         */
+        set(fillColor) {
+            if (fillColor == mFillColor) {
+                return
+            }
 
-    /**
-     * Return the color drawn behind the circle-shaped drawable.
-     *
-     * @return The color drawn behind the drawable
-     *
-     * @deprecated Fill color support is going to be removed in the future
-     */
-    @Deprecated
-    public int getFillColor() {
-        return mFillColor;
-    }
-
-    /**
-     * Set a color to be drawn behind the circle-shaped drawable. Note that
-     * this has no effect if the drawable is opaque or no drawable is set.
-     *
-     * @param fillColor The color to be drawn behind the drawable
-     *
-     * @deprecated Fill color support is going to be removed in the future
-     */
-    @Deprecated
-    public void setFillColor(@ColorInt int fillColor) {
-        if (fillColor == mFillColor) {
-            return;
+            mFillColor = fillColor
+            mFillPaint.color = fillColor
+            invalidate()
         }
-
-        mFillColor = fillColor;
-        mFillPaint.setColor(fillColor);
-        invalidate();
-    }
 
     /**
      * Set a color to be drawn behind the circle-shaped drawable. Note that
      * this has no effect if the drawable is opaque or no drawable is set.
      *
      * @param fillColorRes The color resource to be resolved to a color and
-     *                     drawn behind the drawable
+     * drawn behind the drawable
      *
-     * @deprecated Fill color support is going to be removed in the future
      */
-    @Deprecated
-    public void setFillColorResource(@ColorRes int fillColorRes) {
-        setFillColor(getContext().getColor(fillColorRes));
+    @Deprecated("Fill color support is going to be removed in the future")
+    fun setFillColorResource(@ColorRes fillColorRes: Int) {
+        fillColor = context.getColor(fillColorRes)
     }
 
-    public int getBorderWidth() {
-        return mBorderWidth;
-    }
+    var borderWidth: Int
+        get() = mBorderWidth
+        set(borderWidth) {
+            if (borderWidth == mBorderWidth) {
+                return
+            }
 
-    public void setBorderWidth(int borderWidth) {
-        if (borderWidth == mBorderWidth) {
-            return;
+            mBorderWidth = borderWidth
+            setup()
         }
 
-        mBorderWidth = borderWidth;
-        setup();
-    }
+    var isBorderOverlay: Boolean
+        get() = mBorderOverlay
+        set(borderOverlay) {
+            if (borderOverlay == mBorderOverlay) {
+                return
+            }
 
-    public boolean isBorderOverlay() {
-        return mBorderOverlay;
-    }
-
-    public void setBorderOverlay(boolean borderOverlay) {
-        if (borderOverlay == mBorderOverlay) {
-            return;
+            mBorderOverlay = borderOverlay
+            setup()
         }
 
-        mBorderOverlay = borderOverlay;
-        setup();
-    }
+    var isDisableCircularTransformation: Boolean
+        get() = mDisableCircularTransformation
+        set(disableCircularTransformation) {
+            if (mDisableCircularTransformation == disableCircularTransformation) {
+                return
+            }
 
-    public boolean isDisableCircularTransformation() {
-        return mDisableCircularTransformation;
-    }
-
-    public void setDisableCircularTransformation(boolean disableCircularTransformation) {
-        if (mDisableCircularTransformation == disableCircularTransformation) {
-            return;
+            mDisableCircularTransformation = disableCircularTransformation
+            initializeBitmap()
         }
 
-        mDisableCircularTransformation = disableCircularTransformation;
-        initializeBitmap();
+    override fun setImageBitmap(bm: Bitmap) {
+        super.setImageBitmap(bm)
+        initializeBitmap()
     }
 
-    @Override
-    public void setImageBitmap(Bitmap bm) {
-        super.setImageBitmap(bm);
-        initializeBitmap();
+    override fun setImageDrawable(drawable: Drawable?) {
+        super.setImageDrawable(drawable)
+        initializeBitmap()
     }
 
-    @Override
-    public void setImageDrawable(Drawable drawable) {
-        super.setImageDrawable(drawable);
-        initializeBitmap();
+    override fun setImageResource(@DrawableRes resId: Int) {
+        super.setImageResource(resId)
+        initializeBitmap()
     }
 
-    @Override
-    public void setImageResource(@DrawableRes int resId) {
-        super.setImageResource(resId);
-        initializeBitmap();
+    override fun setImageURI(uri: Uri?) {
+        super.setImageURI(uri)
+        initializeBitmap()
     }
 
-    @Override
-    public void setImageURI(Uri uri) {
-        super.setImageURI(uri);
-        initializeBitmap();
-    }
-
-    @Override
-    public void setColorFilter(ColorFilter cf) {
-        if (cf == mColorFilter) {
-            return;
+    override fun setColorFilter(cf: ColorFilter) {
+        if (cf === mColorFilter) {
+            return
         }
 
-        mColorFilter = cf;
-        applyColorFilter();
-        invalidate();
+        mColorFilter = cf
+        applyColorFilter()
+        invalidate()
     }
 
-    @Override
-    public ColorFilter getColorFilter() {
-        return mColorFilter;
+    override fun getColorFilter(): ColorFilter {
+        return mColorFilter!!
     }
 
-    private void applyColorFilter() {
-        if (mBitmapPaint != null) {
-            mBitmapPaint.setColorFilter(mColorFilter);
-        }
+    private fun applyColorFilter() {
+        mBitmapPaint.setColorFilter(mColorFilter)
     }
 
-    private Bitmap getBitmapFromDrawable(Drawable drawable) {
+    private fun getBitmapFromDrawable(drawable: Drawable?): Bitmap? {
         if (drawable == null) {
-            return null;
+            return null
         }
 
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
+        if (drawable is BitmapDrawable) {
+            return drawable.bitmap
         }
 
         try {
-            Bitmap bitmap;
-
-            if (drawable instanceof ColorDrawable) {
-                bitmap = Bitmap.createBitmap(COLORDRAWABLE_DIMENSION, COLORDRAWABLE_DIMENSION, BITMAP_CONFIG);
+            val bitmap = if (drawable is ColorDrawable) {
+                createBitmap(COLORDRAWABLE_DIMENSION, COLORDRAWABLE_DIMENSION, BITMAP_CONFIG)
             } else {
-                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), BITMAP_CONFIG);
+                createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, BITMAP_CONFIG)
             }
 
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-            return bitmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            val canvas = Canvas(bitmap)
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
+            drawable.draw(canvas)
+            return bitmap
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
         }
     }
 
-    private void initializeBitmap() {
-        if (mDisableCircularTransformation) {
-            mBitmap = null;
+    private fun initializeBitmap() {
+        mBitmap = if (mDisableCircularTransformation) {
+            null
         } else {
-            mBitmap = getBitmapFromDrawable(getDrawable());
+            getBitmapFromDrawable(drawable)
         }
-        setup();
+        setup()
     }
 
-    private void setup() {
+    private fun setup() {
         if (!mReady) {
-            mSetupPending = true;
-            return;
+            mSetupPending = true
+            return
         }
 
-        if (getWidth() == 0 && getHeight() == 0) {
-            return;
+        if (width == 0 && height == 0) {
+            return
         }
 
         if (mBitmap == null) {
-            invalidate();
-            return;
+            invalidate()
+            return
         }
 
-        mBitmapShader = new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        mBitmapShader = BitmapShader(mBitmap!!, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
 
-        mBitmapPaint.setAntiAlias(true);
-        mBitmapPaint.setShader(mBitmapShader);
+        mBitmapPaint.isAntiAlias = true
+        mBitmapPaint.setShader(mBitmapShader)
 
-        mBorderPaint.setStyle(Paint.Style.STROKE);
-        mBorderPaint.setAntiAlias(true);
-        mBorderPaint.setColor(mBorderColor);
-        mBorderPaint.setStrokeWidth(mBorderWidth);
+        mBorderPaint.style = Paint.Style.STROKE
+        mBorderPaint.isAntiAlias = true
+        mBorderPaint.color = mBorderColor
+        mBorderPaint.strokeWidth = mBorderWidth.toFloat()
 
-        mFillPaint.setStyle(Paint.Style.FILL);
-        mFillPaint.setAntiAlias(true);
-        mFillPaint.setColor(mFillColor);
+        mFillPaint.style = Paint.Style.FILL
+        mFillPaint.isAntiAlias = true
+        mFillPaint.color = mFillColor
 
-        mBitmapHeight = mBitmap.getHeight();
-        mBitmapWidth = mBitmap.getWidth();
+        mBitmapHeight = mBitmap!!.height
+        mBitmapWidth = mBitmap!!.width
 
-        mBorderRect.set(calculateBounds());
-        mBorderRadius = Math.min((mBorderRect.height() - mBorderWidth) / 2.0f, (mBorderRect.width() - mBorderWidth) / 2.0f);
+        mBorderRect.set(calculateBounds())
+        mBorderRadius = min(
+            ((mBorderRect.height() - mBorderWidth) / 2.0f).toDouble(),
+            ((mBorderRect.width() - mBorderWidth) / 2.0f).toDouble()
+        ).toFloat()
 
-        mDrawableRect.set(mBorderRect);
+        mDrawableRect.set(mBorderRect)
         if (!mBorderOverlay && mBorderWidth > 0) {
-            mDrawableRect.inset(mBorderWidth - 1.0f, mBorderWidth - 1.0f);
+            mDrawableRect.inset(mBorderWidth - 1.0f, mBorderWidth - 1.0f)
         }
-        mDrawableRadius = Math.min(mDrawableRect.height() / 2.0f, mDrawableRect.width() / 2.0f);
+        mDrawableRadius = min(
+            (mDrawableRect.height() / 2.0f).toDouble(),
+            (mDrawableRect.width() / 2.0f).toDouble()
+        ).toFloat()
 
-        applyColorFilter();
-        updateShaderMatrix();
-        invalidate();
+        applyColorFilter()
+        updateShaderMatrix()
+        invalidate()
     }
 
-    private RectF calculateBounds() {
-        int availableWidth  = getWidth() - getPaddingLeft() - getPaddingRight();
-        int availableHeight = getHeight() - getPaddingTop() - getPaddingBottom();
+    private fun calculateBounds(): RectF {
+        val availableWidth = width - paddingLeft - paddingRight
+        val availableHeight = height - paddingTop - paddingBottom
 
-        int sideLength = Math.min(availableWidth, availableHeight);
+        val sideLength = min(availableWidth.toDouble(), availableHeight.toDouble()).toInt()
 
-        float left = getPaddingLeft() + (availableWidth - sideLength) / 2f;
-        float top = getPaddingTop() + (availableHeight - sideLength) / 2f;
+        val left = paddingLeft + (availableWidth - sideLength) / 2f
+        val top = paddingTop + (availableHeight - sideLength) / 2f
 
-        return new RectF(left, top, left + sideLength, top + sideLength);
+        return RectF(left, top, left + sideLength, top + sideLength)
     }
 
-    private void updateShaderMatrix() {
-        float scale;
-        float dx = 0;
-        float dy = 0;
+    private fun updateShaderMatrix() {
+        val scale: Float
+        var dx = 0f
+        var dy = 0f
 
-        mShaderMatrix.set(null);
+        mShaderMatrix.set(null)
 
         if (mBitmapWidth * mDrawableRect.height() > mDrawableRect.width() * mBitmapHeight) {
-            scale = mDrawableRect.height() / (float) mBitmapHeight;
-            dx = (mDrawableRect.width() - mBitmapWidth * scale) * 0.5f;
+            scale = mDrawableRect.height() / mBitmapHeight.toFloat()
+            dx = (mDrawableRect.width() - mBitmapWidth * scale) * 0.5f
         } else {
-            scale = mDrawableRect.width() / (float) mBitmapWidth;
-            dy = (mDrawableRect.height() - mBitmapHeight * scale) * 0.5f;
+            scale = mDrawableRect.width() / mBitmapWidth.toFloat()
+            dy = (mDrawableRect.height() - mBitmapHeight * scale) * 0.5f
         }
 
-        mShaderMatrix.setScale(scale, scale);
-        mShaderMatrix.postTranslate((int) (dx + 0.5f) + mDrawableRect.left, (int) (dy + 0.5f) + mDrawableRect.top);
+        mShaderMatrix.setScale(scale, scale)
+        mShaderMatrix.postTranslate(
+            (dx + 0.5f).toInt() + mDrawableRect.left,
+            (dy + 0.5f).toInt() + mDrawableRect.top
+        )
 
-        mBitmapShader.setLocalMatrix(mShaderMatrix);
+        mBitmapShader!!.setLocalMatrix(mShaderMatrix)
     }
 
+    companion object {
+        private val SCALE_TYPE = ScaleType.CENTER_CROP
+
+        private val BITMAP_CONFIG = Bitmap.Config.ARGB_8888
+        private const val COLORDRAWABLE_DIMENSION = 2
+
+        private const val DEFAULT_BORDER_WIDTH = 0
+        private const val DEFAULT_BORDER_COLOR = Color.BLACK
+        private const val DEFAULT_FILL_COLOR = Color.TRANSPARENT
+        private const val DEFAULT_BORDER_OVERLAY = false
+    }
 }
