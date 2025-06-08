@@ -24,6 +24,7 @@ import com.zhouyu.pet_science.model.ShippingRequest
 import com.zhouyu.pet_science.model.UserAddress
 import com.zhouyu.pet_science.network.OrderHttpUtils
 import com.zhouyu.pet_science.network.ProductHttpUtils
+import com.zhouyu.pet_science.utils.CartManager
 import com.zhouyu.pet_science.utils.ConsoleUtils
 import com.zhouyu.pet_science.utils.MyToast
 import com.zhouyu.pet_science.views.dialog.MyProgressDialog
@@ -271,9 +272,15 @@ class ProductDetailActivity : BaseActivity() {
 
                 when {
                     isAddToCart -> {
-                        val message = "已加入购物车：$selectedCapacity $selectedColor，数量：$quantity"
-                        Toast.makeText(this@ProductDetailActivity, message, Toast.LENGTH_SHORT).show()
-                        // 这里添加实际的加入购物车逻辑
+                        product?.let { currentProduct ->
+                            val success = CartManager.addToCart(currentProduct, quantity)
+                            if (success) {
+                                val message = "已加入购物车：$selectedCapacity $selectedColor，数量：$quantity"
+                                MyToast.show(message)
+                            } else {
+                                MyToast.show("库存不足，添加失败")
+                            }
+                        }
                     }
                     isBuyNow -> {
                         product?.let { currentProduct ->
@@ -325,10 +332,10 @@ class ProductDetailActivity : BaseActivity() {
             // 从选择的地址中获取收货信息
             val address = selectedAddress?.let {
                 "${it.province}${it.city}${it.district} ${it.detailAddress}"
-            } ?: "四川省成都市金堂县" // 默认地址，实际应用中应该提示用户选择地址
+            } ?:  return@launch
             
-            val receiverMobile = selectedAddress?.recipientPhone ?: "18890908888"
-            val receiverName = selectedAddress?.recipientName ?: "测试用户"
+            val receiverMobile = selectedAddress?.recipientPhone ?:  return@launch
+            val receiverName = selectedAddress?.recipientName ?:  return@launch
             val remark = "备注信息"
 
             val orderItem = OrderItemRequest( // 订单项信息

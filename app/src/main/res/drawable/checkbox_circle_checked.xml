@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- 圆形背景 -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/Theme" />
+            <size
+                android:width="20dp"
+                android:height="20dp" />
+        </shape>
+    </item>
+    
+    <!-- 对勾图标 -->
+    <item
+        android:width="15dp"
+        android:height="15dp"
+        android:gravity="center">
+        <vector
+            android:width="12dp"
+            android:height="12dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:fillColor="@color/white"
+                android:pathData="M9,16.17L4.83,12l-1.42,1.41L9,19 21,7l-1.41,-1.41z" />
+        </vector>
+    </item>
+    
+</layer-list>

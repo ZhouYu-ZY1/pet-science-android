@@ -11,12 +11,12 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
+import com.zhouyu.pet_science.databinding.ActivityMyOrdersBinding
 import com.zhouyu.pet_science.fragments.OrderListFragment
 
 class MyOrdersActivity : BaseActivity() {
 
-    private lateinit var tabLayout: TabLayout
-    private lateinit var viewPager: ViewPager2
+    private lateinit var binding: ActivityMyOrdersBinding
 
     // 订单状态列表
     private val orderStatusList = arrayOf("全部", "待付款", "待发货", "待收货", "已完成")
@@ -24,22 +24,20 @@ class MyOrdersActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_my_orders)
+        binding = ActivityMyOrdersBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setTopBarView(findViewById(R.id.toolbar),true)
+        setTopBarView(binding.toolbar, true)
 
-        // 初始化视图
-        tabLayout = findViewById(R.id.tabLayout)
-        viewPager = findViewById(R.id.viewPager)
+        binding.viewPager.offscreenPageLimit = orderStatusList.size // 设置ViewPager的预加载页面数
 
-        viewPager.offscreenPageLimit = orderStatusList.size // 设置ViewPager的预加载页面数
         // 返回按钮点击事件
-        findViewById<View>(R.id.btnBack).setOnClickListener {
+        binding.btnBack.setOnClickListener {
             finish()
         }
-        
+
         // 搜索按钮点击事件
-        findViewById<View>(R.id.btnSearch).setOnClickListener {
+        binding.btnSearch.setOnClickListener {
             // TODO: 实现订单搜索功能
         }
 
@@ -51,7 +49,7 @@ class MyOrdersActivity : BaseActivity() {
         if (initialStatus != null) {
             val index = orderStatusValues.indexOf(initialStatus)
             if (index != -1) {
-                viewPager.currentItem = index
+                binding.viewPager.currentItem = index
             }
         }
     }
@@ -59,10 +57,10 @@ class MyOrdersActivity : BaseActivity() {
     private fun setupViewPager() {
         // 设置ViewPager适配器
         val pagerAdapter = OrderPagerAdapter(this)
-        viewPager.adapter = pagerAdapter
+        binding.viewPager.adapter = pagerAdapter
 
         // 将TabLayout与ViewPager关联
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = orderStatusList[position]
         }.attach()
     }

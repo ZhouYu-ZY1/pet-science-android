@@ -30,6 +30,7 @@ import com.zhouyu.pet_science.fragments.PersonalCenterFragment
 import com.zhouyu.pet_science.fragments.VideoPlayFragment
 import com.zhouyu.pet_science.fragments.shop.ShopFragment
 import com.zhouyu.pet_science.manager.ActivityManager
+import com.zhouyu.pet_science.utils.CartManager
 import com.zhouyu.pet_science.utils.CleanCacheUtils
 import com.zhouyu.pet_science.utils.ConsoleUtils
 import com.zhouyu.pet_science.utils.NotificationHelper
@@ -44,6 +45,7 @@ class MainActivity : BaseActivity() {
     private var viewPager: CustomViewPager? = null
     var drawerLayout: DrawerLayout? = null
     private lateinit var binding: ActivityMainBinding
+    private var cartBadge: TextView? = null
 
     @SuppressLint("RtlHardcoded")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +73,12 @@ class MainActivity : BaseActivity() {
 
         // 获取通知权限
         NotificationHelper.getNotification(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 更新购物车徽章
+        updateCartBadge()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -223,6 +231,15 @@ class MainActivity : BaseActivity() {
         findViewById<View>(R.id.layoutAddress).setOnClickListener{
             startActivity(Intent(this, AddressActivity::class.java))
         }
+
+        //购物车
+        findViewById<View>(R.id.layoutCart).setOnClickListener{
+            startActivity(Intent(this, CartActivity::class.java))
+        }
+
+        // 初始化购物车徽章
+        cartBadge = findViewById(R.id.cartBadge)
+        updateCartBadge()
     }
 
     private val cleanCacheTool = CleanCacheUtils.instance
@@ -234,6 +251,21 @@ class MainActivity : BaseActivity() {
     @SuppressLint("SetTextI18n", "DefaultLocale")
     fun calculateCacheSize() {
         cleanCacheTool.calculateCacheSize(cacheSize)
+    }
+
+    /**
+     * 更新购物车徽章
+     */
+    private fun updateCartBadge() {
+        val cartCount = CartManager.getCartCount()
+        cartBadge?.let { badge ->
+            if (cartCount > 0) {
+                badge.visibility = View.VISIBLE
+                badge.text = if (cartCount > 99) "99+" else cartCount.toString()
+            } else {
+                badge.visibility = View.GONE
+            }
+        }
     }
 
     private var touchTime: Long = 0

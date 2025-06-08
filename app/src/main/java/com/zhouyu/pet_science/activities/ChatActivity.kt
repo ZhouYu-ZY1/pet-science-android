@@ -16,6 +16,7 @@ import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.adapter.message.MessageAdapter
 import com.zhouyu.pet_science.application.WebSocketManager
+import com.zhouyu.pet_science.databinding.ActivityChatBinding
 import com.zhouyu.pet_science.fragments.MessageFragment
 import com.zhouyu.pet_science.pojo.ChatMessage
 import com.zhouyu.pet_science.pojo.MessageListItem
@@ -26,18 +27,18 @@ import com.zhouyu.pet_science.utils.TimeUtils
 import kotlin.math.max
 
 class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
-    private var recyclerViewChat: RecyclerView? = null
-    private var editTextMessage: EditText? = null
-    private var buttonSend: Button? = null
+    private lateinit var binding: ActivityChatBinding
     private var messageAdapter: MessageAdapter? = null
     private var chatMessages: MessageArrayList<ChatMessage>? = null
     private var currentUserId: String? = null
     private var currentUserName: String? = null
     private var targetUserId: String? = null
     private var targetUserName: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat)
+        binding = ActivityChatBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // 获取传递的用户信息
         targetUserId = intent.getStringExtra("userId")
@@ -63,24 +64,19 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
     }
 
     private fun initViews() {
-        val main = findViewById<View>(R.id.main)
-        setTopBarView(findViewById(R.id.toolbar),true)
+        setTopBarView(binding.toolbar, true)
 
         // 自动适应软键盘，软键盘不遮挡输入框
-        ViewCompat.setOnApplyWindowInsetsListener(main) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
             v.updatePadding(bottom = imeInsets.bottom)
             scrollToBottom(false)
             insets
         }
 
-        recyclerViewChat = findViewById(R.id.recyclerViewChat)
-        editTextMessage = findViewById(R.id.editTextMessage)
-        buttonSend = findViewById(R.id.buttonSend)
-        buttonSend?.setOnClickListener { sendMessage() }
-
-        findViewById<TextView>(R.id.textTitle).text = targetUserName
-        findViewById<View>(R.id.buttonBack).setOnClickListener{
+        binding.buttonSend.setOnClickListener { sendMessage() }
+        binding.textTitle.text = targetUserName
+        binding.buttonBack.setOnClickListener {
             finish()
         }
     }
@@ -93,8 +89,8 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
     private fun loadHistoryMessages() {
         messageAdapter = MessageAdapter(this,chatMessages!!, currentUserId!!)
         val layoutManager = LinearLayoutManager(this)
-        recyclerViewChat?.setLayoutManager(layoutManager)
-        recyclerViewChat?.setAdapter(messageAdapter)
+        binding.recyclerViewChat.layoutManager = layoutManager
+        binding.recyclerViewChat.adapter = messageAdapter
         messageAdapter?.notifyDataSetChanged()
         scrollToBottom(false)
     }
@@ -105,7 +101,7 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
             WebSocketManager.instance.connect()
         }
         val token = StorageUtils.get<String>("token")
-        val messageText = editTextMessage!!.text.toString().trim { it <= ' ' }
+        val messageText = binding.editTextMessage.text.toString().trim { it <= ' ' }
         if (messageText.isNotEmpty()) {
             // 创建消息对象
             val chatMessage = ChatMessage(
@@ -126,20 +122,20 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
                 TimeUtils.getMessageTime(System.currentTimeMillis())
 
             // 清空输入框
-            editTextMessage!!.setText("")
+            binding.editTextMessage.setText("")
         }
     }
 
     private fun scrollToBottom(anim: Boolean) {
         if(anim){
-            recyclerViewChat!!.smoothScrollToPosition(
+            binding.recyclerViewChat.smoothScrollToPosition(
                 max(
                     0,
                     chatMessages!!.size - 1
                 )
             )
         }else{
-            recyclerViewChat!!.scrollToPosition(
+            binding.recyclerViewChat.scrollToPosition(
                 max(
                     0,
                     chatMessages!!.size - 1

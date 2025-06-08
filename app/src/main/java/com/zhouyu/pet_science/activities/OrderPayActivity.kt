@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
+import com.zhouyu.pet_science.databinding.ActivityWebPageBinding
 import com.zhouyu.pet_science.model.Order
 import com.zhouyu.pet_science.network.OrderHttpUtils
 import com.zhouyu.pet_science.network.ProductHttpUtils
@@ -27,14 +28,16 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
 class OrderPayActivity : BaseActivity() {
+    private lateinit var binding: ActivityWebPageBinding
     private lateinit var webView: WebView
     private var order: Order? = null
     private var orderId: Int = -1
-    
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_web_page)
+        binding = ActivityWebPageBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // 从Intent中获取订单ID
         orderId = intent.getIntExtra("orderId",-1)
@@ -75,15 +78,14 @@ class OrderPayActivity : BaseActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initViews() {
-        val main = findViewById<View>(R.id.main)
-//        setTopBarView(main, true)
+//        setTopBarView(binding.main, true)
 
         payProgressDialog = MyProgressDialog(this).apply {
             setTitleStr("支付中")
             setHintStr("正在支付订单...")
         }
 
-        webView = findViewById(R.id.webView)
+        webView = binding.webView
         webView.visibility = View.GONE
 
         // 配置WebView
@@ -114,7 +116,7 @@ class OrderPayActivity : BaseActivity() {
         webView.loadUrl("file:///android_asset/html/order-pay/order-pay.html")
 
         // 处理系统UI和软键盘
-        ViewCompat.setOnApplyWindowInsetsListener(main) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
             v.updatePadding(bottom = imeInsets.bottom)
             insets
@@ -127,16 +129,63 @@ class OrderPayActivity : BaseActivity() {
         @JavascriptInterface
         fun getProductInfo(): String {
             // 返回订单信息的JSON字符串
-            return """
-                {
-                    "productName": "${order?.orderItem?.productName ?: ""}",
-                    "productPrice": "${order?.orderItem?.price ?: 0.0}",
-                    "productSpec": "${order?.remark ?: ""}",
-                    "productImage": "${order?.orderItem?.let { ProductHttpUtils.getFirstImage(it.productImage) } ?: ""}",
-                    "quantity": ${order?.orderItem?.quantity ?: 1},
-                    "orderId": $orderId
+            val order = this@OrderPayActivity.order
+
+            // 检查是否为多商品订单
+            if (order?.orderItems != null && order.orderItems.isNotEmpty()) {
+                // 多商品订单，显示订单摘要
+                val totalQuantity = order.orderItems.sumOf { it.quantity }
+                val firstProduct = order.orderItems.first()
+                val productName = if (order.orderItems.size == 1) {
+                    firstProduct.productName
+                } else {
+                    "${firstProduct.productName} 等${order.orderItems.size}件商品"
                 }
-            """.trimIndent()
+
+                // 构建商品列表
+                val productListJson = order.orderItems.map { item ->
+                    """
+                    {
+                        "productId": ${item.productId},
+                        "productName": "${item.productName}",
+                        "productImage": "${ProductHttpUtils.getFirstImage(item.productImage)}",
+                        "price": ${item.price},
+                        "quantity": ${item.quantity},
+                        "subtotal": ${item.subtotal}
+                    }
+                    """.trimIndent()
+                }.joinToString(",")
+
+                return """
+                    {
+                        "productName": "$productName",
+                        "productPrice": "${order.totalAmount}",
+                        "productSpec": "${order.remark ?: ""}",
+                        "productImage": "${ProductHttpUtils.getFirstImage(firstProduct.productImage)}",
+                        "quantity": $totalQuantity,
+                        "orderId": $orderId,
+                        "isMultiProduct": true,
+                        "productCount": ${order.orderItems.size},
+                        "productList": [$productListJson],
+                        "totalAmount": ${order.totalAmount}
+                    }
+                """.trimIndent()
+            } else {
+                // 单商品订单，保持原有逻辑
+                return """
+                    {
+                        "productName": "${order?.orderItem?.productName ?: ""}",
+                        "productPrice": "${order?.orderItem?.price ?: 0.0}",
+                        "productSpec": "${order?.remark ?: ""}",
+                        "productImage": "${order?.orderItem?.let { ProductHttpUtils.getFirstImage(it.productImage) } ?: ""}",
+                        "quantity": ${order?.orderItem?.quantity ?: 1},
+                        "orderId": $orderId,
+                        "isMultiProduct": false,
+                        "productCount": 1,
+                        "totalAmount": ${order?.totalAmount ?: 0.0}
+                    }
+                """.trimIndent()
+            }
         }
 
         @JavascriptInterface

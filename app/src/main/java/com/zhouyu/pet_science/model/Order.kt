@@ -2,7 +2,8 @@ package com.zhouyu.pet_science.model
 
 // 请求体模型
 data class CreateOrderRequest(
-    val orderItem: OrderItemRequest,
+    val orderItem: OrderItemRequest? = null, // 单商品订单（保持向后兼容）
+    val orderItems: List<OrderItemRequest>? = null, // 多商品订单
     val shipping: ShippingRequest,
     val remark: String?,
 )
@@ -29,10 +30,35 @@ data class Order(
     val remark: String?,
     val createdAt: Long,
     val updatedAt: Long,
-    val orderItem: OrderItem?,
+    val orderItem: OrderItem?, // 单商品订单（保持向后兼容）
+    val orderItems: List<OrderItem>?, // 多商品订单
     val payment: Payment?,
     val shipping: Shipping?
-)
+) {
+    // 获取所有订单项（兼容单商品和多商品）
+    fun getAllOrderItems(): List<OrderItem> {
+        return when {
+            orderItems != null && orderItems.isNotEmpty() -> orderItems
+            orderItem != null -> listOf(orderItem)
+            else -> emptyList()
+        }
+    }
+
+    // 判断是否为多商品订单
+    fun isMultiProduct(): Boolean {
+        return orderItems != null && orderItems.size > 1
+    }
+
+    // 获取商品总数量
+    fun getTotalQuantity(): Int {
+        return getAllOrderItems().sumOf { it.quantity }
+    }
+
+    // 获取商品种类数量
+    fun getProductCount(): Int {
+        return getAllOrderItems().size
+    }
+}
 
 // 订单项模型
 data class OrderItem(

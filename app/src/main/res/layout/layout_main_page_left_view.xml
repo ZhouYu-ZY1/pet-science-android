@@ -113,7 +113,7 @@
                         />
 
                     <LinearLayout
-                        android:id="@+id/layoutMyOrders"
+                        android:id="@+id/layoutCart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="?attr/selectableItemBackground"
@@ -130,7 +130,55 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_weight="1"
+                            android:text="购物车"
+                            android:textColor="@color/textGeneral"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/cartBadge"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="@drawable/unread_count_background"
+                            android:gravity="center"
+                            android:text="0"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/next_icon"
+                            app:tint="@color/textTinge" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/cutOffLine" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutMyOrders"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/order_icon"
+                            app:tint="@color/Theme" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
                             android:layout_weight="1"
                             android:text="我的订单"
                             android:textColor="@color/textGeneral"
@@ -158,15 +206,15 @@
                         android:padding="16dp">
 
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
+                            android:layout_width="23dp"
+                            android:layout_height="23dp"
                             android:src="@drawable/ic_location"
                             app:tint="@color/Theme" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="13dp"
+                            android:layout_marginStart="12dp"
                             android:layout_weight="1"
                             android:text="收货地址"
                             android:textColor="@color/textGeneral"

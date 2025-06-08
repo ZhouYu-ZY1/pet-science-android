@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:gravity="center_vertical"
+    android:background="@color/white">
+
+    <!-- 选择框 -->
+    <CheckBox
+        android:id="@+id/cbSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="5dp"
+        android:checked="true"
+        android:button="@drawable/checkbox_circle_selector" />
+
+    <!-- 商品图片 -->
+    <ImageView
+        android:id="@+id/ivProductImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="12dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/view_radius"
+        />
+
+    <!-- 商品信息 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- 商品名称 -->
+        <TextView
+            android:id="@+id/tvProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="商品名称"
+            android:textSize="14sp"
+            android:textColor="@color/textGeneral"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="高品质宠物狗粮 营养均衡 适合各种犬类" />
+
+        <!-- 商品价格 -->
+        <TextView
+            android:id="@+id/tvProductPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="¥0.00"
+            android:textSize="16sp"
+            android:textColor="@color/Theme"
+            android:textStyle="bold"
+            tools:text="¥128.00" />
+
+        <!-- 数量控制区域 -->
+        <LinearLayout
+            android:id="@+id/quantityLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- 减少按钮 -->
+            <ImageView
+                android:id="@+id/btnDecrease"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/minus_icon"
+                android:background="@drawable/touch_radius"
+                android:padding="6dp"
+                app:tint="@color/textTinge" />
+
+            <!-- 数量输入框 -->
+            <TextView
+                android:id="@+id/tvQuantity"
+                android:layout_width="30dp"
+                android:layout_height="32dp"
+                android:layout_marginHorizontal="8dp"
+                android:gravity="center"
+                android:text="1"
+                android:textSize="15sp"
+                android:textColor="@color/textGeneral"
+                android:background="@drawable/input_style"
+                tools:text="1" />
+
+            <!-- 增加按钮 -->
+            <ImageView
+                android:id="@+id/btnIncrease"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/plus_icon"
+                android:background="@drawable/touch_radius"
+                android:padding="6dp"
+                app:tint="@color/textTinge" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- 删除按钮 -->
+    <ImageView
+        android:id="@+id/btnDelete"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/remove_trash_icon"
+        android:background="@drawable/touch_radius"
+        android:padding="5dp"
+        app:tint="@color/Theme2" />
+
+</LinearLayout>

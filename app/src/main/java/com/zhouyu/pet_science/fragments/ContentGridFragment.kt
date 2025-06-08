@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.adapter.ContentAdapter
+import com.zhouyu.pet_science.databinding.FragmentContentGridBinding
 import com.zhouyu.pet_science.model.Content
 import com.zhouyu.pet_science.network.ContentHttpUtils
 
 class ContentGridFragment : Fragment() {
-    private lateinit var recyclerView: RecyclerView
+    private var _binding: FragmentContentGridBinding? = null
+    private val binding get() = _binding!!
     private lateinit var contentAdapter: ContentAdapter
     private val contentList = mutableListOf<Content>()
     private var contentType: Int = TYPE_POSTS
@@ -48,21 +50,26 @@ class ContentGridFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_content_grid, container, false)
+    ): View {
+        _binding = FragmentContentGridBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        recyclerView = view.findViewById(R.id.recyclerView)
+
         setupRecyclerView()
         loadContent()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun setupRecyclerView() {
         contentAdapter = ContentAdapter(requireContext(), contentList)
-        recyclerView.apply {
+        binding.recyclerView.apply {
             layoutManager = GridLayoutManager(context, 3)
             adapter = contentAdapter
         }
@@ -95,13 +102,10 @@ class ContentGridFragment : Fragment() {
                         contentAdapter.notifyDataSetChanged()
                         
                         // 显示空内容提示
-                        val emptyView = view?.findViewById<View>(R.id.emptyView)
-                        if (emptyView != null) {
-                            if (contentList.isEmpty()) {
-                                emptyView.visibility = View.VISIBLE
-                            } else {
-                                emptyView.visibility = View.GONE
-                            }
+                        if (contentList.isEmpty()) {
+                            binding.tvEmpty.visibility = View.VISIBLE
+                        } else {
+                            binding.tvEmpty.visibility = View.GONE
                         }
                     }
                 }

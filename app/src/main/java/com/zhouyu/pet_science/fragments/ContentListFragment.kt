@@ -10,24 +10,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.adapter.PersonalVideoAdapter
+import com.zhouyu.pet_science.databinding.FragmentContentListBinding
 import com.zhouyu.pet_science.network.ContentHttpUtils.getLikeList
 import com.zhouyu.pet_science.network.ContentHttpUtils.getUserVideoList
 
 
 class ContentListFragment(private val personalCenterFragment: PersonalCenterFragment) : BaseFragment() {
-    private var recyclerView: RecyclerView? = null
+    private var _binding: FragmentContentListBinding? = null
+    private val binding get() = _binding!!
     private var adapter: PersonalVideoAdapter? = null
     private var pageType = "works"
     private var userId: Int = -1
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view: View = inflater.inflate(R.layout.fragment_content_list, container, false)
-        recyclerView = view.findViewById<RecyclerView?>(R.id.recycler_view).apply {
+        _binding = FragmentContentListBinding.inflate(inflater, container, false)
+
+        binding.recyclerView.apply {
             val spanCount = 3
-            setLayoutManager(GridLayoutManager(context, spanCount))
+            layoutManager = GridLayoutManager(context, spanCount)
             this@ContentListFragment.adapter = PersonalVideoAdapter(context)
             adapter = this@ContentListFragment.adapter
         }
@@ -39,7 +43,12 @@ class ContentListFragment(private val personalCenterFragment: PersonalCenterFrag
 
         refreshLikeList = true
         refreshWorksList = true
-        return view
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 
@@ -51,7 +60,7 @@ class ContentListFragment(private val personalCenterFragment: PersonalCenterFrag
 
     private fun initView() {
         refreshLikeList = true
-        recyclerView!!.post(object : Runnable {
+        binding.recyclerView.post(object : Runnable {
             override fun run() {
                 if (refreshLikeList && pageType == "likes") {
                     refreshLikeList = false
@@ -61,7 +70,7 @@ class ContentListFragment(private val personalCenterFragment: PersonalCenterFrag
                     refreshWorksList = false
                     loadList()
                 }
-                recyclerView!!.postDelayed(this, 500)
+                binding.recyclerView.postDelayed(this, 500)
             }
         })
     }

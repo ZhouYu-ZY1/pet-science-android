@@ -24,21 +24,23 @@ import android.widget.TextView
 import android.widget.Toast
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
+import com.zhouyu.pet_science.databinding.ActivityWebBrowserBinding
 import com.zhouyu.pet_science.utils.MyToast
 import com.zhouyu.pet_science.network.HttpUtils
 import com.zhouyu.pet_science.utils.ConsoleUtils
 import com.zhouyu.pet_science.views.dialog.MyDialog
 
 class WebBrowserActivity : BaseActivity() {
+    private lateinit var binding: ActivityWebBrowserBinding
     private var webView: WebView? = null
-    private var topTitle: TextView? = null
     private var uploadMessageAboveL: ValueCallback<Array<Uri>>? = null
     private var notSkipApp = false
     private var ua: String? = null
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_web_browser)
+        binding = ActivityWebBrowserBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val intent = intent
         originalUrl = intent.getStringExtra("url")
         singleUrl = intent.getStringExtra("singleUrl")
@@ -50,11 +52,10 @@ class WebBrowserActivity : BaseActivity() {
         }
 
         currUrl = originalUrl
-        findViewById<View>(R.id.finish_btn).setOnClickListener {
+        binding.finishBtn.setOnClickListener {
             isFinish = true
             finish()
         }
-        topTitle = findViewById(R.id.top_title)
         var intentUrl: String? = null
         if (Intent.ACTION_VIEW == intent.action && intent.data != null) {
             intentUrl = intent.data.toString()
@@ -64,14 +65,13 @@ class WebBrowserActivity : BaseActivity() {
             finish()
             return
         }
-        webView = findViewById(R.id.web_view)
+        webView = binding.webView
         initWebSetting()
         if (intentUrl != null) {
             webView!!.loadUrl(intentUrl)
         } else {
             webView!!.loadUrl(originalUrl!!)
         }
-        val progressBar = findViewById<ProgressBar>(R.id.web_progress_bar)
         webView!!.webViewClient = object : WebViewClient() {
             @SuppressLint("SetTextI18n")
             override fun shouldInterceptRequest(
@@ -131,12 +131,12 @@ class WebBrowserActivity : BaseActivity() {
 
             override fun onPageStarted(view: WebView, url: String, favicon: Bitmap) {
                 super.onPageStarted(view, url, favicon)
-                progressBar.visibility = View.VISIBLE
+                binding.webProgressBar.visibility = View.VISIBLE
             }
 
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
-                progressBar.visibility = View.GONE
+                binding.webProgressBar.visibility = View.GONE
                 webView!!.loadUrl("javascript:window.java_fun.loadFinishHtml(document.body.innerHTML);")
             }
         }
@@ -152,13 +152,13 @@ class WebBrowserActivity : BaseActivity() {
             }
 
             override fun onProgressChanged(view: WebView, newProgress: Int) {
-                progressBar.progress = newProgress
+                binding.webProgressBar.progress = newProgress
                 super.onProgressChanged(view, newProgress)
             }
         }
         webView!!.addJavascriptInterface(MyJavaScriptInterface(), "java_fun")
-        findViewById<View>(R.id.refresh_btn).setOnClickListener { webView!!.reload() }
-        findViewById<View>(R.id.open_web_browser).setOnClickListener {
+        binding.refreshBtn.setOnClickListener { webView!!.reload() }
+        binding.openWebBrowser.setOnClickListener {
             try {
                 val uri = Uri.parse(webView!!.url)
                 val webIntent = Intent(Intent.ACTION_VIEW, uri)
@@ -261,7 +261,7 @@ class WebBrowserActivity : BaseActivity() {
                     }
                     val title = webView!!.title
                     if (currTitle != title && !TextUtils.isEmpty(title)) {
-                        topTitle!!.text = title
+                        binding.topTitle.text = title
                         currTitle = title
                     }
                 }

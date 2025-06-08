@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zhouyu.pet_science.R
@@ -71,6 +73,8 @@ class OrderAdapter(private val listener: OrderActionListener) : RecyclerView.Ada
 
     inner class OrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvOrderStatus: TextView = itemView.findViewById(R.id.tvOrderStatus)
+        private val singleProductLayout: LinearLayout = itemView.findViewById(R.id.singleProductLayout)
+        private val multiProductRecyclerView: RecyclerView = itemView.findViewById(R.id.multiProductRecyclerView)
         private val ivProductImage: ImageView = itemView.findViewById(R.id.ivProductImage)
         private val tvProductName: TextView = itemView.findViewById(R.id.tvProductName)
         private val tvProductSpec: TextView = itemView.findViewById(R.id.tvProductSpec)
@@ -79,6 +83,8 @@ class OrderAdapter(private val listener: OrderActionListener) : RecyclerView.Ada
         private val tvOrderTotal: TextView = itemView.findViewById(R.id.tvOrderTotal)
         private val btnSecondary: Button = itemView.findViewById(R.id.btnSecondary)
         private val btnPrimary: Button = itemView.findViewById(R.id.btnPrimary)
+
+        private val orderProductAdapter = OrderProductAdapter()
 
         @SuppressLint("SetTextI18n")
         fun bind(order: Order) {
@@ -94,25 +100,46 @@ class OrderAdapter(private val listener: OrderActionListener) : RecyclerView.Ada
             }
 
             // 设置商品信息
-            val orderItem = order.orderItem
-            if (orderItem != null) {
-                tvProductName.text = orderItem.productName
-                tvProductSpec.text = order.remark
+            val allOrderItems = order.getAllOrderItems()
+            if (allOrderItems.isNotEmpty()) {
+                if (order.isMultiProduct()) {
+                    // 多商品订单 - 直接显示所有商品
+                    singleProductLayout.visibility = View.GONE
+                    multiProductRecyclerView.visibility = View.VISIBLE
 
-                // 使用Glide加载商品图片
-                val imageUrl = ProductHttpUtils.getFirstImage(orderItem.productImage)
-                Glide.with(itemView.context)
-                    .load(imageUrl)
-                    .placeholder(R.drawable.image_placeholder)
-                    .error(R.drawable.image_placeholder)
-                    .into(ivProductImage)
+                    // 设置多商品列表
+                    if (multiProductRecyclerView.adapter == null) {
+                        multiProductRecyclerView.layoutManager = LinearLayoutManager(itemView.context)
+                        multiProductRecyclerView.adapter = orderProductAdapter
+                    }
+                    orderProductAdapter.setOrderItems(allOrderItems)
 
-                // 设置价格和数量
-                tvProductPrice.text = decimalFormat.format(orderItem.price)
-                tvProductQuantity.text = "x${orderItem.quantity}"
+                    // 设置订单总金额
+                    tvOrderTotal.text = "共${order.getProductCount()}种商品${order.getTotalQuantity()}件 合计：${decimalFormat.format(order.totalAmount)}（含运费¥0.00）"
+                } else {
+                    // 单商品订单显示
+                    singleProductLayout.visibility = View.VISIBLE
+                    multiProductRecyclerView.visibility = View.GONE
 
-                // 设置订单总金额
-                tvOrderTotal.text = "共${orderItem.quantity}件商品 合计：${decimalFormat.format(order.totalAmount)}（含运费¥0.00）"
+                    val orderItem = allOrderItems.first()
+                    tvProductName.text = orderItem.productName
+                    tvProductSpec.text = order.remark
+
+                    // 使用Glide加载商品图片
+                    val imageUrl = ProductHttpUtils.getFirstImage(orderItem.productImage)
+                    Glide.with(itemView.context)
+                        .load(imageUrl)
+                        .placeholder(R.drawable.image_placeholder)
+                        .error(R.drawable.image_placeholder)
+                        .into(ivProductImage)
+
+                    // 设置价格和数量
+                    tvProductPrice.text = decimalFormat.format(orderItem.price)
+                    tvProductQuantity.text = "x${orderItem.quantity}"
+
+                    // 设置订单总金额
+                    tvOrderTotal.text = "共${orderItem.quantity}件商品 合计：${decimalFormat.format(order.totalAmount)}（含运费¥0.00）"
+                }
             }
         }
 

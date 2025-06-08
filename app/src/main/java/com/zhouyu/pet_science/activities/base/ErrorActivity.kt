@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.application.Application
 import com.zhouyu.pet_science.application.CatchException
+import com.zhouyu.pet_science.databinding.ActivityErrorBinding
 import com.zhouyu.pet_science.manager.ActivityManager.Companion.instance
 import com.zhouyu.pet_science.utils.MyToast
 import com.zhouyu.pet_science.utils.FileUtils
@@ -21,10 +22,14 @@ import java.util.Objects
 import kotlin.system.exitProcess
 
 class ErrorActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityErrorBinding
     private var errMessageStr: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_error)
+        binding = ActivityErrorBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         val progressDialog = ProgressDialog(this)
         progressDialog.setMessage("软件发生未知错误，正在获取错误信息，请稍等！")
         progressDialog.setCanceledOnTouchOutside(false)
@@ -33,11 +38,11 @@ class ErrorActivity : AppCompatActivity() {
             errMessageStr = handlerException(CatchException.errorThrowable)
             runOnUiThread { progressDialog.dismiss() }
         }
-        findViewById<View>(R.id.btn_err_message).setOnClickListener {
+        binding.btnErrMessage.setOnClickListener {
             PhoneMessage.copy(errMessageStr)
             MyToast.show("复制成功", true)
         }
-        findViewById<View>(R.id.btn_restart).setOnClickListener {
+        binding.btnRestart.setOnClickListener {
             finish()
             instance.finishApplication()
             Process.killProcess(Process.myPid())

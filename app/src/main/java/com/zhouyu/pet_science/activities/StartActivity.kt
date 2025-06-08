@@ -12,6 +12,7 @@ import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.ClassicsHeader
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
+import com.zhouyu.pet_science.databinding.ActivityStartBinding
 import com.zhouyu.pet_science.fragments.MessageFragment
 import com.zhouyu.pet_science.pojo.MessageListItem
 import com.zhouyu.pet_science.utils.MessageArrayList
@@ -21,9 +22,12 @@ import com.zhouyu.pet_science.utils.ConsoleUtils
 
 
 class StartActivity : BaseActivity() {
+    private lateinit var binding: ActivityStartBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_start)
+        binding = ActivityStartBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         //进入全屏
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -42,7 +46,7 @@ class StartActivity : BaseActivity() {
             .centerCrop()
             .skipMemoryCache(true) // 禁用内存缓存
             .diskCacheStrategy(DiskCacheStrategy.NONE) // 禁用磁盘缓存
-            .into(findViewById(R.id.back_image))
+            .into(binding.backImage)
 
         executeThread{
             // 初始化刷新组件

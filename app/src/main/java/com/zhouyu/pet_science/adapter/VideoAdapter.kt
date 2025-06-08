@@ -34,7 +34,10 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.youth.banner.Banner
+import com.youth.banner.adapter.BannerAdapter
+import com.youth.banner.listener.OnPageChangeListener
 import com.zhouyu.pet_science.R
+import com.zhouyu.pet_science.databinding.ItemVideoBinding
 import com.zhouyu.pet_science.fragments.ContentListFragment
 import com.zhouyu.pet_science.fragments.VideoPlayFragment
 import com.zhouyu.pet_science.network.ContentHttpUtils
@@ -81,8 +84,8 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
     val playbackThreshold = 20000L
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_video, parent, false)
-        return VideoViewHolder(view)
+        val binding = ItemVideoBinding.inflate(LayoutInflater.from(context), parent, false)
+        return VideoViewHolder(binding)
     }
 
     // 数字格式化
@@ -98,18 +101,18 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
         holderPool[position] = holder // 缓存ViewHolder
 
         // 设置视频信息
-        holder.authorNickname.text = video.nickname
-        holder.videoTitle.text = video.desc
+        holder.binding.authorNickname.text = video.nickname
+        holder.binding.videoTitle.text = video.desc
         // 设置点赞、评论、分享数量
-        holder.tvLikeCount.text = video.diggCount?.formatCount() ?: "0"
-        holder.tvCommentCount.text = video.commentCount?.formatCount() ?: "0"
-        holder.tvShareCount.text = video.shareCount?.formatCount() ?: "0"
+        holder.binding.tvLikeCount.text = video.diggCount?.formatCount() ?: "0"
+        holder.binding.tvCommentCount.text = video.commentCount?.formatCount() ?: "0"
+        holder.binding.tvShareCount.text = video.shareCount?.formatCount() ?: "0"
 
         // 加载作者头像
         Glide.with(context)
             .load(video.authorAvatar)
             .placeholder(R.drawable.default_avatar)
-            .into(holder.authorAvatar)
+            .into(holder.binding.authorAvatar)
 
         // 根据类型显示不同内容
         when (video.type) {
@@ -132,14 +135,14 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
         
         // 设置点赞状态
         if (video.isLike) {
-            holder.likeBtn.imageTintList = null
+            holder.binding.likeBtn.imageTintList = null
         } else {
-            holder.likeBtn.imageTintList = holder.itemView.context.getColorStateList(R.color.white)
+            holder.binding.likeBtn.imageTintList = holder.itemView.context.getColorStateList(R.color.white)
         }
         // 设置爱心点击事件
-        holder.likeBtn.setOnClickListener {
+        holder.binding.likeBtn.setOnClickListener {
             if (video.isLike) {
-                holder.likeBtn.imageTintList = holder.itemView.context.getColorStateList(R.color.white)
+                holder.binding.likeBtn.imageTintList = holder.itemView.context.getColorStateList(R.color.white)
                 video.isLike = false
                 Thread {
                     if (ContentHttpUtils.likeVideo(false, video)) {
@@ -148,13 +151,13 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
                     } else {
                         video.isLike = true
                         holder.itemView.post {
-                            holder.likeBtn.imageTintList = null
+                            holder.binding.likeBtn.imageTintList = null
                             MyToast.show("取消点赞失败")
                         }
                     }
                 }.start()
             } else {
-                holder.likeBtn.imageTintList = null
+                holder.binding.likeBtn.imageTintList = null
                 video.isLike = true
                 Thread {
                     if (ContentHttpUtils.likeVideo(true, video)) {
@@ -164,7 +167,7 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
 
                         video.isLike = false
                         holder.itemView.post {
-                            holder.likeBtn.imageTintList = holder.itemView.context.getColorStateList(R.color.white)
+                            holder.binding.likeBtn.imageTintList = holder.itemView.context.getColorStateList(R.color.white)
                             MyToast.show("点赞失败")
                         }
                     }
@@ -173,7 +176,7 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
         }
 
         // 设置评论点击事件
-        holder.commentBtn.setOnClickListener {
+        holder.binding.commentBtn.setOnClickListener {
             // 处理评论逻辑
         }
     }
@@ -181,15 +184,15 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
     // 设置图文内容
     private fun setupImageContent(holder: VideoViewHolder, video: Video.Data, position: Int) {
         // 隐藏视频相关组件
-        holder.playerView.visibility = View.GONE
-        holder.videoBackgroundImage.visibility = View.GONE
-        holder.seekBarParent.visibility = View.GONE
+        holder.binding.videoView.visibility = View.GONE
+        holder.binding.videoBackgroundImage.visibility = View.GONE
+        holder.binding.seekBarParent.visibility = View.GONE
 
         // 显示图文轮播和指示器
-        holder.imageBanner.visibility = View.VISIBLE
-        holder.imageIndicatorLayout.visibility = View.VISIBLE
-        holder.bannerTouchOverlay.visibility = View.VISIBLE // 显示透明触摸覆盖层
-        holder.videoPlayImage.visibility = View.VISIBLE // 显示播放按钮用于音乐控制
+        holder.binding.imageBanner.visibility = View.VISIBLE
+        holder.binding.imageIndicatorLayout.visibility = View.VISIBLE
+        holder.binding.bannerTouchOverlay.visibility = View.VISIBLE // 显示透明触摸覆盖层
+        holder.binding.videoPlayImage.visibility = View.VISIBLE // 显示播放按钮用于音乐控制
 
         // 解析图片URL列表（从coverSrc获取，用分号分割）
         val imageUrls = video.coverSrc?.split(";")?.filter { it.isNotEmpty() } ?: emptyList()
@@ -197,10 +200,10 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
         if (imageUrls.isNotEmpty()) {
             // 设置轮播适配器
             val adapter = ImageBannerAdapter(imageUrls)
-            holder.imageBanner.setAdapter(adapter)
+            holder.binding.imageBanner.setAdapter(adapter)
 
             // 配置Banner（不使用内置指示器）
-            holder.imageBanner.apply {
+            holder.binding.imageBanner.apply {
                 // 启用自动轮播
                 isAutoLoop(true)
                 // 设置轮播间隔为3秒
@@ -260,7 +263,7 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
         }}
 
         // 监听Banner页面切换
-        holder.imageBanner.addOnPageChangeListener(object : com.youth.banner.listener.OnPageChangeListener {
+        holder.imageBanner.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
@@ -1178,28 +1181,30 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
     
     override fun getItemCount(): Int = videos.size
     
-    class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class VideoViewHolder(val binding: ItemVideoBinding) : RecyclerView.ViewHolder(binding.root) {
         var isLongPress = false
         var isSeekBarTouch = false
-        val playerView: StyledPlayerView = itemView.findViewById(R.id.videoView)
-        val videoBackgroundImage: ImageView = itemView.findViewById(R.id.video_background_image)
-        val videoPlayImage: ImageView = itemView.findViewById(R.id.video_play_image)
-        val loveView: LoveView = itemView.findViewById(R.id.loveView)
-        val authorNickname: TextView = itemView.findViewById(R.id.author_nickname)
-        val videoTitle: TextView = itemView.findViewById(R.id.video_title)
-        val tvLikeCount: TextView = itemView.findViewById(R.id.tv_like_count)
-        val tvCommentCount: TextView = itemView.findViewById(R.id.tv_comment_count)
-        val tvShareCount: TextView = itemView.findViewById(R.id.tv_share_count)
-        val authorAvatar: ImageView = itemView.findViewById(R.id.author_avatar)
-        val likeBtn: ImageView = itemView.findViewById(R.id.like_btn)
-        val commentBtn: ImageView = itemView.findViewById(R.id.comment_btn)
-        val seekBar: SeekBar = itemView.findViewById(R.id.video_seekBar)
-        val seekBarParent: LinearLayout = itemView.findViewById(R.id.seekBar_parent)
-        val timeTextView: TextView = itemView.findViewById(R.id.time_text_view)
-        val authorInfoLayout: LinearLayout = itemView.findViewById(R.id.author_info_layout)
-        val imageBanner: Banner<String, ImageBannerAdapter> = itemView.findViewById(R.id.imageBanner)
-        val imageIndicatorLayout: LinearLayout = itemView.findViewById(R.id.imageIndicatorLayout)
-        val bannerTouchOverlay: View = itemView.findViewById(R.id.bannerTouchOverlay)
+
+        // 通过 binding 访问视图组件
+        val playerView: StyledPlayerView get() = binding.videoView
+        val videoBackgroundImage: ImageView get() = binding.videoBackgroundImage
+        val videoPlayImage: ImageView get() = binding.videoPlayImage
+        val loveView: LoveView get() = binding.loveView
+        val authorNickname: TextView get() = binding.authorNickname
+        val videoTitle: TextView get() = binding.videoTitle
+        val tvLikeCount: TextView get() = binding.tvLikeCount
+        val tvCommentCount: TextView get() = binding.tvCommentCount
+        val tvShareCount: TextView get() = binding.tvShareCount
+        val authorAvatar: ImageView get() = binding.authorAvatar
+        val likeBtn: ImageView get() = binding.likeBtn
+        val commentBtn: ImageView get() = binding.commentBtn
+        val seekBar: SeekBar get() = binding.videoSeekBar
+        val seekBarParent: LinearLayout get() = binding.seekBarParent
+        val timeTextView: TextView get() = binding.timeTextView
+        val authorInfoLayout: LinearLayout get() = binding.authorInfoLayout
+        val imageBanner: Banner<*, out BannerAdapter<*, *>> get() = binding.imageBanner
+        val imageIndicatorLayout: LinearLayout get() = binding.imageIndicatorLayout
+        val bannerTouchOverlay: View get() = binding.bannerTouchOverlay
     }
 
     private fun animateSeekBarHeight(seekBar: SeekBar, targetHeight: Int) {

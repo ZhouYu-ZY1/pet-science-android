@@ -50,6 +50,8 @@
         <activity android:name=".activities.SearchActivity"  />
         <!-- 收货地址管理 -->
         <activity android:name=".activities.AddressActivity"  />
+        <!-- 购物车 -->
+        <activity android:name=".activities.CartActivity"  />
         <!--错误页-->
         <activity android:name="com.zhouyu.pet_science.activities.base.ErrorActivity" />
         <!--Web浏览器-->

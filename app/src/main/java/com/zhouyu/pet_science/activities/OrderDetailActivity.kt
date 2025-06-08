@@ -9,9 +9,11 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
+import com.zhouyu.pet_science.adapter.OrderProductAdapter
 import com.zhouyu.pet_science.databinding.ActivityOrderDetailBinding
 import com.zhouyu.pet_science.model.Order
 import com.zhouyu.pet_science.network.OrderHttpUtils
@@ -25,6 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import android.os.CountDownTimer
+import com.zhouyu.pet_science.model.OrderItem
 import com.zhouyu.pet_science.utils.MyToast
 import com.zhouyu.pet_science.views.dialog.MyDialog
 
@@ -35,8 +38,9 @@ class OrderDetailActivity : BaseActivity() {
     private val decimalFormat = DecimalFormat("¥#,##0.00")
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
     private var countDownTimer: CountDownTimer? = null
-    
+
     private lateinit var binding: ActivityOrderDetailBinding
+    private lateinit var orderProductAdapter: OrderProductAdapter
 
     // 订单状态描述映射
     private val statusDescMap = mapOf(
@@ -61,11 +65,22 @@ class OrderDetailActivity : BaseActivity() {
 
         setTopBarView(binding.toolbar, true)
 
+        // 初始化多商品列表
+        setupMultiProductRecyclerView()
+
         // 设置点击事件
         setupClickListeners()
 
         // 加载订单详情
         loadOrderDetail()
+    }
+
+    private fun setupMultiProductRecyclerView() {
+        orderProductAdapter = OrderProductAdapter()
+        binding.multiProductRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this@OrderDetailActivity)
+            adapter = orderProductAdapter
+        }
     }
 
     private fun setupClickListeners() {
@@ -239,34 +254,50 @@ class OrderDetailActivity : BaseActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun updateProductInfo(order: Order) {
-        val orderItem = order.orderItem
-        if (orderItem != null) {
-            binding.tvProductName.text = orderItem.productName
-            binding.tvProductSpec.text = "规格：标准" // 假设规格信息，实际应该从API获取
-            binding.tvProductPrice.text = decimalFormat.format(orderItem.price)
-            binding.tvProductQuantity.text = "x${orderItem.quantity}"
-            
-            // 加载商品图片
-            val imageUrl = ProductHttpUtils.getFirstImage(orderItem.productImage)
-            Glide.with(this)
-                .load(imageUrl)
-                .placeholder(R.drawable.image_placeholder)
-                .error(R.drawable.image_placeholder)
-                .into(binding.ivProductImage)
+        val allOrderItems = order.getAllOrderItems()
+        if (allOrderItems.isNotEmpty()) {
+            if (order.isMultiProduct()) {
+                // 多商品订单 - 直接显示所有商品
+                binding.singleProductLayout.visibility = View.GONE
+                binding.multiProductRecyclerView.visibility = View.VISIBLE
+
+                // 设置多商品列表数据
+                orderProductAdapter.setOrderItems(allOrderItems)
+            } else {
+                // 单商品订单显示
+                binding.singleProductLayout.visibility = View.VISIBLE
+                binding.multiProductRecyclerView.visibility = View.GONE
+
+                val orderItem = allOrderItems.first()
+                binding.tvProductName.text = orderItem.productName
+                binding.tvProductSpec.text = order.remark ?: "规格：标准"
+                binding.tvProductPrice.text = decimalFormat.format(orderItem.price)
+                binding.tvProductQuantity.text = "x${orderItem.quantity}"
+
+                // 加载商品图片
+                val imageUrl = ProductHttpUtils.getFirstImage(orderItem.productImage)
+                Glide.with(this)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.image_placeholder)
+                    .error(R.drawable.image_placeholder)
+                    .into(binding.ivProductImage)
+            }
         }
     }
 
+
+
     @SuppressLint("SetTextI18n")
     private fun updatePriceInfo(order: Order) {
-        val orderItem = order.orderItem
-        if (orderItem != null) {
-            // 商品金额 = 单价 × 数量
-            val productAmount = orderItem.price * orderItem.quantity
+        val allOrderItems = order.getAllOrderItems()
+        if (allOrderItems.isNotEmpty()) {
+            // 计算商品总金额
+            val productAmount = allOrderItems.sumOf { it.subtotal }
             binding.tvProductAmount.text = decimalFormat.format(productAmount)
-            
+
             // 运费，假设为0
             binding.tvShippingFee.text = "¥0.00"
-            
+
             // 优惠，计算优惠金额
             val discount = productAmount - order.totalAmount
             if (discount > 0) {
@@ -274,7 +305,7 @@ class OrderDetailActivity : BaseActivity() {
             } else {
                 binding.tvDiscount.text = "-¥0.00"
             }
-            
+
             // 实付款
             binding.tvTotalAmount.text = decimalFormat.format(order.totalAmount)
         }
@@ -327,13 +358,45 @@ class OrderDetailActivity : BaseActivity() {
                 binding.btnConfirmReceipt.text = "再次购买"
                 binding.btnConfirmReceipt.visibility = View.VISIBLE
                 
-                // 再次购买按钮点击事
+                // 再次购买按钮点击事件
                 binding.btnConfirmReceipt.setOnClickListener {
-                    startActivity(Intent(this, ProductDetailActivity::class.java).apply {
-                        order.orderItem?.apply {
-                            ProductDetailActivity.product = Product(productId,productName,"",price,1,"","",productImage,"2.3万",1,"","")
+                    val allOrderItems = order.getAllOrderItems()
+                    if (allOrderItems.isNotEmpty()) {
+                        if (order.isMultiProduct()) {
+                            // 多商品订单，提示用户前往商品页面重新选择
+                            MyDialog(this).apply {
+                                setTitle("再次购买")
+                                setMessage("这是多商品订单，请前往商品页面重新选择商品")
+                                setYesOnclickListener("去购物") {
+                                    dismiss()
+                                    finish() // 返回到上一页面
+                                }
+                                setNoOnclickListener("取消") {
+                                    dismiss()
+                                }
+                                show()
+                            }
+                        } else {
+                            // 单商品订单，直接跳转到商品详情页面
+                            val orderItem = allOrderItems.first()
+                            startActivity(Intent(this, ProductDetailActivity::class.java).apply {
+                                ProductDetailActivity.product = Product(
+                                    orderItem.productId,
+                                    orderItem.productName,
+                                    "",
+                                    orderItem.price,
+                                    1,
+                                    "",
+                                    "",
+                                    orderItem.productImage,
+                                    "2.3万",
+                                    1,
+                                    "",
+                                    ""
+                                )
+                            })
                         }
-                    })
+                    }
                 }
             }
             else -> {

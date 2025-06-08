@@ -36,18 +36,14 @@ import com.amap.api.services.poisearch.PoiResult
 import com.amap.api.services.poisearch.PoiSearch
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
+import com.zhouyu.pet_science.databinding.ActivityMapBinding
 import com.zhouyu.pet_science.utils.InputUtils
 
 class MapActivity : BaseActivity(), GeocodeSearch.OnGeocodeSearchListener, PoiSearch.OnPoiSearchListener {
-    private lateinit var mapView: MapView
+    private lateinit var binding: ActivityMapBinding
     private lateinit var aMap: AMap
     private lateinit var locationClient: AMapLocationClient
     private lateinit var geocodeSearch: GeocodeSearch
-    private lateinit var tvAddress: TextView
-    private lateinit var btnConfirm: Button
-    private lateinit var etSearch: EditText
-    private lateinit var btnCancelSearch: Button
-    private lateinit var rvSearchResult: RecyclerView
     private lateinit var searchAdapter: SearchResultAdapter
 
     private var currentMarker: Marker? = null
@@ -56,35 +52,30 @@ class MapActivity : BaseActivity(), GeocodeSearch.OnGeocodeSearchListener, PoiSe
     private var currentProvince: String = ""
     private var currentCity: String = ""
     private var currentDistrict: String = ""
-    
+
     private val REQUEST_CODE_LOCATION = 100
     private var searchPoiItems = mutableListOf<PoiItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_map)
+        binding = ActivityMapBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setTopBarView(findViewById(R.id.layout_map),true)
-        
+        setTopBarView(binding.layoutMap, true)
+
         // 初始化视图
-        mapView = findViewById(R.id.map)
-        tvAddress = findViewById(R.id.tv_address)
-        btnConfirm = findViewById(R.id.btn_confirm)
-        etSearch = findViewById(R.id.et_search)
-        btnCancelSearch = findViewById(R.id.btn_cancel_search)
-        rvSearchResult = findViewById(R.id.rv_search_result)
-
-        rvSearchResult.setPadding(rvSearchResult.left,
-            rvSearchResult.top,
-            rvSearchResult.right,
-            findViewById<View>(R.id.layout_bottom_bar).height
+        binding.rvSearchResult.setPadding(
+            binding.rvSearchResult.left,
+            binding.rvSearchResult.top,
+            binding.rvSearchResult.right,
+            binding.layoutBottomBar.height
         )
-        
-        mapView.onCreate(savedInstanceState)
-        
+
+        binding.map.onCreate(savedInstanceState)
+
         // 初始化地图
         if (::aMap.isInitialized.not()) {
-            aMap = mapView.map
+            aMap = binding.map.map
             aMap.mapType = AMap.MAP_TYPE_NORMAL
 
             // 设置定位蓝点
@@ -138,7 +129,7 @@ class MapActivity : BaseActivity(), GeocodeSearch.OnGeocodeSearchListener, PoiSe
         }
 
         // 设置确认按钮点击事件
-        btnConfirm.setOnClickListener {
+        binding.btnConfirm.setOnClickListener {
             if (currentLatLng != null && currentAddress.isNotEmpty()) {
                 val intent = Intent()
                 intent.putExtra("address", currentAddress)
@@ -153,9 +144,9 @@ class MapActivity : BaseActivity(), GeocodeSearch.OnGeocodeSearchListener, PoiSe
                 Toast.makeText(this, "请先选择位置", Toast.LENGTH_SHORT).show()
             }
         }
-        
+
         // 返回按钮
-        findViewById<View>(R.id.btn_back).setOnClickListener {
+        binding.btnBack.setOnClickListener {
             finish()
         }
     }
@@ -163,34 +154,34 @@ class MapActivity : BaseActivity(), GeocodeSearch.OnGeocodeSearchListener, PoiSe
     private fun setupSearchResultList() {
         searchAdapter = SearchResultAdapter(searchPoiItems) { poiItem ->
             // 隐藏键盘
-            InputUtils.inputHide(this, etSearch)
+            InputUtils.inputHide(this, binding.etSearch)
 
             // 点击搜索结果项的处理
             val latLng = LatLng(poiItem.latLonPoint.latitude, poiItem.latLonPoint.longitude)
             updateMarkerAndAddress(latLng)
             // 隐藏搜索结果列表
-            rvSearchResult.visibility = View.GONE
+            binding.rvSearchResult.visibility = View.GONE
         }
-        
-        rvSearchResult.apply {
+
+        binding.rvSearchResult.apply {
             layoutManager = LinearLayoutManager(this@MapActivity)
             adapter = searchAdapter
         }
     }
-    
+
     private fun setupSearchListeners() {
         // 搜索按钮点击事件
-        btnCancelSearch.setOnClickListener {
+        binding.btnCancelSearch.setOnClickListener {
             // 隐藏键盘
-            InputUtils.inputHide(this, etSearch)
-            etSearch.setText("")
+            InputUtils.inputHide(this, binding.etSearch)
+            binding.etSearch.setText("")
 
-            rvSearchResult.visibility = View.GONE
-            btnCancelSearch.visibility = View.GONE
+            binding.rvSearchResult.visibility = View.GONE
+            binding.btnCancelSearch.visibility = View.GONE
         }
-        
+
         // 输入框回车搜索
-        etSearch.addTextChangedListener(object : android.text.TextWatcher {
+        binding.etSearch.addTextChangedListener(object : android.text.TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: android.text.Editable?) {
@@ -201,12 +192,12 @@ class MapActivity : BaseActivity(), GeocodeSearch.OnGeocodeSearchListener, PoiSe
     }
     
     private fun performSearch() {
-        val keyword = etSearch.text.toString().trim()
+        val keyword = binding.etSearch.text.toString().trim()
         if (keyword.isEmpty()) {
             return
         }
 
-        btnCancelSearch.visibility = View.VISIBLE
+        binding.btnCancelSearch.visibility = View.VISIBLE
 
         // 执行POI搜索
         searchPOI(keyword)
@@ -256,14 +247,14 @@ class MapActivity : BaseActivity(), GeocodeSearch.OnGeocodeSearchListener, PoiSe
                 searchPoiItems.clear()
                 searchPoiItems.addAll(result.pois)
                 searchAdapter.notifyDataSetChanged()
-                rvSearchResult.visibility = View.VISIBLE
+                binding.rvSearchResult.visibility = View.VISIBLE
             } else {
                 Toast.makeText(this, "未找到相关位置", Toast.LENGTH_SHORT).show()
-                rvSearchResult.visibility = View.GONE
+                binding.rvSearchResult.visibility = View.GONE
             }
         } else {
             Toast.makeText(this, "搜索失败，错误码: $rCode", Toast.LENGTH_SHORT).show()
-            rvSearchResult.visibility = View.GONE
+            binding.rvSearchResult.visibility = View.GONE
         }
     }
     
@@ -381,7 +372,7 @@ class MapActivity : BaseActivity(), GeocodeSearch.OnGeocodeSearchListener, PoiSe
                 currentAddress = regeocodeAddress.formatAddress.replace(currentProvince, "")
                     .replace(currentCity, "")
                     .replace(currentDistrict, "")
-                tvAddress.text = regeocodeAddress.formatAddress
+                binding.tvAddress.text = regeocodeAddress.formatAddress
             }
         } else {
             Toast.makeText(this, "获取地址信息失败", Toast.LENGTH_SHORT).show()
@@ -394,25 +385,25 @@ class MapActivity : BaseActivity(), GeocodeSearch.OnGeocodeSearchListener, PoiSe
     
     override fun onResume() {
         super.onResume()
-        mapView.onResume()
+        binding.map.onResume()
     }
-    
+
     override fun onPause() {
         super.onPause()
-        mapView.onPause()
+        binding.map.onPause()
     }
-    
+
     override fun onDestroy() {
         super.onDestroy()
-        mapView.onDestroy()
+        binding.map.onDestroy()
         if (::locationClient.isInitialized) {
             locationClient.stopLocation()
             locationClient.onDestroy()
         }
     }
-    
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        mapView.onSaveInstanceState(outState)
+        binding.map.onSaveInstanceState(outState)
     }
 }

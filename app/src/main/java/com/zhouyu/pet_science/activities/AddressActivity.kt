@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
+import com.zhouyu.pet_science.databinding.ActivityWebPageBinding
 import com.zhouyu.pet_science.network.HttpUtils
 import com.zhouyu.pet_science.network.ProductHttpUtils
 import com.zhouyu.pet_science.utils.ConsoleUtils
@@ -30,17 +31,19 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class AddressActivity : BaseActivity() {
+    private lateinit var binding: ActivityWebPageBinding
     private lateinit var webView: WebView
     private lateinit var progressDialog: MyProgressDialog
     private var isSelectMode = false // 是否是选择地址模式
-    
+
     // 地图选择位置的请求码
     private val REQUEST_MAP_LOCATION = 1001
-    
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_web_page)
+        binding = ActivityWebPageBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // 获取是否是选择地址模式
         isSelectMode = intent.getBooleanExtra("isSelect", false)
@@ -56,9 +59,7 @@ class AddressActivity : BaseActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initViews() {
-        val main = findViewById<View>(R.id.main)
-        
-        webView = findViewById(R.id.webView)
+        webView = binding.webView
         webView.visibility = View.GONE
 
         // 配置WebView
@@ -89,7 +90,7 @@ class AddressActivity : BaseActivity() {
         webView.loadUrl("file:///android_asset/html/address/address.html")
 
         // 处理系统UI和软键盘
-        ViewCompat.setOnApplyWindowInsetsListener(main) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
             v.updatePadding(bottom = imeInsets.bottom)
             insets

@@ -43,15 +43,25 @@
 
             <!-- 订单详情折叠面板 -->
             <div class="order-detail-panel" id="order-detail-panel">
-                <div class="product-info">
-                    <img src="" alt="商品图片" class="product-img">
-                    <div class="product-desc">
-                        <h3 class="product-name">宠物猫咪狗狗洗澡沐浴露香波</h3>
-                        <p class="product-spec">规格：500ml 草莓香型</p>
-                        <div class="product-price-row">
-                            <span class="product-price">¥45.00</span>
-                            <span class="product-quantity">x1</span>
+                <!-- 单商品订单显示 -->
+                <div class="single-product-info" id="single-product-info">
+                    <div class="product-info">
+                        <img src="" alt="商品图片" class="product-img">
+                        <div class="product-desc">
+                            <h3 class="product-name">宠物猫咪狗狗洗澡沐浴露香波</h3>
+                            <p class="product-spec">规格：500ml 草莓香型</p>
+                            <div class="product-price-row">
+                                <span class="product-price">¥45.00</span>
+                                <span class="product-quantity">x1</span>
+                            </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- 多商品订单显示 -->
+                <div class="multi-product-info" id="multi-product-info" style="display: none;">
+                    <div class="product-list" id="product-list">
+                        <!-- 商品列表将由JavaScript动态生成 -->
                     </div>
                 </div>
                 <div class="price-detail">

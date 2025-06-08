@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/themeColor"
+    tools:context=".activities.CartActivity">
+
+    <!-- 顶部导航栏 -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/return_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="购物车"
+                android:textColor="@color/textGeneral"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btnSearch"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/search_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- 购物车内容 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/themeColor"
+        android:layout_weight="1">
+
+        <!-- 空购物车状态 -->
+        <LinearLayout
+            android:id="@+id/emptyCartLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="40dp"
+            >
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/shop_icon"
+                android:alpha="0.3"
+                app:tint="@color/textGeneral" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="购物车是空的"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/textGeneral" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="快去选购您喜欢的宠物用品吧！"
+                android:textSize="13sp"
+                android:textColor="@color/textTinge" />
+
+            <Button
+                android:id="@+id/btnGoShopping"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="去购物"
+                android:textSize="13sp"
+                android:textColor="@color/white"
+                android:background="@drawable/view_semicircle"
+                android:backgroundTint="@color/Theme"
+                android:paddingHorizontal="30dp"
+                android:paddingVertical="12dp" />
+
+        </LinearLayout>
+
+        <!-- 购物车商品列表 -->
+        <LinearLayout
+            android:id="@+id/cartContentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- 全选区域 -->
+            <com.zhouyu.pet_science.views.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:layout_marginTop="10dp"
+                app:view_radius="5dp">
+
+                <CheckBox
+                    android:id="@+id/cbSelectAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/checkbox_circle_selector" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="全选"
+                    android:textSize="16sp"
+                    android:textColor="@color/textGeneral" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tvEditMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="编辑"
+                    android:textSize="14sp"
+                    android:textColor="@color/Theme"
+                    android:padding="8dp"
+                    android:background="?attr/selectableItemBackground" />
+
+            </com.zhouyu.pet_science.views.CardView>
+
+            <com.zhouyu.pet_science.views.CardView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:background="@color/white"
+                android:layout_marginTop="10dp"
+                app:view_radius="5dp">
+                <!-- 商品列表 -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:minHeight="200dp"
+                    android:overScrollMode="never" />
+            </com.zhouyu.pet_science.views.CardView>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <!-- 底部结算栏 -->
+    <LinearLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:elevation="8dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvSelectedCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="已选择 0 件商品"
+                android:textSize="12sp"
+                android:textColor="@color/textTinge" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="合计："
+                    android:textSize="16sp"
+                    android:textColor="@color/textGeneral" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="¥"
+                    android:textSize="14sp"
+                    android:textColor="@color/Theme" />
+
+                <TextView
+                    android:id="@+id/tvTotalPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.00"
+                    android:textSize="18sp"
+                    android:textColor="@color/Theme"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnCheckout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="结算"
+            android:textColor="@color/white"
+            android:background="@drawable/view_semicircle"
+            android:backgroundTint="@color/Theme"
+            android:paddingHorizontal="30dp"
+            android:paddingVertical="12dp"
+            android:enabled="false" />
+
+    </LinearLayout>
+
+</LinearLayout>

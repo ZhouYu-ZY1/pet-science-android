@@ -324,38 +324,32 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 更新商品信息的函数
     function updateProductInfo(info) {
-        if (info.productPrice) {
-            // 计算总价（无论数量是多少）
-            const quantity = info.quantity || 1;
-            const totalPrice = (parseFloat(info.productPrice) * quantity).toFixed(2);
-
-            // 更新页面上的金额
-            document.getElementById('payment-amount').textContent = totalPrice;
-            document.getElementById('bottom-payment-amount').textContent = totalPrice;
-
-            // 更新商品价格
-            const productPrice = document.querySelector('.product-price');
-            if (productPrice) {
-                productPrice.textContent = `¥${info.productPrice}`;
-            }
-            const priceValue = document.querySelector('.price-detail .price-item:first-child .price-value');
-            if (priceValue) {
-                priceValue.textContent = `¥${info.productPrice}`;
-            }
-
-            // 更新价格详情
-            const priceTotalValue = document.querySelector('.price-detail .price-item.total .price-value');
-            if (priceTotalValue) {
-                 priceTotalValue.textContent = `¥${totalPrice}`;
-            }
-
-
-            // 如果有单品总价显示区域，也更新它
-            const totalPriceElement = document.querySelector('.total-price');
-            if (totalPriceElement) {
-                totalPriceElement.textContent = `¥${totalPrice}`;
-            }
+        // 检查是否为多商品订单
+        if (info.isMultiProduct && info.productList && info.productList.length > 0) {
+            // 显示多商品订单
+            showMultiProductOrder(info);
+        } else {
+            // 显示单商品订单
+            showSingleProductOrder(info);
         }
+
+        // 更新支付金额（对于所有订单类型都一样）
+        const totalAmount = info.totalAmount || info.productPrice;
+        document.getElementById('payment-amount').textContent = parseFloat(totalAmount).toFixed(2);
+        document.getElementById('bottom-payment-amount').textContent = parseFloat(totalAmount).toFixed(2);
+
+        // 更新价格详情中的实付款
+        const priceTotalValue = document.querySelector('.price-detail .price-item.total .price-value');
+        if (priceTotalValue) {
+            priceTotalValue.textContent = `¥${parseFloat(totalAmount).toFixed(2)}`;
+        }
+    }
+
+    // 显示单商品订单
+    function showSingleProductOrder(info) {
+        // 显示单商品区域，隐藏多商品区域
+        document.getElementById('single-product-info').style.display = 'block';
+        document.getElementById('multi-product-info').style.display = 'none';
 
         if (info.productName) {
             document.querySelector('.product-name').textContent = info.productName;
@@ -371,6 +365,54 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (info.quantity && info.quantity > 1) {
             document.querySelector('.product-quantity').textContent = `x${info.quantity}`;
+        }
+
+        // 更新单商品价格
+        const productPrice = document.querySelector('.product-price');
+        if (productPrice) {
+            productPrice.textContent = `¥${info.productPrice}`;
+        }
+
+        // 更新商品金额
+        const priceValue = document.querySelector('.price-detail .price-item:first-child .price-value');
+        if (priceValue) {
+            const totalPrice = (parseFloat(info.productPrice) * (info.quantity || 1)).toFixed(2);
+            priceValue.textContent = `¥${totalPrice}`;
+        }
+    }
+
+    // 显示多商品订单
+    function showMultiProductOrder(info) {
+        // 隐藏单商品区域，显示多商品区域
+        document.getElementById('single-product-info').style.display = 'none';
+        document.getElementById('multi-product-info').style.display = 'block';
+
+        // 生成商品列表HTML
+        const productListContainer = document.getElementById('product-list');
+        let productListHtml = '';
+
+        info.productList.forEach(product => {
+            productListHtml += `
+                <div class="product-item">
+                    <img src="${product.productImage}" alt="${product.productName}" class="product-item-img">
+                    <div class="product-item-desc">
+                        <h4 class="product-item-name">${product.productName}</h4>
+                        <div class="product-item-price-row">
+                            <span class="product-item-price">¥${product.price.toFixed(2)}</span>
+                            <span class="product-item-quantity">x${product.quantity}</span>
+                            <span class="product-item-subtotal">¥${product.subtotal.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        productListContainer.innerHTML = productListHtml;
+
+        // 更新商品金额为总金额
+        const priceValue = document.querySelector('.price-detail .price-item:first-child .price-value');
+        if (priceValue) {
+            priceValue.textContent = `¥${parseFloat(info.totalAmount).toFixed(2)}`;
         }
     }
 });

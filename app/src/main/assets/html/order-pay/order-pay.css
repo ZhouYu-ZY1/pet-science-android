@@ -160,6 +160,73 @@ html, body {
     color: var(--dark-gray);
 }
 
+/* 多商品订单样式 */
+.multi-product-info {
+    padding: 15px 0;
+}
+
+.product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.product-item:last-child {
+    border-bottom: none;
+}
+
+.product-item-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    margin-right: 12px;
+    object-fit: cover;
+}
+
+.product-item-desc {
+    flex: 1;
+}
+
+.product-item-name {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+}
+
+.product-item-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+.product-item-price {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.product-item-quantity {
+    color: var(--dark-gray);
+    margin: 0 8px;
+}
+
+.product-item-subtotal {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
 .price-detail {
     padding-top: 15px;
 }
