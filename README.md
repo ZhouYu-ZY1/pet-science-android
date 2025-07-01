@@ -7,7 +7,6 @@
   
   ![Android](https://img.shields.io/badge/Android-7.0%2B-green.svg)
   ![Kotlin](https://img.shields.io/badge/Kotlin-1.9.0-blue.svg)
-  ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
   ![Version](https://img.shields.io/badge/Version-1.0-red.svg)
 </div>
 
