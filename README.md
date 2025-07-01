@@ -1,7 +1,7 @@
 # 萌宠视界 (Pet Science Android)
 
 <div align="center">
-  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="萌宠视界" width="120" height="120">
+  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" alt="萌宠视界" width="120" height="120">
   
   <h3>一个集宠物社交、视频分享、商城购物于一体的Android应用</h3>
   
@@ -234,6 +234,5 @@ app/src/main/
 
 ## 📞 联系方式
 
-- 项目维护者：周宇
-- 邮箱：your-email@example.com
+- 邮箱：2179853437@qq.com
 - 项目地址：https://github.com/your-username/pet-science-android
