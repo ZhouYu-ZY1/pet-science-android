@@ -21,14 +21,7 @@ android {
     buildFeatures {
         viewBinding true
     }
-    signingConfigs {
-        release {
-            keyAlias 'com.zhouyu.pet_science'
-            keyPassword 'zy200592'
-            storeFile file('C:/Users/zhouyu/Desktop/Project/pet-science-android/app/key/pet_science.jks')
-            storePassword 'zy200592'
-        }
-    }
+
 
     buildTypes {
         release {
@@ -44,7 +37,7 @@ android {
 //            debuggable = true
         }
         debug {
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
 //
 ////            //混淆
 ////            minifyEnabled true
@@ -100,8 +93,8 @@ dependencies {
     //数据储存
     implementation 'com.orhanobut:hawk:2.0.1'
 
-    //解析json
-    implementation 'com.alibaba:fastjson:1.2.75'
+    //解析json - 使用更安全的Gson替代fastjson
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     //加载GIF图片
 //    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.1'
@@ -117,7 +110,7 @@ dependencies {
     })
 
     //网络通信库
-    implementation "com.squareup.okhttp3:okhttp:4.9.0"
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
 //    // Retrofit 核心库
 //    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 //    // Gson 转换器（用于 JSON 解析）
