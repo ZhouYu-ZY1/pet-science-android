@@ -1,7 +1,7 @@
 # 萌宠视界 (Pet Science Android)
 
 <div align="center">
-  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="萌宠视界" width="120" height="120">
+  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" alt="萌宠视界" width="120" height="120">
   
   <h3>一个集宠物社交、视频分享、商城购物于一体的Android应用</h3>
   
