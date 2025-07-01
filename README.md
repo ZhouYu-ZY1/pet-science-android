@@ -22,22 +22,45 @@
 - **订单管理**: 订单创建、支付、物流跟踪
 - **地址管理**: 收货地址的增删改查
 
+<div align="center">
+  <img src="image/商城模块1.png" alt="商城首页" width="200">
+  <img src="image/商城模块2.png" alt="商品分类" width="200">
+  <img src="image/商城模块3.png" alt="商品详情" width="200">
+  <img src="image/商城模块4.png" alt="购物车" width="200">
+  <img src="image/商城模块5.png" alt="订单管理" width="200">
+</div>
+
 ### 📹 视频模块
 - **短视频播放**: 流畅的视频播放体验
 - **智能推荐**: 基于用户喜好的视频推荐算法
 - **视频缓存**: 预加载机制，提升播放体验
 - **滑动切换**: 类似抖音的滑动播放体验
 
+<div align="center">
+  <img src="image/视频模块1.png" alt="视频播放界面" width="200">
+</div>
+
 ### 💬 聊天模块
 - **即时通讯**: 基于WebSocket的实时聊天
 - **AI智能聊天**: 集成AI助手，提供宠物护理建议
 - **消息管理**: 聊天记录保存与管理
+
+<div align="center">
+  <img src="image/聊天模块1.png" alt="聊天界面" width="200">
+  <img src="image/聊天模块2.png" alt="AI智能聊天" width="200">
+</div>
 
 ### 👤 个人中心
 - **用户资料**: 个人信息编辑与展示
 - **宠物管理**: 宠物信息录入与管理
 - **作品发布**: 发布宠物相关内容
 - **关注系统**: 关注/粉丝功能
+
+<div align="center">
+  <img src="image/个人中心1.png" alt="个人中心首页" width="200">
+  <img src="image/个人中心2.png" alt="用户资料" width="200">
+  <img src="image/个人中心3.png" alt="宠物管理" width="200">
+</div>
 
 ## 🛠️ 技术栈
 
