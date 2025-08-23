@@ -88,7 +88,7 @@ private constructor() : ImageEngine {
      */
     fun getVideoBitmap(videoPath: String?): Bitmap? {
         return try {
-            Glide.with(Application.context)
+            Glide.with(Application.getContext())
                 .asBitmap()
                 .load(videoPath) //                    .skipMemoryCache(true) // 禁用内存缓存
                 .diskCacheStrategy(DiskCacheStrategy.NONE) // 禁用磁盘缓存

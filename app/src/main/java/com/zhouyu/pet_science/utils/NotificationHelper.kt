@@ -43,11 +43,6 @@ object NotificationHelper {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, flags)
-        val remoteViews = RemoteViews(context.packageName, R.layout.message_notification_layout)
-        remoteViews.setImageViewBitmap(R.id.notification_icon, roundedAvatar)
-        remoteViews.setTextViewText(R.id.notification_title, nickname)
-        remoteViews.setTextViewText(R.id.notification_message, message)
-        remoteViews.setTextViewText(R.id.notification_time, time)
         
         // 设置通知声音
         val soundUri = Settings.System.DEFAULT_NOTIFICATION_URI
@@ -55,12 +50,10 @@ object NotificationHelper {
         // 修改通知渠道设置，确保高优先级
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name: CharSequence = "消息通知"
-            val description = "接收消息提醒"
             val importance = NotificationManager.IMPORTANCE_HIGH  // 使用HIGH确保弹出
             val channel = NotificationChannel(CHANNEL_ID, name, importance)
-            channel.description = description
+            channel.description = "接收消息提醒"
             channel.enableLights(true)
-            channel.lightColor = context.getColor(R.color.themeColor)
             channel.enableVibration(true)
             channel.vibrationPattern = longArrayOf(0, 300, 300, 300)  // 明确设置震动模式
             channel.setShowBadge(true)
@@ -86,7 +79,7 @@ object NotificationHelper {
             .setContentText(message)
             .setContentIntent(pendingIntent)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-            .setCustomContentView(remoteViews)
+//            .setCustomContentView(remoteViews)
             .setPriority(NotificationCompat.PRIORITY_MAX)  // 设置为MAX优先级
             .setAutoCancel(true)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)

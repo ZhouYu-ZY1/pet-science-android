@@ -66,7 +66,7 @@ object BitmapUtils {
      */
     fun urlToBitmap(url: String?): Bitmap? {
         try {
-            return GlideEngine.instance.getCacheBitmap(Application.context, url!!, 1000, 1000)
+            return GlideEngine.instance.getCacheBitmap(Application.getContext(), url!!, 1000, 1000)
         } catch (e: Exception) {
             e.printStackTrace()
         }

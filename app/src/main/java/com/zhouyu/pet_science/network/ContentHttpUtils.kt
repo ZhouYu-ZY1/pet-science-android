@@ -1,7 +1,6 @@
 package com.zhouyu.pet_science.network
 
 import com.google.gson.Gson
-import com.orhanobut.hawk.Hawk
 import com.zhouyu.pet_science.model.Content
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.network.HttpUtils.client

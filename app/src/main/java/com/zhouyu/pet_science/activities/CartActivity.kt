@@ -53,6 +53,7 @@ class CartActivity : BaseActivity(), CartAdapter.OnCartItemListener {
         setupRecyclerView()
         setupClickListeners()
         loadCartData()
+        loadDefaultAddress()
     }
 
 
@@ -98,6 +99,13 @@ class CartActivity : BaseActivity(), CartAdapter.OnCartItemListener {
         binding.btnGoShopping.setOnClickListener {
             // 跳转到商城页面
             finish()
+        }
+
+        // 地址选择点击事件
+        binding.addressContainer.setOnClickListener {
+            val intent = Intent(this, AddressActivity::class.java)
+            intent.putExtra("isSelect", true)
+            startActivity(intent)
         }
     }
 
@@ -353,16 +361,45 @@ class CartActivity : BaseActivity(), CartAdapter.OnCartItemListener {
         }
     }
 
+    // 加载默认地址
+    private fun loadDefaultAddress() {
+        // 如果没有选择地址，则获取默认地址
+        if (selectedAddress == null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val defaultAddressResult = ProductHttpUtils.getDefaultAddress()
+                if (defaultAddressResult?.code == 200 && defaultAddressResult.data != null) {
+                    // 在主线程中更新UI
+                    runOnUiThread {
+                        selectedAddress = defaultAddressResult.data
+                        updateAddressUI()
+                    }
+                }
+            }
+        }
+    }
+
+    // 更新地址UI显示
+    private fun updateAddressUI() {
+        selectedAddress?.let { address ->
+            // 显示已选择的地址
+            binding.addressInfo.text = "${address.recipientName} ${address.recipientPhone}"
+            binding.addressDetail.text = "${address.province}${address.city}${address.district} ${address.detailAddress}"
+            binding.addressDetail.visibility = View.VISIBLE
+        } ?: run {
+            // 未选择地址
+            binding.addressInfo.text = "请选择收货地址"
+            binding.addressDetail.visibility = View.GONE
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         // 刷新购物车数据
         loadCartData()
         // 从地址选择页面返回时，获取选择的地址
         selectedAddress = ProductDetailActivity.selectedAddress
-        // 如果选择了地址，可以在这里更新UI显示地址信息
-        selectedAddress?.let {
-            MyToast.show("已选择地址: ${it.recipientName}")
-        }
+        // 更新地址UI显示
+        updateAddressUI()
     }
 
     override fun onDestroy() {

@@ -191,7 +191,7 @@ class SearchActivity : BaseActivity() {
 
         // 加载历史记录
         if(StorageUtils.contains("search_history")) {
-            searchHistoryList.addAll(StorageUtils.get("search_history"))
+            searchHistoryList.addAll(StorageUtils.get("search_history", ArrayList()))
         }
     }
     

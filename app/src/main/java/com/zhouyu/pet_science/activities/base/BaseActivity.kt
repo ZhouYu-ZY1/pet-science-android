@@ -1,5 +1,6 @@
 package com.zhouyu.pet_science.activities.base
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -15,8 +16,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.manager.ActivityManager.Companion.instance
 import com.zhouyu.pet_science.utils.PhoneMessage
+import me.jessyan.autosize.AutoSizeCompat
+import me.jessyan.autosize.internal.CustomAdapt
 
-open class BaseActivity : AppCompatActivity() {
+open class BaseActivity : AppCompatActivity() , CustomAdapt {
     var isDarkBack = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +96,18 @@ open class BaseActivity : AppCompatActivity() {
     @JvmOverloads
     fun showToast(text: String?, duration: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(this, text, duration).show()
+    }
+
+    override fun isBaseOnWidth(): Boolean = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    // 默认设计图尺寸
+    override fun getSizeInDp(): Float {
+        return 393f
+    }
+    // 横竖屏切换时重新适配
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        AutoSizeCompat.autoConvertDensity(resources, sizeInDp, isBaseOnWidth())
     }
 
     companion object {

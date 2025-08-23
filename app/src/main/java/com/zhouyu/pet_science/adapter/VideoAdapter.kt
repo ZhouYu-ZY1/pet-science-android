@@ -508,13 +508,24 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
     // 图文内容事件处理
     @SuppressLint("ClickableViewAccessibility")
     private fun setupImageEvent(holder: VideoViewHolder, video: Video.Data, position: Int) {
+        holder.imageBanner.setOnBannerListener { data, position ->
+            // 图文内容点击事件
+            toggleImageContentPlayback(holder, position)
+        }
+
         // 在透明覆盖层上设置触摸监听器
-        holder.bannerTouchOverlay.setOnTouchListener(EventUtils.OnDoubleClickListener(object : EventUtils.OnDoubleClickListener.DoubleClickCallback {
+        holder.bannerTouchOverlay.setOnTouchListener(EventUtils.OnMultiEventListener(object : EventUtils.OnMultiEventListener.MultiEventCallback {
+            override fun onTouch(view: View?, event: MotionEvent?): Boolean {
+                if (event != null) {
+                    // 将事件传递给Banner处理触摸事件（用于滑动）
+                    holder.imageBanner.dispatchTouchEvent(event)
+                }
+                return true
+            }
             override fun onDoubleClick(event: MotionEvent?) {
                 handleDoubleTap(event, holder, video)
             }
             override fun onClick(event: MotionEvent?) {
-                // 图文内容单击事件：暂停/继续背景音乐和轮播
                 toggleImageContentPlayback(holder, position)
             }
 
@@ -524,15 +535,6 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
 
             override fun onLongPressFinish(event: MotionEvent?) {
                 // 图文内容长按结束事件
-            }
-
-            override fun onTouch(view: View?, event: MotionEvent?): Boolean {
-                // 将触摸事件传递给Banner，让Banner处理滑动
-                if (event != null) {
-                    // 先让Banner处理触摸事件（用于滑动）
-                    holder.imageBanner.dispatchTouchEvent(event)
-                }
-                return true
             }
         }, holder.itemView.context))
     }
@@ -571,7 +573,7 @@ class VideoAdapter(private val context: Context,private val videoPlayFragment: V
     // 视频内容事件处理
     private fun setupVideoEvent(holder: VideoViewHolder, video: Video.Data, position: Int, player: Player?, videoPlayImage: ImageView) {
         val itemView = holder.itemView
-        itemView.setOnTouchListener(EventUtils.OnDoubleClickListener(object : EventUtils.OnDoubleClickListener.DoubleClickCallback {
+        itemView.setOnTouchListener(EventUtils.OnMultiEventListener(object : EventUtils.OnMultiEventListener.MultiEventCallback {
             override fun onDoubleClick(event: MotionEvent?) {
                 handleDoubleTap(event, holder, video)
             }

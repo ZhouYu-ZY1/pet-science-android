@@ -15,7 +15,7 @@ class MessageArrayList<T> : ArrayList<T>() {
     override fun add(element: T): Boolean {
         Application.executeThread {
             // 将消息List保存到本地
-            saveList(Application.context)
+            saveList(Application.getContext())
         }
         return super.add(element)
     }

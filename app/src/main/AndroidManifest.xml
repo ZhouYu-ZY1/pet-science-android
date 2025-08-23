@@ -41,7 +41,9 @@
         <!-- 个人信息修改页 -->
         <activity android:name=".activities.UserInfoEditActivity" android:exported="false" />
         <!--主页-->
-        <activity android:name="com.zhouyu.pet_science.activities.MainActivity" />
+        <activity
+            android:launchMode="singleTask"
+            android:name="com.zhouyu.pet_science.activities.MainActivity" />
         <!--聊天页面-->
         <activity android:name="com.zhouyu.pet_science.activities.ChatActivity" android:exported="false"/>
         <!-- AI聊天页面 -->
@@ -52,8 +54,6 @@
         <activity android:name=".activities.AddressActivity"  />
         <!-- 购物车 -->
         <activity android:name=".activities.CartActivity"  />
-        <!--错误页-->
-        <activity android:name="com.zhouyu.pet_science.activities.base.ErrorActivity" />
         <!--Web浏览器-->
         <activity android:name="com.zhouyu.pet_science.activities.WebBrowserActivity" />
         <!-- 订单列表 -->

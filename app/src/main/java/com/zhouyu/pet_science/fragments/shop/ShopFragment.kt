@@ -65,11 +65,8 @@ class ShopFragment : BaseFragment() {
     @SuppressLint("InflateParams")
     private fun initData() {
         // 先从本地缓存加载分类列表
-        val cachedCategoryList = StorageUtils.get<List<Category>>("category_list")
-        if (cachedCategoryList != null) {
-            // 如果有缓存数据，先使用缓存数据初始化UI
-            initCateGory(cachedCategoryList)
-        }
+        val cachedCategoryList = StorageUtils.get("category_list",ArrayList<Category>())
+        initCateGory(cachedCategoryList)
         
         // 然后再从网络获取最新数据
         executeThread {
@@ -135,7 +132,7 @@ class ShopFragment : BaseFragment() {
                 val categoryName = categoryList[position].categoryName
                 tab.text = categoryName
                 val customView: View =
-                    LayoutInflater.from(Application.context).inflate(R.layout.item_shop_category, null)
+                    LayoutInflater.from(Application.getContext()).inflate(R.layout.item_shop_category, null)
                 val textView = customView.findViewById<TextView>(R.id.category_name)
                 textView.text = categoryName
                 textView.setTypeface(null, Typeface.NORMAL) // 初始化为非粗体

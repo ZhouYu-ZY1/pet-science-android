@@ -24,7 +24,7 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <!--透明触摸覆盖层，用于接收Banner的触摸事件-->
+    <!--透明触摸覆盖层-->
     <View
         android:id="@+id/bannerTouchOverlay"
         android:layout_width="match_parent"

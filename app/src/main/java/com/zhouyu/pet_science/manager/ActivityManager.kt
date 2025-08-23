@@ -1,11 +1,16 @@
 package com.zhouyu.pet_science.manager
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Looper
 import android.os.Process
+import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.zhouyu.pet_science.activities.LoginActivity
 import com.zhouyu.pet_science.activities.MainActivity
 import com.zhouyu.pet_science.application.Application
+import com.zhouyu.pet_science.utils.MyToast
+import com.zhouyu.pet_science.utils.StorageUtils
 
 class ActivityManager {
     //添加Activity
@@ -64,10 +69,10 @@ class ActivityManager {
             try {
                 if (Looper.myLooper() != Looper.getMainLooper()) { //只能在主线程执行
                     Application.mainHandler.post {
-                        Glide.get(Application.context).clearMemory()
+                        Glide.get(Application.getContext()).clearMemory()
                     } //清理内存中的缓存
                 } else {
-                    Glide.get(Application.context).clearMemory()
+                    Glide.get(Application.getContext()).clearMemory()
                 }
             } catch (ignored: Exception) {
             }
@@ -140,5 +145,34 @@ class ActivityManager {
         @get:Synchronized
         val instance = ActivityManager()
         var isFinishApplication = false
+
+
+        private var isLogoutLoad = false // 是否正在登出
+        /**
+         * 跳转到登录页面
+         */
+        fun logout(message: String = "") {
+            if(isLogoutLoad){
+                return
+            }
+            StorageUtils.delete("token")
+            StorageUtils.delete("userId")
+            isLogoutLoad = true
+            Application.getContext().apply {
+                Application.mainHandler.post {
+                    // 跳转到登录页面
+                    startActivity(Intent(this, LoginActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    })
+                    instance.finishAllActivity()
+                    if (message.isNotEmpty()) {
+                        Toast.makeText(Application.getContext(), message, Toast.LENGTH_LONG).show()
+                    }
+                    Application.mainHandler.postDelayed({
+                        isLogoutLoad = false
+                    },1000)
+                }
+            }
+        }
     }
 }

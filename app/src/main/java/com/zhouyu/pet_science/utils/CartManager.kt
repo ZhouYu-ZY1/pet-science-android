@@ -17,8 +17,8 @@ object CartManager {
      * 获取购物车商品列表
      */
     fun getCartItems(): MutableList<CartItem> {
-        val cartJson = StorageUtils.get<String>(CART_KEY)
-        return if (cartJson.isNullOrEmpty()) {
+        val cartJson = StorageUtils.get(CART_KEY,"")
+        return if (cartJson.isEmpty()) {
             mutableListOf()
         } else {
             try {

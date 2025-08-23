@@ -14,6 +14,7 @@ import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
 import com.zhouyu.pet_science.databinding.ActivityStartBinding
 import com.zhouyu.pet_science.fragments.MessageFragment
+import com.zhouyu.pet_science.manager.IMClientManager
 import com.zhouyu.pet_science.pojo.MessageListItem
 import com.zhouyu.pet_science.utils.MessageArrayList
 import com.zhouyu.pet_science.utils.StorageUtils
@@ -48,6 +49,7 @@ class StartActivity : BaseActivity() {
             .diskCacheStrategy(DiskCacheStrategy.NONE) // 禁用磁盘缓存
             .into(binding.backImage)
 
+        IMClientManager.getInstance( this).initMobileIMSDK()
         executeThread{
             // 初始化刷新组件
             initSmartRefreshLayout()
@@ -61,10 +63,12 @@ class StartActivity : BaseActivity() {
                 }
                 MessageFragment.setMessageList(messageList as ArrayList<MessageListItem>)
             }
-
-            val token = StorageUtils.get<String>("token")
+            val token = StorageUtils.get("token","")
+            val userId = StorageUtils.get("userId","")
             Handler(Looper.getMainLooper()).postDelayed({
-                val intent = if(token != null && token.isNotEmpty()){
+                val intent = if(token.isNotEmpty()){
+                    // 登录IM
+                    IMClientManager.getInstance(this).login(userId, token)
                     Intent(this, MainActivity::class.java)
                 }else{
                     Intent(this, LoginActivity::class.java)

@@ -24,19 +24,11 @@ import kotlin.math.acos
 class MessageAdapter(private val context: Context,private val messages: List<ChatMessage>, private val currentUserId: String) :
     RecyclerView.Adapter<MessageViewHolder>() {
     class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var avatarImage: ImageView
-        var nickname: TextView
-        var messageContent: TextView
-        var sendTime: TextView
-        var messageContentLayout: LinearLayout
-
-        init {
-            avatarImage = itemView.findViewById(R.id.avatar_image)
-            nickname = itemView.findViewById(R.id.nickname)
-            messageContent = itemView.findViewById(R.id.message_content)
-            sendTime = itemView.findViewById(R.id.sendTime)
-            messageContentLayout = itemView.findViewById(R.id.message_content_layout)
-        }
+        var avatarImage: ImageView = itemView.findViewById(R.id.avatar_image)
+        var nickname: TextView = itemView.findViewById(R.id.nickname)
+        var messageContent: TextView = itemView.findViewById(R.id.message_content)
+        var sendTime: TextView = itemView.findViewById(R.id.sendTime)
+        var messageContentLayout: LinearLayout = itemView.findViewById(R.id.message_content_layout)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
@@ -47,7 +39,11 @@ class MessageAdapter(private val context: Context,private val messages: List<Cha
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         val chatMessage = messages[position]
         holder.avatarImage.setOnClickListener {
-            context.startActivity(UserProfileActivity.createIntent(context,Integer.parseInt(chatMessage.senderId)))
+            if(chatMessage.senderId != currentUserId){
+                context.startActivity(UserProfileActivity.createIntent(context,Integer.parseInt(chatMessage.senderId)))
+            }else{
+                context.startActivity(UserProfileActivity.createIntent(context))
+            }
         }
 
         holder.messageContent.text = chatMessage.content

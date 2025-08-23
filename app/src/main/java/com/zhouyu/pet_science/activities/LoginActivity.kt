@@ -1,16 +1,21 @@
 package com.zhouyu.pet_science.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
+import android.widget.Toast
 import com.zhouyu.pet_science.R
 import com.zhouyu.pet_science.activities.base.BaseActivity
-import com.zhouyu.pet_science.network.UserHttpUtils
-import android.content.Intent
 import com.zhouyu.pet_science.databinding.ActivityLoginBinding
-import com.zhouyu.pet_science.utils.StorageUtils
+import com.zhouyu.pet_science.manager.IMClientManager
+import com.zhouyu.pet_science.network.UserHttpUtils
 import com.zhouyu.pet_science.utils.ConsoleUtils
+import com.zhouyu.pet_science.utils.StorageUtils
+import net.x52im.mobileimsdk.android.core.LocalDataSender.SendLoginDataAsync
+import net.x52im.mobileimsdk.server.protocal.c.PLoginInfo
+
 
 class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -28,6 +33,10 @@ class LoginActivity : BaseActivity() {
         setTopBarView(binding.container, true)
         // 设置点击事件
         setupClickListeners()
+
+        // 确保MobileIMSDK被初始化（整个APP生生命周期中只需调用一次）
+        // 提示：在不退出APP的情况下退出登陆后再重新登陆时，请确保调用本方法一次，不然会报code=203错误！
+        IMClientManager.getInstance(this).initMobileIMSDK()
     }
     
 
@@ -85,7 +94,15 @@ class LoginActivity : BaseActivity() {
                 runOnUiThread {
                     if (success) {
                         try {
-                            StorageUtils.put("token",data.getString("token"))
+                            val token = data.getString("token")
+                            val userId = data.getString("userId")
+                            StorageUtils.put("token", token)
+                            StorageUtils.put("userId", userId)
+
+                            // 登录IM
+                            IMClientManager.getInstance(this).login(userId, token)
+
+//                            IMClientManager.getInstance(this).chatBaseListener.setLoginOkForLaunchObserver(onLoginSucessObserver);
                             if(data.getBoolean("isRegister")){  // 判断是否为注册
                                 // 注册成功后跳转到个人信息填写页面
                                 showToast("注册成功")

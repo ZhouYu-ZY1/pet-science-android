@@ -20,19 +20,19 @@ import kotlin.math.sqrt
 
 class EventUtils {
     /**
-     * 自定义双击单击判断
+     * 自定义多事件监听判断
      */
-    class OnDoubleClickListener(
+    class OnMultiEventListener(
         /**
          * 自定义回调接口
          */
-        private val mCallback: DoubleClickCallback?, context: Context?
+        private val mCallback: MultiEventCallback?, context: Context?
     ) : OnTouchListener {
-        private var firstClick = false
+        private var notFirstClick = false
         private val handler = Handler(Looper.getMainLooper())
 
         /**
-         * 两次点击时间间隔，单位毫秒
+         * 多事件监听时间间隔，单位毫秒
          */
         private val totalTime = 250
         private var downX: Float = 0f
@@ -40,7 +40,7 @@ class EventUtils {
         private val gestureDetector: GestureDetector
         private var isLongPress = false
 
-        interface DoubleClickCallback {
+        interface MultiEventCallback {
             fun onDoubleClick(event: MotionEvent?)
             fun onClick(event: MotionEvent?)
             fun onLongPress(event: MotionEvent?)
@@ -63,12 +63,11 @@ class EventUtils {
         }
 
         /**
-         * 触摸事件处理
+         * 多事件监听触摸处理
          */
         @SuppressLint("ClickableViewAccessibility")
         override fun onTouch(v: View, event: MotionEvent): Boolean {
             gestureDetector.onTouchEvent(event)
-
             // 记录按下的位置
             if (MotionEvent.ACTION_DOWN == event.action) {
                 downX = event.x
@@ -77,31 +76,30 @@ class EventUtils {
                 // 计算按下和抬起的距离
                 val upX = event.x
                 val upY = event.y
+                // 计算两个点的直线距离 = √[(x₂-x₁)² + (y₂-y₁)²]
                 val distance = sqrt((upX - downX).toDouble().pow(2.0) + (upY - downY).toDouble().pow(2.0)).toFloat()
-
-                // 如果距离超过阈值，则不触发点击事件
+                // 如果距离超过阈值，则不触发多事件监听
                 val maxClickDistance = dpToPx(5f) // 设置最大允许的距离
                 if (distance > maxClickDistance) {
                     return mCallback!!.onTouch(v, event)
                 }
-
-                if (firstClick) {
+                if (notFirstClick) {
                     handler.removeCallbacksAndMessages(null)
                     mCallback?.onDoubleClick(event)
                     handlerDouble.removeCallbacksAndMessages(null)
-                    handlerDouble.postDelayed({ firstClick = false }, totalTime.toLong())
+                    handlerDouble.postDelayed({ notFirstClick = false }, totalTime.toLong())
                     return mCallback!!.onTouch(v, event)
                 }
-                firstClick = true
+                notFirstClick = true
                 if (isLongPress) {
                     mCallback!!.onLongPressFinish(event)
                     isLongPress = false
-                    firstClick = false
+                    notFirstClick = false
                 } else {
                     handler.removeCallbacksAndMessages(null)
                     handler.postDelayed({
                         mCallback?.onClick(event)
-                        firstClick = false
+                        notFirstClick = false
                         handler.removeCallbacksAndMessages(null)
                     }, totalTime.toLong())
                 }

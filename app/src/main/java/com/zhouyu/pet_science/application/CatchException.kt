@@ -1,174 +1,247 @@
 package com.zhouyu.pet_science.application
 
+import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.app.job.JobScheduler
+import android.content.Context
 import android.content.Intent
-import android.os.Looper
-import android.os.Process
+import android.os.*
+import android.util.Log
 import android.widget.Toast
-import com.zhouyu.pet_science.activities.base.ErrorActivity
-import com.zhouyu.pet_science.activities.base.ErrorActivity.Companion.collectDeviceInfo
-import com.zhouyu.pet_science.manager.ActivityManager
-import com.zhouyu.pet_science.utils.FileUtils
-import com.zhouyu.pet_science.utils.ConsoleUtils
-import com.zhouyu.pet_science.utils.PhoneMessage
+import java.io.File
+import java.io.FileWriter
 import java.io.PrintWriter
 import java.io.StringWriter
-import java.io.Writer
-import java.util.Date
+import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.system.exitProcess
 
-/**
- * 全局异常捕获
- */
-class CatchException  //保证只有一个实例
-    : Thread.UncaughtExceptionHandler {
-    private var mDefaultException: Thread.UncaughtExceptionHandler? = null
+class CatchException private constructor() : Thread.UncaughtExceptionHandler {
 
-    //获取系统默认的异常处理器,并且设置本类为系统默认处理器
-    fun init() {
-        mDefaultException = Thread.getDefaultUncaughtExceptionHandler()
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        @Volatile
+        private var instance: CatchException? = null
+
+        @JvmStatic
+        fun getInstance(): CatchException {
+            return instance ?: synchronized(this) {
+                instance ?: CatchException().also { instance = it }
+            }
+        }
+
+        private fun getStackTraceString(ex: Throwable): String {
+            StringWriter().use { sw ->
+                PrintWriter(sw).use { pw ->
+                    ex.printStackTrace(pw)
+                    return sw.toString()
+                }
+            }
+        }
+
+        fun collectDeviceInfo(isLocal: Boolean): String {
+            val c = if (isLocal) {
+                "\n"
+            } else {
+                "</br>"
+            }
+            val stringBuilder = StringBuilder()
+            stringBuilder.append("Android版本: ").append(Build.VERSION.RELEASE).append(c)
+            val fields = Build::class.java.declaredFields
+            for (field in fields) {
+                try {
+                    field.isAccessible = true
+                    stringBuilder.append(field.name).append(": ").append(
+                        Objects.requireNonNull(
+                            field[null]
+                        ).toString()
+                    ).append(c)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            return stringBuilder.toString()
+        }
+
+        private fun getVersionName(context: Context?): String {
+            return try {
+                context?.packageManager?.getPackageInfo(context.packageName, 0)?.versionName ?: "未知"
+            } catch (e: Exception) {
+                "未知"
+            }
+        }
+    }
+
+    private var defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+    private val isHandling = AtomicBoolean(false)
+    private var lastCrashTime = 0L
+    private var context: Context? = null
+
+    fun init(context: Context) {
+        this.context = context.applicationContext
         Thread.setDefaultUncaughtExceptionHandler(this)
     }
 
     override fun uncaughtException(thread: Thread, ex: Throwable) {
+        if (isSystemCrash(ex)) {
+            defaultHandler?.uncaughtException(thread, ex)
+            return
+        }
+
+        if (isHandling.getAndSet(true)) {
+            forceExit()
+            return
+        }
+
+        // 防止频繁崩溃处理
+        if (SystemClock.elapsedRealtime() - lastCrashTime < 3000) {
+            forceExit()
+            return
+        }
+        lastCrashTime = SystemClock.elapsedRealtime()
+
         try {
-            if (Thread.currentThread() === Looper.getMainLooper().thread) {
-                //UI线程的异常处理，启动新页面会导致无响应
-                //直接复制错误信息
-                if (!handlerException(ex) && mDefaultException != null) {
-                    // 如果用户没有处理则让系统默认的异常处理器来处理
-                    mDefaultException!!.uncaughtException(thread, ex)
-                } else {
-                    waitCollectMsg()
-                }
-            } else {
-                //非UI线程，可直接打开异常页面
-                errorThrowable = ex
-                val intent = Intent(Application.context, ErrorActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                Application.context.startActivity(intent)
+            handleCrash(ex)
+        } catch (e: Exception) {
+            Log.e("崩溃处理", "处理崩溃时发生错误", e)
+        } finally {
+            forceExit()
+        }
+    }
+
+    private fun handleCrash(ex: Throwable) {
+        saveCrashLog(ex)
+        Thread {
+            Looper.prepare()
+            context?.let {
+                Toast.makeText(it, "程序遇到错误，正在保存错误日志", Toast.LENGTH_LONG).show()
+            }
+            Looper.loop()
+        }.start()
+
+        try {
+            // 延迟1秒，等待Toast显示
+            Thread.sleep(1000)
+        }catch (_:  Exception){}
+    }
+
+    private fun isSystemCrash(ex: Throwable): Boolean {
+        return when {
+            ex is DeadSystemException -> true
+            ex.message?.contains("android.os.DeadSystem") == true -> true
+            ex.message?.contains("ForegroundServiceStartNotAllowedException") == true -> true
+            else -> false
+        }
+    }
+
+    private fun saveCrashLog(ex: Throwable) {
+        try {
+            val logContent = buildString {
+                append("=== 设备信息 ===\n")
+                append(collectDeviceInfo(true))
+                append("\n=== 堆栈跟踪 ===\n")
+                append(getStackTraceString(ex))
+                append("\n\n")
+            }
+
+            saveToFile(logContent)
+        } catch (e: Exception) {
+            Log.e("崩溃处理", "保存崩溃日志失败", e)
+        }
+    }
+
+    private fun saveToFile(content: String) {
+        val externalDir = context?.getExternalFilesDir(null) ?: return
+        val logDir = File(externalDir, "error_log").apply {
+            if (!exists()) mkdirs()
+        }
+
+        val logFile = File(logDir, "error_${System.currentTimeMillis()}.log")
+        try {
+            FileWriter(logFile).use { writer ->
+                writer.write(content)
+                Log.d("崩溃处理", "崩溃日志已保存至 ${logFile.absolutePath}")
             }
         } catch (e: Exception) {
-            e.printStackTrace()
-
-            // 如果启动Activity失败，可能是应用处于无法响应的状态
-            // 这里可以进行最后的处理，如退出应用
-            ActivityManager.instance.finishApplication()
-            Process.killProcess(Process.myPid())
-            exitProcess(0)
+            Log.e("崩溃处理", "写入崩溃日志文件失败", e)
         }
     }
 
-    //自定义错误处理器
-    private fun handlerException(ex: Throwable?): Boolean {
-        if (ex == null) {  //如果已经处理过这个Exception,则让系统处理器进行后续关闭处理
-            return false
-        }
-        val message = ex.message
-        if (message != null) {
-            if (message.contains("Context.startForegroundService() did not then call Service.startForeground()")
-                || message.contains("android.os.DeadSystemException")
-            ) {
-                return false
-            }
-        }
-
-        //获取错误原因
-        val writer: Writer = StringWriter()
-        val printWriter = PrintWriter(writer)
-        ex.printStackTrace(printWriter)
-        var cause = ex.cause
-        while (cause != null) {
-            cause.printStackTrace(printWriter)
-            cause = cause.cause
-        }
-        printWriter.close()
-        val errMsg = writer.toString()
-        Application.executeThread {
-            try {
-                Looper.prepare()
-                Toast.makeText(Application.context, "发生未知错误", Toast.LENGTH_LONG).show()
-                Looper.loop()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        Application.executeThread {
-            try {
-                val time = Date().time
-                //保存本地
-                val path = Application.appCachePath + "/error/" + time + ".err"
-                val msg = """
-                $errMsg
-                ${collectDeviceInfo(true)}
-                """.trimIndent()
-                PhoneMessage.copy(msg)
-                FileUtils.commonStream.write(msg, path)
-            } catch (ignored: Exception) {
-            } catch (ignored: Error) {
-            } finally {
-                isSucceed = true
-            }
-        }
-        return true
-    }
-
-    private var isSucceed = false
-    private fun waitCollectMsg() {
+    /**
+     * 强制退出程序，避免崩溃保存日志后APP无法正常退出
+     */
+    @Synchronized
+    private fun forceExit() {
         try {
-            Thread.sleep(3000)
-        } catch (ignored: Exception) {
-        } finally {
-            if (isSucceed) {
-                ConsoleUtils.logErr("结束")
-                ActivityManager.instance.finishApplication()
-                Process.killProcess(Process.myPid())
-                exitProcess(0)
-            } else {
-                waitCollectMsg()
+            // 1. 停止所有Activity
+            (context?.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager)?.apply {
+                appTasks?.forEach { it.finishAndRemoveTask() }
             }
+
+            // 2. 停止所有服务
+            stopAllServices()
+
+            // 3. 取消所有定时任务
+            cancelPendingWorks()
+
+            // 4. 杀死进程
+            Process.killProcess(Process.myPid())
+
+            // 5. 退出JVM
+            exitProcess(10)
+        } catch (_: Exception) { }
+        finally {
+            // Android 10+ 额外措施，比System.exit()或android.os.Process.killProcess()更底层，因为它直接使用了Linux系统的进程信号机制
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Process.sendSignal(Process.myPid(), Process.SIGNAL_KILL)
+            }
+            // 最终尝试
+            Runtime.getRuntime().exit(0)
         }
     }
 
-    companion object {
-        //本类实例
-        private var mInstance: CatchException? = null
-        @JvmStatic
-        val instance: CatchException
-            //单例模式
-            get() {
-                if (mInstance == null) {
-                    mInstance = CatchException()
+    private fun stopAllServices() {
+        try {
+            val activityManager = context?.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+            activityManager?.getRunningServices(Integer.MAX_VALUE)?.forEach { service ->
+                if (service.service.packageName == context?.packageName) {
+                    val intent = Intent().apply {
+                        component = service.service
+                    }
+                    context?.stopService(intent)
                 }
-                return mInstance!!
+            }
+        } catch (e: Exception) {
+            Log.e("崩溃处理", "停止服务失败", e)
+        }
+    }
+
+    private fun cancelPendingWorks() {
+        try {
+            // 取消AlarmManager定时任务
+            val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+            alarmManager?.apply {
+                getPendingIntent()?.let { cancel(it) }
             }
 
-        /**
-         * 获取异常信息
-         */
-//        fun getStackTraceInfo(e: Exception): String {
-//            val sw = StringWriter()
-//            val pw = PrintWriter(sw)
-//            return try {
-//                e.printStackTrace(pw)
-//                pw.flush()
-//                sw.flush()
-//                sw.toString()
-//            } catch (ex: Exception) {
-//                "异常信息转换错误"
-//            } finally {
-//                try {
-//                    pw.close()
-//                } catch (ex: Exception) {
-//                    ex.printStackTrace()
-//                }
-//                try {
-//                    sw.close()
-//                } catch (ex: Exception) {
-//                    ex.printStackTrace()
-//                }
-//            }
-//        }
+            // 取消JobScheduler任务
+            (context?.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler)?.cancelAll()
 
-        var errorThrowable: Throwable? = null
+            // 取消WorkManager任务
+//            context?.let { WorkManager.getInstance(it).cancelAllWork() }
+        } catch (e: Exception) {
+            Log.e("崩溃处理", "取消定时任务失败", e)
+        }
+    }
+
+    private fun getPendingIntent(): PendingIntent? {
+        return try {
+            val intent = Intent(context, context?.javaClass)
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        } catch (e: Exception) {
+            null
+        }
     }
 }

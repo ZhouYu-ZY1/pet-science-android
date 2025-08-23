@@ -95,7 +95,7 @@ object FileUtils {
                     documentFile.delete()
                 }
                 documentFile.createFile(type!!, name)
-                Application.context.contentResolver.openOutputStream(documentFile.uri)
+                Application.getContext().contentResolver.openOutputStream(documentFile.uri)
             } else {
                 FileOutputStream(bitmapFile)
             }
@@ -104,7 +104,7 @@ object FileUtils {
                 out.close()
                 if (isDocument) {
                     //保存图片后发送广播通知更新数据库
-                    Application.context.sendBroadcast(
+                    Application.getContext().sendBroadcast(
                         Intent(
                             Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                             Uri.fromFile(bitmapFile)

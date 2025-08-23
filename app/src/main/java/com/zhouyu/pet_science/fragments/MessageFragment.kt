@@ -21,6 +21,7 @@ import com.zhouyu.pet_science.utils.TimeUtils
 class MessageFragment : BaseFragment() {
     private var binding: FragmentMessageBinding? = null
     private var messageListAdapter: MessageListAdapter? = null
+    private var refreshRunnable: Runnable? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +54,11 @@ class MessageFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // 移除延迟任务，防止内存泄漏和 NPE
+        refreshRunnable?.let { runnable ->
+            binding?.root?.removeCallbacks(runnable)
+        }
+        refreshRunnable = null
         binding = null
     }
 
@@ -62,7 +68,7 @@ class MessageFragment : BaseFragment() {
             var aiChat: MessageListItem?
             var messageTime = ""
             try {
-                aiChat = StorageUtils.get<MessageListItem>("ai_last_message")
+                aiChat = StorageUtils.get("ai_last_message",MessageListItem())
                 messageTime = TimeUtils.getMessageTime(aiChat.lastTime.toLong())
             }catch (e: Exception){
                 aiChat = null
@@ -99,7 +105,7 @@ class MessageFragment : BaseFragment() {
         }
         isLoad = true
         executeThread {
-            val token = StorageUtils.get<String>("token")
+            val token = StorageUtils.get("token","")
             val followList: List<User> = UserHttpUtils.getFollowList()
             for (user in followList) {
                 var isExist = false
@@ -122,9 +128,12 @@ class MessageFragment : BaseFragment() {
     }
 
     private fun refreshList() {
-        binding?.root?.post(object : Runnable {
+        refreshRunnable = object : Runnable {
             @SuppressLint("NotifyDataSetChanged")
             override fun run() {
+                // 检查 binding 是否还存在，防止 NPE
+                if (binding == null) return
+
                 if (refreshList) {
                     refreshList = false
                     loadAIMessage()
@@ -134,9 +143,11 @@ class MessageFragment : BaseFragment() {
                     refreshFollowList = false
                     loadMessages()
                 }
+                // 再次检查 binding 是否还存在
                 binding?.root?.postDelayed(this, 500)
             }
-        })
+        }
+        refreshRunnable?.let { binding?.root?.post(it) }
     }
 
     override fun onStart() {

@@ -136,12 +136,14 @@ class PersonalCenterFragment : BaseFragment() {
         //    fragments.add(WorksFragment())
         //    fragments.add(LikesFragment())
         //    fragments.add(FavoritesFragment())
-        val fragments = listOf(
-            ContentListFragment(this).apply { arguments = Bundle().apply { putString("pageType", "works"); putInt("userId",userId) } },
-            ContentListFragment(this).apply { arguments = Bundle().apply { putString("pageType", "likes"); putInt("userId",userId) } }
-//            ContentGridFragment.newInstance(ContentGridFragment.TYPE_POSTS, userId),
-//            ContentGridFragment.newInstance(ContentGridFragment.TYPE_LIKES, userId)
-        )
+        val worksFragment = ContentListFragment.newInstance("works", userId)
+        val likesFragment = ContentListFragment.newInstance("likes", userId)
+
+        // 设置 PersonalCenterFragment 引用
+        worksFragment.setPersonalCenterFragment(this)
+        likesFragment.setPersonalCenterFragment(this)
+
+        val fragments = listOf(worksFragment, likesFragment)
         
         binding.viewPager.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount(): Int = fragments.size

@@ -171,7 +171,7 @@ object Tool {
     object MyBottomSheetDialog {
         fun showBottomSheetDialog(dialog: BottomSheetDialog, viewList: ArrayList<View?>) {
             @SuppressLint("InflateParams") val dialogView =
-                LayoutInflater.from(Application.context).inflate(R.layout.activity_bottom, null)
+                LayoutInflater.from(Application.getContext()).inflate(R.layout.activity_bottom, null)
             val frame = dialogView.findViewById<LinearLayout>(R.id.frame)
             for (view in viewList) {
                 frame.addView(view, 1)
@@ -189,7 +189,7 @@ object Tool {
 
         @JvmOverloads
         fun createBottomDialogView(icon: Int, text: String?, iconSize: Int = 0): LinearLayout {
-            @SuppressLint("InflateParams") val view = LayoutInflater.from(Application.context)
+            @SuppressLint("InflateParams") val view = LayoutInflater.from(Application.getContext())
                 .inflate(R.layout.item_bottom_dialog_text, null) as LinearLayout
             val textView = view.findViewById<TextView>(R.id.bottom_dialog_text)
             textView.setLines(1)
@@ -209,7 +209,7 @@ object Tool {
 
         @SuppressLint("UseCompatLoadingForColorStateLists")
         fun createTextView(text: String?): TextView {
-            val context = Application.context
+            val context = Application.getContext()
             val view = TextView(context)
             view.text = text
             view.setTextColor(context.getColorStateList(R.color.textGeneral))

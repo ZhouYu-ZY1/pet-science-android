@@ -36,7 +36,7 @@ object HttpUtils {
         .addInterceptor { //添加token
             val originalRequest: Request = it.request()
             if(originalRequest.url.toString().startsWith(BASE_URL)){
-                val token = StorageUtils.get<String>("token")
+                val token = StorageUtils.get("token","")
                 val requestWithToken: Request = originalRequest.newBuilder()
                     .header("Authorization", "Bearer $token")
                     .build()

@@ -23,7 +23,7 @@ object PhoneMessage {
     fun copy(data: String?) {
         // 获取系统剪贴板
         val clipboard =
-            Application.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            Application.getContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         // 创建一个剪贴数据集，包含一个普通文本数据条目（需要复制的数据）,其他的还有
         // newHtmlText、
         // newIntent、
@@ -47,10 +47,10 @@ object PhoneMessage {
 
     @JvmStatic
     val widthPixels: Int
-        get() = Application.context.resources.displayMetrics.widthPixels
+        get() = Application.getContext().resources.displayMetrics.widthPixels
     @JvmStatic
     val heightPixels: Int
-        get() = Application.context.resources.displayMetrics.heightPixels
+        get() = Application.getContext().resources.displayMetrics.heightPixels
 
     /**
      * 获取状态栏高度
@@ -70,12 +70,12 @@ object PhoneMessage {
      */
     @JvmStatic
     fun dpToPx(dpValue: Float): Int {
-        return (dpValue * Application.context.resources.displayMetrics.density + 0.5f).toInt()
+        return (dpValue * Application.getContext().resources.displayMetrics.density + 0.5f).toInt()
     }
 
     @JvmStatic
     fun dpToPxFloat(dpValue: Float): Float {
-        return dpValue * Application.context.resources.displayMetrics.density
+        return dpValue * Application.getContext().resources.displayMetrics.density
     }
 
     /**
@@ -84,7 +84,7 @@ object PhoneMessage {
      * @return dp值
      */
     fun pxToDp(pxValue: Float): Int {
-        return (pxValue / Application.context.resources.displayMetrics.density + 0.5f).toInt()
+        return (pxValue / Application.getContext().resources.displayMetrics.density + 0.5f).toInt()
     }
 
     /**
@@ -136,9 +136,9 @@ object PhoneMessage {
         get() {
             var appVersionCode: Long = 0
             try {
-                val packageInfo = Application.context.applicationContext
+                val packageInfo = Application.getContext().applicationContext
                     .packageManager
-                    .getPackageInfo(Application.context.packageName, 0)
+                    .getPackageInfo(Application.getContext().packageName, 0)
                 appVersionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     packageInfo.longVersionCode
                 } else {
@@ -156,9 +156,9 @@ object PhoneMessage {
         get() {
             var appVersionName = ""
             try {
-                val packageInfo = Application.context.applicationContext
+                val packageInfo = Application.getContext().applicationContext
                     .packageManager
-                    .getPackageInfo(Application.context.packageName, 0)
+                    .getPackageInfo(Application.getContext().packageName, 0)
                 appVersionName = packageInfo.versionName!!
             } catch (e: PackageManager.NameNotFoundException) {
                 Log.e("", e.message!!)
@@ -188,7 +188,7 @@ object PhoneMessage {
      */
     fun isAppInstalled(packageName: String?): Boolean {
         return try {
-            Application.context.packageManager.getPackageInfo(
+            Application.getContext().packageManager.getPackageInfo(
                 packageName!!, PackageManager.GET_ACTIVITIES
             )
             true
@@ -204,8 +204,8 @@ object PhoneMessage {
         get() {
             try {
                 @SuppressLint("PackageManagerGetSignatures") val packageInfo =
-                    Application.context.packageManager.getPackageInfo(
-                        Application.context.packageName, PackageManager.GET_SIGNATURES
+                    Application.getContext().packageManager.getPackageInfo(
+                        Application.getContext().packageName, PackageManager.GET_SIGNATURES
                     )
                 val signatures = packageInfo.signatures
                 val builder = StringBuilder()

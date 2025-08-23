@@ -137,6 +137,11 @@ class ProductDetailActivity : BaseActivity() {
             showSpecDialog()
         }
 
+
+        binding.cartBtn.setOnClickListener{
+            startActivity(Intent(this, CartActivity::class.java))
+
+        }
         // 加入购物车按钮
         binding.addCartBtn.setOnClickListener {
             showSpecDialog(isAddToCart = true)

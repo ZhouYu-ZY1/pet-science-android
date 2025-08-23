@@ -42,10 +42,13 @@ class WebSocketManager private constructor() {
     }
 
     fun connect() {
+        if(true){
+            return
+        }
         val client: OkHttpClient = OkHttpClient.Builder()
             .pingInterval(30, TimeUnit.SECONDS)
             .build()
-        val token = StorageUtils.get<String>("token")
+        val token = StorageUtils.get("token","")
         val request: Request = Request.Builder()
             .url("$wsUrl?token=$token")
             .build()
@@ -141,7 +144,7 @@ class WebSocketManager private constructor() {
             instance.disconnect()
         }
         fun connectWebSocket(context: Context) {
-            val token = StorageUtils.get<String>("token")
+            val token = StorageUtils.get("token","")
             messageCallback = object : MessageCallback {
                 override fun onMessage(message: String?) {
                     try {

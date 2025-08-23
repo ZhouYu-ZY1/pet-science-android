@@ -1,6 +1,5 @@
 package com.zhouyu.pet_science.network
 
-import com.orhanobut.hawk.Hawk
 import com.zhouyu.pet_science.model.User
 import com.zhouyu.pet_science.network.HttpUtils.BASE_URL
 import com.zhouyu.pet_science.network.HttpUtils.client

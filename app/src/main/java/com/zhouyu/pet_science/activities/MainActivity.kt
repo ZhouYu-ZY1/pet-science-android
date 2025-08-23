@@ -52,6 +52,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        handleIntent(intent)
 
         // 初始化布局元素
         initViews()
@@ -69,7 +70,7 @@ class MainActivity : BaseActivity() {
 //        }
 
         // 连接WebSocket
-        WebSocketManager.connectWebSocket(this)
+//        WebSocketManager.connectWebSocket(this)
 
         // 获取通知权限
         NotificationHelper.getNotification(this)
@@ -84,6 +85,10 @@ class MainActivity : BaseActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         ConsoleUtils.logErr("onNewIntent")
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
         if (intent.getBooleanExtra(OPEN_CHAT_ACTIVITY, false)) {
             val startIntent = Intent(this, ChatActivity::class.java)
             val extras = intent.extras
@@ -217,9 +222,7 @@ class MainActivity : BaseActivity() {
 
         //退出登录
         findViewById<View>(R.id.quit_login).setOnClickListener{
-            StorageUtils.delete("token")
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
+            ActivityManager.logout()
         }
 
         //我的订单

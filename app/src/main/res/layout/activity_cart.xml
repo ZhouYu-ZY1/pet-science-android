@@ -123,6 +123,67 @@
             android:orientation="vertical"
             android:visibility="gone">
 
+            <!-- 收货地址选择区域 -->
+            <com.zhouyu.pet_science.views.CardView
+                android:id="@+id/addressCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_marginTop="10dp"
+                app:view_radius="5dp">
+
+                <LinearLayout
+                    android:id="@+id/addressContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="18dp">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/ic_location"
+                        android:layout_marginEnd="12dp"
+                        app:tint="@color/Theme" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/addressInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="请选择收货地址"
+                            android:textSize="16sp"
+                            android:textColor="@color/textGeneral"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/addressDetail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textSize="14sp"
+                            android:textColor="@color/textTinge"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/next_icon"
+                        app:tint="@color/textTinge" />
+
+                </LinearLayout>
+
+            </com.zhouyu.pet_science.views.CardView>
+
             <!-- 全选区域 -->
             <com.zhouyu.pet_science.views.CardView
                 android:layout_width="match_parent"

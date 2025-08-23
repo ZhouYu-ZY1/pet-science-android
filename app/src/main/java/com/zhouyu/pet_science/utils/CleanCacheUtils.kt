@@ -27,7 +27,7 @@ class CleanCacheUtils {
     var videoSize = 0.00f
     var countSize = 0.00f
     var isCacheSizeLoadComplete = false
-    private val context = Application.context
+    private val context = Application.getContext()
     private val cacheHandler = Handler(Looper.getMainLooper())
     fun showDialog(activity: Activity?, textView: TextView?) {
         cacheHandler.post(object : Runnable {

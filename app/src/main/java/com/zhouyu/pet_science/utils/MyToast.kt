@@ -77,7 +77,7 @@ class MyToast
                 }
                 loadImportanceToast = isImportance
                 // 初始化一个新的Toast对象
-                initToast(Application.context, text)
+                initToast(Application.getContext(), text)
                 handler.removeCallbacksAndMessages(null)
                 // 设置显示时长
                 if (time == LENGTH_LONG) {

@@ -595,18 +595,23 @@
                     app:tabRippleColor="@android:color/transparent"
                     app:tabMode="fixed"
                     app:tabSelectedTextColor="@color/Theme"
-                    app:tabTextColor="@color/textTinge">
+                    app:tabTextColor="@color/textGeneral">
 
                     <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="我的发布" />
+                        android:text="发布" />
 
                     <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="我的点赞" />
+                        android:text="点赞" />
                 </com.google.android.material.tabs.TabLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/cutOffLine" />
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager"

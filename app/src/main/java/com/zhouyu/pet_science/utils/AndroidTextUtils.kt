@@ -256,7 +256,7 @@ object AndroidTextUtils {
         get() {
             var content = ""
             val clipboardManager =
-                Application.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                Application.getContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             // 获取剪贴板的剪贴数据集
             val clipData = clipboardManager.primaryClip
             if (null != clipData && clipData.itemCount > 0) {

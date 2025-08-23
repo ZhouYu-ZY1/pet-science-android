@@ -2,6 +2,8 @@ package com.zhouyu.pet_science.activities
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -18,6 +20,7 @@ import com.zhouyu.pet_science.adapter.message.MessageAdapter
 import com.zhouyu.pet_science.application.WebSocketManager
 import com.zhouyu.pet_science.databinding.ActivityChatBinding
 import com.zhouyu.pet_science.fragments.MessageFragment
+import com.zhouyu.pet_science.manager.IMClientManager
 import com.zhouyu.pet_science.pojo.ChatMessage
 import com.zhouyu.pet_science.pojo.MessageListItem
 import com.zhouyu.pet_science.utils.MessageArrayList
@@ -30,9 +33,9 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
     private lateinit var binding: ActivityChatBinding
     private var messageAdapter: MessageAdapter? = null
     private var chatMessages: MessageArrayList<ChatMessage>? = null
-    private var currentUserId: String? = null
+    private var currentUserId: String = ""
     private var currentUserName: String? = null
-    private var targetUserId: String? = null
+    private var targetUserId: String = "-1"
     private var targetUserName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,16 +44,16 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
         setContentView(binding.root)
 
         // 获取传递的用户信息
-        targetUserId = intent.getStringExtra("userId")
+        targetUserId = intent.getStringExtra("userId").toString()
         targetUserName = intent.getStringExtra("username")
-        currentUserId = StorageUtils.get("token")
-        if(currentUserId == null){
+        currentUserId = StorageUtils.get("token","")
+        if(currentUserId.isEmpty()){
             MyToast.show("登录异常，请重新登录")
             finish()
             return
         }
         currentUserName = "我" // 可以从用户配置或登录信息中获取
-        chatMessages = messageListItem!!.getChatMessageList()
+        chatMessages = messageListItem?.getChatMessageList()?: MessageArrayList()
         messageListItem!!.unreadCount = 0 //重置未读数量
 
         // 设置标题
@@ -63,6 +66,7 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
         loadHistoryMessages()
     }
 
+    private var handler = Handler(Looper.getMainLooper())
     private fun initViews() {
         setTopBarView(binding.toolbar, true)
 
@@ -79,6 +83,19 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
         binding.buttonBack.setOnClickListener {
             finish()
         }
+
+        handler.post(object : Runnable {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun run() {
+                // 检查 binding 是否还存在，防止 NPE
+                if (isRefresh) {
+                    isRefresh = false
+                    loadHistoryMessages()
+                }
+                // 再次检查 binding 是否还存在
+                handler.postDelayed(this, 500)
+            }
+        })
     }
 
     private fun setupWebSocket() {
@@ -87,7 +104,7 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun loadHistoryMessages() {
-        messageAdapter = MessageAdapter(this,chatMessages!!, currentUserId!!)
+        messageAdapter = MessageAdapter(this,chatMessages!!, currentUserId)
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerViewChat.layoutManager = layoutManager
         binding.recyclerViewChat.adapter = messageAdapter
@@ -96,22 +113,19 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
     }
 
     private fun sendMessage() {
-        //重新连接服务器
-        if (!WebSocketManager.isConnectWebSocket) {
-            WebSocketManager.instance.connect()
-        }
-        val token = StorageUtils.get<String>("token")
+//        val token = StorageUtils.get("token", "")
         val messageText = binding.editTextMessage.text.toString().trim { it <= ' ' }
         if (messageText.isNotEmpty()) {
             // 创建消息对象
             val chatMessage = ChatMessage(
-                token, currentUserName,
+                currentUserId, currentUserName,
                 targetUserId, messageText, 1
             )
 
             // 发送到WebSocket服务器
-            val jsonMessage = Gson().toJson(chatMessage)
-            WebSocketManager.instance.sendMessage(jsonMessage)
+//            val jsonMessage = Gson().toJson(chatMessage)
+//            WebSocketManager.instance.sendMessage(jsonMessage)
+            IMClientManager.getInstance(this).sendMessage(messageText, targetUserId)
 
             // 添加到本地消息列表
             chatMessages!!.add(chatMessage)
@@ -172,6 +186,7 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
 
     override fun onDestroy() {
         chatMessages = MessageArrayList()
+        handler.removeCallbacksAndMessages(null)
         super.onDestroy()
     }
 
@@ -183,5 +198,6 @@ class ChatActivity : BaseActivity(), WebSocketManager.MessageCallback {
 
     companion object {
         var messageListItem: MessageListItem? = null
+        var isRefresh = false // 刷新列表
     }
 }
